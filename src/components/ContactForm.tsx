@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
-import { Send, CheckCircle } from 'lucide-react';
+import { Send, CheckCircle, Home, Building } from 'lucide-react';
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
+import { useIntersectionAnimation } from '@/lib/animations';
 
-const ContactForm = () => {
+const PricingSection = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,6 +17,8 @@ const ContactForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  
+  const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -54,18 +58,120 @@ const ContactForm = () => {
       style={{
         background: 'linear-gradient(180deg, #FFFFFF 0%, #F5F9F7 100%)'
       }}
+      ref={sectionRef as React.RefObject<HTMLDivElement>}
     >
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="mb-4">Vraag een offerte aan</h2>
+          <h2 className="mb-4">Onze vaste tarieven</h2>
           <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            Vul het formulier in en ontvang binnen 24 uur een persoonlijke offerte voor uw energielabel
+            Transparante prijzen zonder verrassingen. Direct uw energielabel aanvragen zonder offerte.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          {/* Standard Housing Card */}
+          <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div className="h-48 overflow-hidden relative">
+              <img 
+                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                alt="Standaard woning" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <div className="flex items-center">
+                  <Building className="h-5 w-5 mr-2" />
+                  <span className="font-medium">Woningen tot 150m²</span>
+                </div>
+              </div>
+            </div>
+            <CardContent className="p-6">
+              <div className="mb-4">
+                <span className="text-3xl font-bold text-epa-green">€285</span>
+                <span className="text-gray-500 ml-2">incl. BTW</span>
+              </div>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Appartementen, tussenwoningen, hoekwoningen</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Geldig voor 10 jaar</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Geregistreerd bij RVO</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Professionele EPA-adviseur</span>
+                </li>
+              </ul>
+              <button
+                onClick={() => document.getElementById('contactForm')?.scrollIntoView({ behavior: 'smooth' })}
+                className="w-full button-transition py-3 px-6 rounded-md flex items-center justify-center gap-2 font-medium bg-epa-green hover:bg-epa-green-dark text-white"
+              >
+                <Send className="h-5 w-5" /> Direct aanvragen
+              </button>
+            </CardContent>
+          </Card>
+
+          {/* Detached Housing Card */}
+          <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div className="h-48 overflow-hidden relative">
+              <img 
+                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                alt="Vrijstaande woning" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <div className="flex items-center">
+                  <Home className="h-5 w-5 mr-2" />
+                  <span className="font-medium">Vrijstaande woningen</span>
+                </div>
+              </div>
+            </div>
+            <CardContent className="p-6">
+              <div className="mb-4">
+                <span className="text-3xl font-bold text-epa-green">€350</span>
+                <span className="text-gray-500 ml-2">incl. BTW</span>
+              </div>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Vrijstaande woningen, villa's, landhuizen</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Geldig voor 10 jaar</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Geregistreerd bij RVO</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Professionele EPA-adviseur</span>
+                </li>
+              </ul>
+              <button
+                onClick={() => document.getElementById('contactForm')?.scrollIntoView({ behavior: 'smooth' })}
+                className="w-full button-transition py-3 px-6 rounded-md flex items-center justify-center gap-2 font-medium bg-epa-green hover:bg-epa-green-dark text-white"
+              >
+                <Send className="h-5 w-5" /> Direct aanvragen
+              </button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Contact Form Section */}
+        <div id="contactForm" className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3">
             <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 md:p-8">
+              <h3 className="text-xl font-semibold mb-6">Aanvraagformulier</h3>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -183,7 +289,7 @@ const ContactForm = () => {
                     </>
                   ) : (
                     <>
-                      <Send className="h-5 w-5" /> Offerte aanvragen
+                      <Send className="h-5 w-5" /> Aanvraag versturen
                     </>
                   )}
                 </button>
@@ -224,4 +330,4 @@ const ContactForm = () => {
   );
 };
 
-export default ContactForm;
+export default PricingSection;

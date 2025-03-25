@@ -6,7 +6,7 @@ import Features from '@/components/Features';
 import Process from '@/components/Process';
 import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
-import ContactForm from '@/components/ContactForm';
+import PricingSection from '@/components/ContactForm';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -46,7 +46,7 @@ const Index = () => {
         <Process />
         <Testimonials />
         <FAQ />
-        <ContactForm />
+        <PricingSection />
       </main>
       <Footer />
     </div>

@@ -7,6 +7,7 @@ const Hero = () => {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Staggered animation for hero elements
@@ -14,8 +15,9 @@ const Hero = () => {
     const title = titleRef.current;
     const subtitle = subtitleRef.current;
     const cta = ctaRef.current;
+    const image = imageRef.current;
 
-    if (hero && title && subtitle && cta) {
+    if (hero && title && subtitle && cta && image) {
       hero.style.opacity = '1';
       
       setTimeout(() => {
@@ -29,6 +31,10 @@ const Hero = () => {
       setTimeout(() => {
         cta.classList.add('animate-fade-in');
       }, 600);
+      
+      setTimeout(() => {
+        image.classList.add('animate-fade-in');
+      }, 800);
     }
   }, []);
 
@@ -50,36 +56,54 @@ const Hero = () => {
         style={{ animationDelay: '2s' }}
       />
 
-      <div className="max-w-5xl mx-auto text-center z-10">
-        <h1 
-          ref={titleRef}
-          className="opacity-0 font-bold mb-6 leading-tight text-balance"
-        >
-          Energielabel voor uw woning <br/>
-          <span className="text-epa-green">Gemakkelijk en Betrouwbaar</span>
-        </h1>
-        
-        <p 
-          ref={subtitleRef}
-          className="opacity-0 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10 text-balance"
-        >
-          Krijg snel en professioneel uw energielabel voor uw woning. EPA gecertificeerde adviseurs. Geldig voor 10 jaar en geregistreerd bij RVO.
-        </p>
-        
-        <div ref={ctaRef} className="opacity-0 flex flex-col sm:flex-row justify-center items-center gap-4">
-          <a 
-            href="#contact" 
-            className="button-transition bg-epa-green hover:bg-epa-green-dark text-white px-8 py-3 rounded-md text-base md:text-lg font-medium flex items-center gap-2 group w-64 sm:w-auto justify-center"
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="text-left z-10">
+          <h1 
+            ref={titleRef}
+            className="opacity-0 font-bold mb-6 leading-tight text-balance"
           >
-            Vraag offerte aan
-            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </a>
-          <a 
-            href="#process" 
-            className="button-transition border border-gray-300 hover:border-epa-green-dark text-gray-800 px-8 py-3 rounded-md text-base md:text-lg font-medium w-64 sm:w-auto"
+            Energielabel voor uw woning <br/>
+            <span className="text-epa-green">Vanaf €285</span>
+          </h1>
+          
+          <p 
+            ref={subtitleRef}
+            className="opacity-0 text-lg md:text-xl text-gray-600 max-w-3xl mb-10 text-balance"
           >
-            Bekijk werkwijze
-          </a>
+            Krijg snel en professioneel uw energielabel voor uw woning. EPA gecertificeerde adviseurs. Geldig voor 10 jaar en geregistreerd bij RVO.
+          </p>
+          
+          <div ref={ctaRef} className="opacity-0 flex flex-col sm:flex-row items-start gap-4">
+            <a 
+              href="#contact" 
+              className="button-transition bg-epa-green hover:bg-epa-green-dark text-white px-8 py-3 rounded-md text-base md:text-lg font-medium flex items-center gap-2 group w-64 sm:w-auto justify-center"
+            >
+              Direct aanvragen
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </a>
+            <a 
+              href="#process" 
+              className="button-transition border border-gray-300 hover:border-epa-green-dark text-gray-800 px-8 py-3 rounded-md text-base md:text-lg font-medium w-64 sm:w-auto text-center"
+            >
+              Bekijk werkwijze
+            </a>
+          </div>
+        </div>
+        
+        <div 
+          ref={imageRef} 
+          className="opacity-0 relative h-[400px] lg:h-[500px] rounded-lg overflow-hidden shadow-2xl"
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+            alt="Energielabel woning" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" />
+          <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur rounded-lg p-4 shadow-lg max-w-[260px]">
+            <div className="text-epa-green font-bold text-xl mb-1">Vaste tarieven</div>
+            <p className="text-gray-700 text-sm">Transparante prijzen voor energielabels zonder verrassingen.</p>
+          </div>
         </div>
       </div>
 
