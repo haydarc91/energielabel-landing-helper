@@ -39,8 +39,10 @@ const Hero = () => {
   }, []);
 
   return (
-    <div 
+    <section 
       ref={heroRef}
+      id="home"
+      aria-label="Energielabel voor woningen"
       className="min-h-screen flex flex-col justify-center items-center relative pt-20 pb-16 px-6 md:px-8 lg:px-12 transition-opacity duration-1000 opacity-0 overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #FFFFFF 0%, #F5F9F7 100%)'
@@ -50,10 +52,12 @@ const Hero = () => {
       <div 
         className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-epa-green-light blur-3xl opacity-40 animate-float"
         style={{ animationDelay: '0s' }}
+        aria-hidden="true"
       />
       <div 
         className="absolute top-1/2 -left-32 w-64 h-64 rounded-full bg-epa-green-light blur-3xl opacity-30 animate-float"
         style={{ animationDelay: '2s' }}
+        aria-hidden="true"
       />
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -77,6 +81,7 @@ const Hero = () => {
             <a 
               href="#contact" 
               className="button-transition bg-epa-green hover:bg-epa-green-dark text-white px-8 py-3 rounded-md text-base md:text-lg font-medium flex items-center gap-2 group w-64 sm:w-auto justify-center"
+              rel="nofollow"
             >
               Direct aanvragen
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -96,10 +101,13 @@ const Hero = () => {
         >
           <img 
             src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
-            alt="Energielabel woning" 
+            alt="Energiezuinige woning met energielabel" 
             className="w-full h-full object-cover"
+            loading="eager"
+            width="1170"
+            height="780"
           />
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" aria-hidden="true" />
           <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur rounded-lg p-4 shadow-lg max-w-[260px]">
             <div className="text-epa-green font-bold text-xl mb-1">Vaste tarieven</div>
             <p className="text-gray-700 text-sm">Transparante prijzen voor energielabels zonder verrassingen.</p>
@@ -116,7 +124,7 @@ const Hero = () => {
           <div className="w-24 h-12 bg-gray-200 rounded-md flex items-center justify-center text-sm font-medium text-gray-500">EPBD</div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

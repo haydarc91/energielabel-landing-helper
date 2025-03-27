@@ -11,6 +11,15 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   useEffect(() => {
+    // Update document title for SEO
+    document.title = "EPA Woninglabel | Officieel Energielabel Vanaf €285";
+    
+    // Set meta description dynamically
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Krijg snel en professioneel een officieel energielabel voor uw woning. EPA gecertificeerde adviseurs, geldig voor 10 jaar en geregistreerd bij RVO.");
+    }
+    
     // Smooth scroll for anchor links
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
