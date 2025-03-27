@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Send, CheckCircle, Home, Building, Clock, MapPin, Euro } from 'lucide-react';
+import { Send, CheckCircle, Home, Building, Clock, MapPin, Euro, Upload } from 'lucide-react';
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,8 @@ const PricingSection = () => {
     surfaceArea: 0,
     message: '',
     propertyType: 'apartment',
-    rushService: false
+    rushService: false,
+    hasFloorplans: false
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +29,7 @@ const PricingSection = () => {
   const [isLookingUpAddress, setIsLookingUpAddress] = useState(false);
   const [calculatedPrice, setCalculatedPrice] = useState(285);
   const [totalPrice, setTotalPrice] = useState(285);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   
   const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
 
@@ -37,8 +39,15 @@ const PricingSection = () => {
     setCalculatedPrice(basePrice);
     
     // Add rush service fee if selected
-    setTotalPrice(basePrice + (formData.rushService ? 95 : 0));
-  }, [formData.propertyType, formData.surfaceArea, formData.rushService]);
+    let total = basePrice + (formData.rushService ? 95 : 0);
+    
+    // Subtract discount for floorplans if selected
+    if (formData.hasFloorplans) {
+      total -= 10;
+    }
+    
+    setTotalPrice(total);
+  }, [formData.propertyType, formData.surfaceArea, formData.rushService, formData.hasFloorplans]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -50,6 +59,14 @@ const PricingSection = () => {
     setFormData(prev => ({ ...prev, [name]: checked }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+      setFormData(prev => ({ ...prev, hasFloorplans: true }));
+      toast.success("Plattegrond geselecteerd. €10 korting toegepast!");
+    }
+  };
+
   const handlePostcodeSearch = async () => {
     if (!formData.postcode || !formData.houseNumber) {
       toast.error("Vul een postcode en huisnummer in");
@@ -57,6 +74,8 @@ const PricingSection = () => {
     }
     
     setIsLookingUpAddress(true);
+    setFormData(prev => ({ ...prev, address: '' })); // Clear address to prevent showing old data
+    
     try {
       const addressData = await lookupAddress(formData.postcode, formData.houseNumber);
       
@@ -100,8 +119,10 @@ const PricingSection = () => {
         surfaceArea: 0,
         message: '',
         propertyType: 'apartment',
-        rushService: false
+        rushService: false,
+        hasFloorplans: false
       });
+      setSelectedFile(null);
       
       setTimeout(() => {
         setSubmitted(false);
@@ -131,7 +152,7 @@ const PricingSection = () => {
           <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div className="h-48 overflow-hidden relative">
               <img 
-                src="/apartment-building.jpg" 
+                src="/dutch-house.jpg" 
                 alt="Appartementen en tussenwoningen" 
                 className="w-full h-full object-cover"
               />
@@ -273,8 +294,8 @@ const PricingSection = () => {
         </div>
 
         {/* Contact Form Section */}
-        <div id="contactForm" className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <div className="lg:col-span-3">
+        <div id="contactForm" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 md:p-8">
               <h3 className="text-xl font-semibold mb-6">Aanvraagformulier</h3>
               
@@ -440,7 +461,7 @@ const PricingSection = () => {
                 </div>
               </div>
               
-              <div className="mt-5">
+              <div className="mt-5 space-y-3">
                 <div className="flex items-start">
                   <input
                     id="rushService"
@@ -457,6 +478,44 @@ const PricingSection = () => {
                     </p>
                   </label>
                 </div>
+                
+                <div className="flex items-start">
+                  <input
+                    id="hasFloorplans"
+                    name="hasFloorplans"
+                    type="checkbox"
+                    checked={formData.hasFloorplans}
+                    onChange={handleCheckboxChange}
+                    className="h-5 w-5 text-epa-green rounded border-gray-300 focus-ring mt-0.5"
+                  />
+                  <label htmlFor="hasFloorplans" className="ml-2 block text-sm text-gray-700">
+                    <span className="font-medium">Ik heb actuele plattegronden (-€10 korting)</span>
+                    <p className="text-gray-500 text-xs mt-1">
+                      Actuele plattegronden van de woning met duidelijke maatvoering
+                    </p>
+                  </label>
+                </div>
+                
+                {formData.hasFloorplans && (
+                  <div className="ml-7">
+                    <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-4 mt-2 hover:border-epa-green transition-colors">
+                      <input
+                        type="file"
+                        id="floorplan"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onChange={handleFileChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <div className="text-center">
+                        <Upload className="mx-auto h-6 w-6 text-gray-400 mb-2" />
+                        <p className="text-sm font-medium">
+                          {selectedFile ? selectedFile.name : "Klik om plattegrond te uploaden"}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">PDF, JPG of PNG (max. 10MB)</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div className="mt-5">
@@ -466,7 +525,7 @@ const PricingSection = () => {
                 <Textarea
                   id="message"
                   name="message"
-                  rows={4}
+                  rows={3}
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Eventuele opmerkingen of vragen"
@@ -496,6 +555,13 @@ const PricingSection = () => {
                     <div className="flex justify-between text-sm">
                       <span>Spoedservice toeslag:</span>
                       <span className="font-medium text-amber-600">€95</span>
+                    </div>
+                  )}
+                  
+                  {formData.hasFloorplans && (
+                    <div className="flex justify-between text-sm">
+                      <span>Korting voor plattegronden:</span>
+                      <span className="font-medium text-green-600">-€10</span>
                     </div>
                   )}
                   
@@ -532,7 +598,7 @@ const PricingSection = () => {
             </form>
           </div>
 
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-1">
             <div className="glass-card rounded-xl p-6 md:p-8 h-full flex flex-col">
               <h3 className="text-xl font-semibold mb-4">Contact informatie</h3>
               
