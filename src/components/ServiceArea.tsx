@@ -1,12 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { MapPin, Clock, Check } from 'lucide-react';
 import { useIntersectionAnimation } from '@/lib/animations';
+import type { Map } from 'leaflet';
 
 const ServiceArea = () => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const leafletMapRef = useRef<Map | null>(null);
   const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
   
   useEffect(() => {
+    // Only load and initialize if the map ref exists
+    if (!mapRef.current) return;
+
     // Initialize map script
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
@@ -23,52 +28,55 @@ const ServiceArea = () => {
     document.head.appendChild(link);
     document.body.appendChild(script);
     
+    let mapInstance: Map | null = null;
+    
     script.onload = () => {
-      if (mapRef.current && typeof L !== 'undefined') {
+      if (mapRef.current && window.L) {
         // Center coordinates for Netherlands
-        const center = [52.1326, 5.2913];
+        const center: [number, number] = [52.1326, 5.2913];
         
         // Create the map
-        const map = L.map(mapRef.current).setView(center, 7);
+        mapInstance = window.L.map(mapRef.current).setView(center, 7);
+        leafletMapRef.current = mapInstance;
         
         // Add the tile layer (map styling)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        }).addTo(mapInstance);
         
         // Add Netherlands outline - simplified GeoJSON
         fetch('/netherlands-outline.json')
           .then(response => response.json())
           .then(data => {
-            L.geoJSON(data, {
+            window.L.geoJSON(data, {
               style: {
                 color: '#10B981',
                 weight: 3,
                 fillColor: '#10B981',
                 fillOpacity: 0.1
               }
-            }).addTo(map);
+            }).addTo(mapInstance!);
 
             // Add marker to indicate service area
             const mainCities = [
-              { name: "Amsterdam", coords: [52.3676, 4.9041] },
-              { name: "Rotterdam", coords: [51.9244, 4.4777] },
-              { name: "Den Haag", coords: [52.0705, 4.3007] },
-              { name: "Utrecht", coords: [52.0907, 5.1214] },
-              { name: "Eindhoven", coords: [51.4416, 5.4697] },
-              { name: "Groningen", coords: [53.2194, 6.5665] }
+              { name: "Amsterdam", coords: [52.3676, 4.9041] as [number, number] },
+              { name: "Rotterdam", coords: [51.9244, 4.4777] as [number, number] },
+              { name: "Den Haag", coords: [52.0705, 4.3007] as [number, number] },
+              { name: "Utrecht", coords: [52.0907, 5.1214] as [number, number] },
+              { name: "Eindhoven", coords: [51.4416, 5.4697] as [number, number] },
+              { name: "Groningen", coords: [53.2194, 6.5665] as [number, number] }
             ];
             
             // Add markers for main cities
             mainCities.forEach(city => {
-              L.marker(city.coords)
-                .addTo(map)
+              window.L.marker(city.coords)
+                .addTo(mapInstance!)
                 .bindPopup(`<b>${city.name}</b><br>Energielabel service beschikbaar`);
             });
             
             // Disable zoom to keep the map clean and focused
-            map.scrollWheelZoom.disable();
-            map.doubleClickZoom.disable();
+            mapInstance!.scrollWheelZoom.disable();
+            mapInstance!.doubleClickZoom.disable();
           })
           .catch(error => {
             console.error('Error loading Netherlands GeoJSON:', error);
@@ -78,7 +86,16 @@ const ServiceArea = () => {
     };
     
     return () => {
-      document.body.removeChild(script);
+      // Clean up
+      if (leafletMapRef.current) {
+        leafletMapRef.current.remove();
+        leafletMapRef.current = null;
+      }
+      
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      
       if (document.head.contains(link)) {
         document.head.removeChild(link);
       }
