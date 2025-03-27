@@ -72,7 +72,7 @@ const Hero = () => {
             </h1>
             <div className="ml-4 hidden md:block">
               <img 
-                src="/energielabel-colors.png" 
+                src="energielabel-colors.png" 
                 alt="Energielabel kleuren A tot G" 
                 className="h-20 w-auto" 
               />
@@ -109,7 +109,7 @@ const Hero = () => {
           className="opacity-0 relative h-[400px] lg:h-[500px] rounded-lg overflow-hidden shadow-2xl"
         >
           <img 
-            src="/dutch-house.jpg" 
+            src="dutch-house.jpg" 
             alt="Nederlandse woning met energielabel" 
             className="w-full h-full object-cover"
             loading="eager"
