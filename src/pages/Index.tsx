@@ -7,6 +7,7 @@ import Process from '@/components/Process';
 import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
 import PricingSection from '@/components/ContactForm';
+import ServiceArea from '@/components/ServiceArea';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -53,6 +54,7 @@ const Index = () => {
         <Hero />
         <Features />
         <Process />
+        <ServiceArea />
         <Testimonials />
         <FAQ />
         <PricingSection />

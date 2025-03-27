@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Send, CheckCircle, Home, Building } from 'lucide-react';
+import { Send, CheckCircle, Home, Building, Clock } from 'lucide-react';
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIntersectionAnimation } from '@/lib/animations';
@@ -13,6 +12,7 @@ const PricingSection = () => {
     address: '',
     message: '',
     propertyType: 'apartment',
+    rushService: false
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,6 +23,11 @@ const PricingSection = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: checked }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,6 +48,7 @@ const PricingSection = () => {
         address: '',
         message: '',
         propertyType: 'apartment',
+        rushService: false
       });
       
       setTimeout(() => {
@@ -68,7 +74,7 @@ const PricingSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {/* Standard Housing Card */}
           <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div className="h-48 overflow-hidden relative">
@@ -164,6 +170,54 @@ const PricingSection = () => {
               </button>
             </CardContent>
           </Card>
+
+          {/* New Rush Service Card */}
+          <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-amber-200">
+            <div className="h-48 overflow-hidden relative">
+              <img 
+                src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                alt="Spoedservice energielabel" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <div className="flex items-center">
+                  <Clock className="h-5 w-5 mr-2" />
+                  <span className="font-medium">Spoedservice</span>
+                </div>
+              </div>
+            </div>
+            <CardContent className="p-6">
+              <div className="mb-4">
+                <span className="text-3xl font-bold text-amber-600">+€95</span>
+                <span className="text-gray-500 ml-2">incl. BTW</span>
+              </div>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-amber-600 mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Binnen 24 uur een opname en energielabel</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-amber-600 mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Zelfde kwaliteit en geldigheid</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-amber-600 mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Voorrang op reguliere aanvragen</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-amber-600 mr-2 flex-shrink-0 mt-0.5" />
+                  <span>Toeslag bovenop standaard tarief</span>
+                </li>
+              </ul>
+              <button
+                onClick={() => document.getElementById('contactForm')?.scrollIntoView({ behavior: 'smooth' })}
+                className="w-full button-transition py-3 px-6 rounded-md flex items-center justify-center gap-2 font-medium bg-amber-600 hover:bg-amber-700 text-white"
+              >
+                <Clock className="h-5 w-5" /> Direct aanvragen
+              </button>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Contact Form Section */}
@@ -254,6 +308,25 @@ const PricingSection = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus-ring"
                   placeholder="Straat, huisnummer, postcode en plaats"
                 />
+              </div>
+              
+              <div className="mt-5">
+                <div className="flex items-start">
+                  <input
+                    id="rushService"
+                    name="rushService"
+                    type="checkbox"
+                    checked={formData.rushService}
+                    onChange={handleCheckboxChange}
+                    className="h-5 w-5 text-amber-600 rounded border-gray-300 focus-ring mt-0.5"
+                  />
+                  <label htmlFor="rushService" className="ml-2 block text-sm text-gray-700">
+                    <span className="font-medium">Spoedservice (+€95 incl. BTW)</span>
+                    <p className="text-gray-500 text-xs mt-1">
+                      Opname en afgifte van het energielabel binnen 24 uur
+                    </p>
+                  </label>
+                </div>
               </div>
               
               <div className="mt-5">
