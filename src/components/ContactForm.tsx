@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
-import { Send, CheckCircle, Home, Building, Clock } from 'lucide-react';
+
+import React, { useState, useRef } from 'react';
+import { Send, CheckCircle, Home, Building, Clock, Upload, Check, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useIntersectionAnimation } from '@/lib/animations';
 
+interface Address {
+  street: string;
+  city: string;
+  municipality: string;
+  province: string;
+  surfaceArea: number;
+}
+
 const PricingSection = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,11 +24,20 @@ const PricingSection = () => {
     address: '',
     message: '',
     propertyType: 'apartment',
-    rushService: false
+    rushService: false,
+    floorplanDiscount: false,
+    postcode: '',
+    houseNumber: '',
+    houseNumberAddition: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
+  const [addressError, setAddressError] = useState<string | null>(null);
+  const [addressDetails, setAddressDetails] = useState<Address | null>(null);
+  const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   
   const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
 
@@ -27,7 +48,129 @@ const PricingSection = () => {
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
+    
+    // If enabling floorplan discount
+    if (name === 'floorplanDiscount' && checked && !uploadedFileName) {
+      // Prompt user to upload floorplan
+      fileInputRef.current?.click();
+    }
+    
     setFormData(prev => ({ ...prev, [name]: checked }));
+    
+    // Recalculate price when checkboxes change
+    if (addressDetails) {
+      calculatePrice(addressDetails.surfaceArea, formData.propertyType, name === 'rushService' ? checked : formData.rushService, name === 'floorplanDiscount' ? checked : formData.floorplanDiscount);
+    }
+  };
+
+  const calculatePrice = (surfaceArea: number, propertyType: string, rushService: boolean, floorplanDiscount: boolean) => {
+    let basePrice = 0;
+    
+    // Determine base price by property type
+    if (propertyType === 'detached' || propertyType === 'semi-detached') {
+      basePrice = 350; // Base price for detached homes up to 200m²
+      
+      // Add surcharges for larger properties
+      if (surfaceArea > 200) {
+        const extraSurface = surfaceArea - 200;
+        const extraChunks = Math.ceil(extraSurface / 25);
+        basePrice += extraChunks * 50;
+      }
+    } else {
+      basePrice = 285; // Apartments and terraced houses
+    }
+    
+    // Add rush service fee if selected
+    if (rushService) {
+      basePrice += 95;
+    }
+    
+    // Apply floorplan discount if selected
+    if (floorplanDiscount) {
+      basePrice -= 10;
+    }
+    
+    setCalculatedPrice(basePrice);
+    return basePrice;
+  };
+
+  const lookupAddress = async () => {
+    const { postcode, houseNumber, houseNumberAddition } = formData;
+    
+    if (!postcode || !houseNumber) {
+      setAddressError("Vul een postcode en huisnummer in");
+      return;
+    }
+    
+    setIsLoadingAddress(true);
+    setAddressError(null);
+    
+    try {
+      // In a real implementation, you would need to use an API key for postcodeapi.nu
+      // This is a mock implementation
+      console.log(`Looking up address: ${postcode} ${houseNumber} ${houseNumberAddition}`);
+      
+      // Simulating API call
+      setTimeout(() => {
+        // Mock response - in real implementation, replace with actual API call
+        const mockAddress: Address = {
+          street: "Voorbeeldstraat",
+          city: "Amersfoort",
+          municipality: "Amersfoort",
+          province: "Utrecht",
+          surfaceArea: formData.propertyType === 'detached' ? 220 : 120
+        };
+        
+        setAddressDetails(mockAddress);
+        
+        // Set full address in the form
+        const fullAddress = `${mockAddress.street} ${houseNumber}${houseNumberAddition ? ' ' + houseNumberAddition : ''}, ${postcode} ${mockAddress.city}`;
+        setFormData(prev => ({ ...prev, address: fullAddress }));
+        
+        // Calculate price based on property type and surface area
+        calculatePrice(
+          mockAddress.surfaceArea, 
+          formData.propertyType, 
+          formData.rushService, 
+          formData.floorplanDiscount
+        );
+        
+        toast.success("Adres succesvol gevonden!");
+        setIsLoadingAddress(false);
+      }, 1500);
+      
+      // NOTE: In a real implementation, use the actual API:
+      // const response = await fetch(`https://api.postcodeapi.nu/v2/addresses/?postcode=${postcode}&number=${houseNumber}`, {
+      //   headers: {
+      //     'X-Api-Key': 'YOUR_API_KEY'
+      //   }
+      // });
+      // const data = await response.json();
+      // Process the actual data from postcodeapi.nu
+    } catch (error) {
+      setAddressError("Kon het adres niet vinden. Controleer de gegevens.");
+      setIsLoadingAddress(false);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setUploadedFileName(files[0].name);
+      setFormData(prev => ({ ...prev, floorplanDiscount: true }));
+      
+      // Recalculate price with floorplan discount
+      if (addressDetails) {
+        calculatePrice(
+          addressDetails.surfaceArea, 
+          formData.propertyType, 
+          formData.rushService, 
+          true
+        );
+      }
+      
+      toast.success("Plattegrond succesvol geüpload!");
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -48,8 +191,15 @@ const PricingSection = () => {
         address: '',
         message: '',
         propertyType: 'apartment',
-        rushService: false
+        rushService: false,
+        floorplanDiscount: false,
+        postcode: '',
+        houseNumber: '',
+        houseNumberAddition: ''
       });
+      setAddressDetails(null);
+      setCalculatedPrice(null);
+      setUploadedFileName(null);
       
       setTimeout(() => {
         setSubmitted(false);
@@ -79,7 +229,7 @@ const PricingSection = () => {
           <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div className="h-48 overflow-hidden relative">
               <img 
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
                 alt="Standaard woning" 
                 className="w-full h-full object-cover"
               />
@@ -127,7 +277,7 @@ const PricingSection = () => {
           <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div className="h-48 overflow-hidden relative">
               <img 
-                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
                 alt="Vrijstaande woning" 
                 className="w-full h-full object-cover"
               />
@@ -147,11 +297,11 @@ const PricingSection = () => {
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Vrijstaande woningen, villa's, landhuizen</span>
+                  <span>Vrijstaande woningen tot 200m²</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Geldig voor 10 jaar</span>
+                  <span>€50 toeslag per extra 25m²</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
@@ -171,11 +321,11 @@ const PricingSection = () => {
             </CardContent>
           </Card>
 
-          {/* New Rush Service Card */}
+          {/* Rush Service Card */}
           <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-amber-200">
             <div className="h-48 overflow-hidden relative">
               <img 
-                src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                src="https://images.unsplash.com/photo-1609921141835-710b7290f500?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
                 alt="Spoedservice energielabel" 
                 className="w-full h-full object-cover"
               />
@@ -221,8 +371,8 @@ const PricingSection = () => {
         </div>
 
         {/* Contact Form Section */}
-        <div id="contactForm" className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <div className="lg:col-span-3">
+        <div id="contactForm" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 md:p-8">
               <h3 className="text-xl font-semibold mb-6">Aanvraagformulier</h3>
               
@@ -231,14 +381,14 @@ const PricingSection = () => {
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                     Naam
                   </label>
-                  <input
+                  <Input
                     id="name"
                     name="name"
                     type="text"
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus-ring"
+                    className="w-full"
                     placeholder="Uw volledige naam"
                   />
                 </div>
@@ -246,14 +396,14 @@ const PricingSection = () => {
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                     E-mail
                   </label>
-                  <input
+                  <Input
                     id="email"
                     name="email"
                     type="email"
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus-ring"
+                    className="w-full"
                     placeholder="uw@email.nl"
                   />
                 </div>
@@ -264,13 +414,13 @@ const PricingSection = () => {
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                     Telefoonnummer
                   </label>
-                  <input
+                  <Input
                     id="phone"
                     name="phone"
                     type="tel"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus-ring"
+                    className="w-full"
                     placeholder="06 - 12345678"
                   />
                 </div>
@@ -295,22 +445,112 @@ const PricingSection = () => {
                 </div>
               </div>
               
+              {/* Postcode API lookup section */}
+              <div className="mt-5 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 className="text-md font-medium mb-3">Adresgegevens</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label htmlFor="postcode" className="block text-sm font-medium text-gray-700 mb-1">
+                      Postcode
+                    </label>
+                    <Input
+                      id="postcode"
+                      name="postcode"
+                      type="text"
+                      value={formData.postcode}
+                      onChange={handleChange}
+                      className="w-full"
+                      placeholder="1234 AB"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="houseNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                      Huisnummer
+                    </label>
+                    <Input
+                      id="houseNumber"
+                      name="houseNumber"
+                      type="text"
+                      value={formData.houseNumber}
+                      onChange={handleChange}
+                      className="w-full"
+                      placeholder="123"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="houseNumberAddition" className="block text-sm font-medium text-gray-700 mb-1">
+                      Toevoeging
+                    </label>
+                    <Input
+                      id="houseNumberAddition"
+                      name="houseNumberAddition"
+                      type="text"
+                      value={formData.houseNumberAddition}
+                      onChange={handleChange}
+                      className="w-full"
+                      placeholder="A"
+                    />
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={lookupAddress}
+                    disabled={isLoadingAddress}
+                    className="inline-flex items-center gap-2 text-sm py-2 px-4 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
+                  >
+                    {isLoadingAddress ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Adres ophalen...
+                      </>
+                    ) : (
+                      <>Adres zoeken</>
+                    )}
+                  </button>
+                  {addressError && (
+                    <div className="text-red-500 text-sm flex items-center gap-1">
+                      <AlertCircle className="h-4 w-4" />
+                      {addressError}
+                    </div>
+                  )}
+                </div>
+
+                {/* Show address details when available */}
+                {addressDetails && (
+                  <div className="mt-3 text-sm">
+                    <p className="text-gray-700">
+                      <span className="font-medium">Gevonden adres:</span> {formData.address}
+                    </p>
+                    <p className="text-gray-700">
+                      <span className="font-medium">Oppervlakte:</span> {addressDetails.surfaceArea} m²
+                    </p>
+                    {calculatedPrice && (
+                      <p className="mt-1 font-medium text-epa-green">
+                        Berekende prijs: €{calculatedPrice} incl. BTW
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+              
               <div className="mt-5">
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                  Adres
+                  Volledig adres
                 </label>
-                <input
+                <Input
                   id="address"
                   name="address"
                   type="text"
                   value={formData.address}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus-ring"
-                  placeholder="Straat, huisnummer, postcode en plaats"
+                  className="w-full"
+                  placeholder="Adres wordt automatisch ingevuld na postcode check"
+                  readOnly={!!addressDetails}
                 />
               </div>
               
-              <div className="mt-5">
+              <div className="mt-5 space-y-3">
                 <div className="flex items-start">
                   <input
                     id="rushService"
@@ -327,19 +567,66 @@ const PricingSection = () => {
                     </p>
                   </label>
                 </div>
+                
+                <div className="flex items-start">
+                  <input
+                    id="floorplanDiscount"
+                    name="floorplanDiscount"
+                    type="checkbox"
+                    checked={formData.floorplanDiscount}
+                    onChange={handleCheckboxChange}
+                    className="h-5 w-5 text-epa-green rounded border-gray-300 focus-ring mt-0.5"
+                  />
+                  <label htmlFor="floorplanDiscount" className="ml-2 block text-sm text-gray-700">
+                    <span className="font-medium">Plattegrond uploaden (-€10 korting)</span>
+                    <p className="text-gray-500 text-xs mt-1">
+                      Upload een actuele plattegrond met duidelijke maatvoering en ontvang €10 korting
+                    </p>
+                  </label>
+                </div>
+                
+                {/* Hidden file input for floor plan */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  onChange={handleFileUpload}
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  className="hidden"
+                  id="floorPlanUpload"
+                />
+                
+                {/* Show upload button if checkbox is checked */}
+                {formData.floorplanDiscount && (
+                  <div className="ml-7">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="inline-flex items-center gap-2 text-sm py-2 px-4 bg-epa-green/10 hover:bg-epa-green/20 text-epa-green-dark rounded-md transition-colors"
+                    >
+                      <Upload className="h-4 w-4" />
+                      {uploadedFileName ? 'Wijzig plattegrond' : 'Upload plattegrond'}
+                    </button>
+                    {uploadedFileName && (
+                      <p className="mt-1 text-xs text-gray-600 flex items-center gap-1">
+                        <Check className="h-3 w-3 text-epa-green" />
+                        Geüpload: {uploadedFileName}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
               
               <div className="mt-5">
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                   Bericht (optioneel)
                 </label>
-                <textarea
+                <Textarea
                   id="message"
                   name="message"
                   rows={4}
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus-ring"
+                  className="w-full"
                   placeholder="Eventuele opmerkingen of vragen"
                 />
               </div>
@@ -355,7 +642,10 @@ const PricingSection = () => {
                   }`}
                 >
                   {isSubmitting ? (
-                    <>Verzenden...</>
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Verzenden...
+                    </>
                   ) : submitted ? (
                     <>
                       <CheckCircle className="h-5 w-5" /> Verzonden
@@ -370,8 +660,8 @@ const PricingSection = () => {
             </form>
           </div>
 
-          <div className="lg:col-span-2">
-            <div className="glass-card rounded-xl p-6 md:p-8 h-full flex flex-col">
+          <div className="lg:col-span-1">
+            <div className="glass-card rounded-xl p-6 md:p-8 sticky top-24">
               <h3 className="text-xl font-semibold mb-4">Contact informatie</h3>
               
               <div className="space-y-4 text-gray-600 mb-6">
@@ -392,9 +682,51 @@ const PricingSection = () => {
               <div className="mt-auto">
                 <h4 className="font-medium mb-3 text-lg">Werkgebied</h4>
                 <p className="text-gray-600">
-                  Wij zijn actief in heel Nederland en kunnen in elke provincie een energielabel verzorgen voor uw woning.
+                  Wij zijn actief in een straal van 80km rondom Amersfoort, inclusief steden als Utrecht, Amsterdam en Apeldoorn.
                 </p>
               </div>
+              
+              {calculatedPrice && (
+                <div className="mt-6 p-4 bg-epa-green/10 rounded-lg border border-epa-green/20">
+                  <h4 className="font-medium text-epa-green-dark">Uw offerte</h4>
+                  <div className="mt-2 space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Basistarief:</span>
+                      <span>€{
+                        formData.propertyType === 'detached' || formData.propertyType === 'semi-detached' ? 
+                        '350' : '285'
+                      }</span>
+                    </div>
+                    
+                    {addressDetails && addressDetails.surfaceArea > 200 && 
+                     (formData.propertyType === 'detached' || formData.propertyType === 'semi-detached') && (
+                      <div className="flex justify-between">
+                        <span>Toeslag grote woning:</span>
+                        <span>€{Math.ceil((addressDetails.surfaceArea - 200) / 25) * 50}</span>
+                      </div>
+                    )}
+                    
+                    {formData.rushService && (
+                      <div className="flex justify-between">
+                        <span>Spoedservice:</span>
+                        <span>+€95</span>
+                      </div>
+                    )}
+                    
+                    {formData.floorplanDiscount && (
+                      <div className="flex justify-between">
+                        <span>Korting plattegrond:</span>
+                        <span>-€10</span>
+                      </div>
+                    )}
+                    
+                    <div className="border-t border-epa-green/20 pt-2 font-medium flex justify-between">
+                      <span>Totaal (incl. BTW):</span>
+                      <span>€{calculatedPrice}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

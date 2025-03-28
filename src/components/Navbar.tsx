@@ -36,9 +36,11 @@ const Navbar = () => {
         </a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-6">
           <a href="#features" className="text-sm font-medium hover:text-epa-green transition-colors">Voordelen</a>
           <a href="#process" className="text-sm font-medium hover:text-epa-green transition-colors">Werkwijze</a>
+          <a href="#service-area" className="text-sm font-medium hover:text-epa-green transition-colors">Werkgebied</a>
+          <a href="#about" className="text-sm font-medium hover:text-epa-green transition-colors">Over Ons</a>
           <a href="#faq" className="text-sm font-medium hover:text-epa-green transition-colors">FAQ</a>
           <a 
             href="#contact" 
@@ -82,6 +84,20 @@ const Navbar = () => {
             onClick={() => setMobileMenuOpen(false)}
           >
             Werkwijze
+          </a>
+          <a 
+            href="#service-area" 
+            className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Werkgebied
+          </a>
+          <a 
+            href="#about" 
+            className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Over Ons
           </a>
           <a 
             href="#faq" 

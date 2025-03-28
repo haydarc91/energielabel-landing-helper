@@ -8,6 +8,7 @@ import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
 import PricingSection from '@/components/ContactForm';
 import ServiceArea from '@/components/ServiceArea';
+import AboutUs from '@/components/AboutUs';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -55,6 +56,7 @@ const Index = () => {
         <Features />
         <Process />
         <ServiceArea />
+        <AboutUs />
         <Testimonials />
         <FAQ />
         <PricingSection />
