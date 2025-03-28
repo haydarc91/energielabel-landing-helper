@@ -24,11 +24,11 @@ const Index = () => {
     
     // Ensure images are properly loaded from the public directory
     const preloadImages = [
-      'dutch-house.jpg',
-      'energielabel-colors.png',
-      'detached-house.jpg',
-      'apartment-building.jpg',
-      'rush-service.jpg'
+      '/dutch-house.jpg',
+      '/energielabel-colors.png',
+      '/detached-house.jpg',
+      '/apartment-building.jpg',
+      '/rush-service.jpg'
     ];
     
     preloadImages.forEach(imgSrc => {
