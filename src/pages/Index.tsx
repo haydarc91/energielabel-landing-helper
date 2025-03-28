@@ -22,13 +22,13 @@ const Index = () => {
       metaDescription.setAttribute("content", "Krijg snel en professioneel een officieel energielabel voor uw woning. EPA gecertificeerde adviseurs, geldig voor 10 jaar en geregistreerd bij RVO.");
     }
     
-    // Ensure images are properly loaded from the public directory
+    // Use Unsplash images instead of local files to ensure they load
     const preloadImages = [
-      '/dutch-house.jpg',
-      '/energielabel-colors.png',
-      '/detached-house.jpg',
-      '/apartment-building.jpg',
-      '/rush-service.jpg'
+      'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80', // Dutch house
+      'https://images.unsplash.com/photo-1550093786-fdca3c19c416?ixlib=rb-1.2.1&auto=format&fit=crop&w=640&q=80', // Energy label colors
+      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80', // Detached house
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80', // Apartment building
+      'https://images.unsplash.com/photo-1429041966141-44d228a42775?ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80' // Rush service
     ];
     
     preloadImages.forEach(imgSrc => {
