@@ -106,28 +106,68 @@ const PricingSection = () => {
     setAddressError(null);
     
     try {
-      // In a real implementation, you would need to use an API key for postcodeapi.nu
-      // This is a mock implementation
+      // In een echte implementatie zou je een API key moeten gebruiken voor postcodeapi.nu
+      // Dit is een gesimuleerde implementatie, in productie code zou je deze vervangen met echte API aanroep
       console.log(`Looking up address: ${postcode} ${houseNumber} ${houseNumberAddition}`);
       
-      // Simulating API call
+      // Simuleren van verschillende adressen op basis van postcode
+      // In een echte implementatie zou je hier een API aanroep naar postcodeapi.nu doen
       setTimeout(() => {
-        // Mock response - in real implementation, replace with actual API call
-        const mockAddress: Address = {
-          street: "Voorbeeldstraat",
-          city: "Amersfoort",
-          municipality: "Amersfoort",
-          province: "Utrecht",
-          surfaceArea: formData.propertyType === 'detached' ? 220 : 120
-        };
+        let mockAddress: Address;
+        
+        // Simuleer verschillende adressen op basis van postcode
+        const postcodePrefix = postcode.substring(0, 4);
+        
+        if (postcodePrefix === "1000" || postcodePrefix === "1001") {
+          mockAddress = {
+            street: "Damrak",
+            city: "Amsterdam",
+            municipality: "Amsterdam",
+            province: "Noord-Holland",
+            surfaceArea: 85
+          };
+        } else if (postcodePrefix === "3800" || postcodePrefix === "3801") {
+          mockAddress = {
+            street: "Utrechtseweg",
+            city: "Amersfoort",
+            municipality: "Amersfoort",
+            province: "Utrecht",
+            surfaceArea: 180
+          };
+        } else if (postcodePrefix === "3500" || postcodePrefix === "3511") {
+          mockAddress = {
+            street: "Oudegracht",
+            city: "Utrecht",
+            municipality: "Utrecht",
+            province: "Utrecht",
+            surfaceArea: 95
+          };
+        } else if (postcodePrefix >= "2000" && postcodePrefix <= "2599") {
+          mockAddress = {
+            street: "Laan van Nieuw Oost-Indië",
+            city: "Den Haag",
+            municipality: "Den Haag",
+            province: "Zuid-Holland",
+            surfaceArea: 230
+          };
+        } else {
+          // Default adres voor alle andere postcodes
+          mockAddress = {
+            street: "Dorpsstraat",
+            city: "Voorbeeld",
+            municipality: "Voorbeeldgemeente",
+            province: "Utrecht",
+            surfaceArea: formData.propertyType === 'detached' ? 220 : 120
+          };
+        }
         
         setAddressDetails(mockAddress);
         
-        // Set full address in the form
+        // Volledige adres in het formulier zetten
         const fullAddress = `${mockAddress.street} ${houseNumber}${houseNumberAddition ? ' ' + houseNumberAddition : ''}, ${postcode} ${mockAddress.city}`;
         setFormData(prev => ({ ...prev, address: fullAddress }));
         
-        // Calculate price based on property type and surface area
+        // Prijs berekenen op basis van woningtype en oppervlakte
         calculatePrice(
           mockAddress.surfaceArea, 
           formData.propertyType, 
@@ -137,16 +177,16 @@ const PricingSection = () => {
         
         toast.success("Adres succesvol gevonden!");
         setIsLoadingAddress(false);
-      }, 1500);
+      }, 1000);
       
-      // NOTE: In a real implementation, use the actual API:
+      // OPMERKING: In een echte implementatie, gebruik de werkelijke API:
       // const response = await fetch(`https://api.postcodeapi.nu/v2/addresses/?postcode=${postcode}&number=${houseNumber}`, {
       //   headers: {
       //     'X-Api-Key': 'YOUR_API_KEY'
       //   }
       // });
       // const data = await response.json();
-      // Process the actual data from postcodeapi.nu
+      // De werkelijke data van postcodeapi.nu verwerken
     } catch (error) {
       setAddressError("Kon het adres niet vinden. Controleer de gegevens.");
       setIsLoadingAddress(false);
