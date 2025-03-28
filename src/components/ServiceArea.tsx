@@ -32,11 +32,11 @@ const ServiceArea = () => {
     
     script.onload = () => {
       if (mapRef.current && window.L) {
-        // Center coordinates for Amersfoort
-        const center: [number, number] = [52.1561, 5.3878]; // Amersfoort coordinates
+        // Center coordinates for Netherlands
+        const center: [number, number] = [52.1326, 5.2913];
         
         // Create the map
-        mapInstance = window.L.map(mapRef.current).setView(center, 9);
+        mapInstance = window.L.map(mapRef.current).setView(center, 7);
         leafletMapRef.current = mapInstance;
         
         // Add the tile layer (map styling)
@@ -44,39 +44,44 @@ const ServiceArea = () => {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(mapInstance);
         
-        // Add Amersfoort marker
-        const amersfoortMarker = window.L.marker(center)
-          .addTo(mapInstance)
-          .bindPopup('<b>Amersfoort</b><br>Ons hoofdkantoor');
-        
-        // Add 80km radius circle around Amersfoort
-        const circle = window.L.circle(center, {
-          color: '#10B981',
-          fillColor: '#10B981',
-          fillOpacity: 0.1,
-          radius: 80000 // 80km in meters
-        }).addTo(mapInstance);
-        
-        // Add markers for key cities within the service area
-        const serviceCities = [
-          { name: "Amsterdam", coords: [52.3676, 4.9041] as [number, number] },
-          { name: "Utrecht", coords: [52.0907, 5.1214] as [number, number] },
-          { name: "Apeldoorn", coords: [52.2112, 5.9699] as [number, number] },
-          { name: "Zwolle", coords: [52.5168, 6.0830] as [number, number] },
-          { name: "Arnhem", coords: [51.9851, 5.8987] as [number, number] },
-          { name: "Almere", coords: [52.3508, 5.2647] as [number, number] }
-        ];
-        
-        // Add markers for cities within service area
-        serviceCities.forEach(city => {
-          window.L.marker(city.coords)
-            .addTo(mapInstance!)
-            .bindPopup(`<b>${city.name}</b><br>Energielabel service beschikbaar`);
-        });
-        
-        // Disable zoom to keep the map clean and focused
-        mapInstance!.scrollWheelZoom.disable();
-        mapInstance!.doubleClickZoom.disable();
+        // Add Netherlands outline - simplified GeoJSON
+        fetch('/netherlands-outline.json')
+          .then(response => response.json())
+          .then(data => {
+            window.L.geoJSON(data, {
+              style: {
+                color: '#10B981',
+                weight: 3,
+                fillColor: '#10B981',
+                fillOpacity: 0.1
+              }
+            }).addTo(mapInstance!);
+
+            // Add marker to indicate service area
+            const mainCities = [
+              { name: "Amsterdam", coords: [52.3676, 4.9041] as [number, number] },
+              { name: "Rotterdam", coords: [51.9244, 4.4777] as [number, number] },
+              { name: "Den Haag", coords: [52.0705, 4.3007] as [number, number] },
+              { name: "Utrecht", coords: [52.0907, 5.1214] as [number, number] },
+              { name: "Eindhoven", coords: [51.4416, 5.4697] as [number, number] },
+              { name: "Groningen", coords: [53.2194, 6.5665] as [number, number] }
+            ];
+            
+            // Add markers for main cities
+            mainCities.forEach(city => {
+              window.L.marker(city.coords)
+                .addTo(mapInstance!)
+                .bindPopup(`<b>${city.name}</b><br>Energielabel service beschikbaar`);
+            });
+            
+            // Disable zoom to keep the map clean and focused
+            mapInstance!.scrollWheelZoom.disable();
+            mapInstance!.doubleClickZoom.disable();
+          })
+          .catch(error => {
+            console.error('Error loading Netherlands GeoJSON:', error);
+            // Fallback to just showing the map without outline
+          });
       }
     };
     
@@ -107,7 +112,7 @@ const ServiceArea = () => {
         <div className="text-center mb-12">
           <h2 className="mb-4">Ons werkgebied</h2>
           <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            Wij verlenen onze diensten in een straal van 80 kilometer rond Amersfoort. Onze EPA-adviseurs komen naar u toe voor een professionele opname.
+            Wij verlenen onze diensten in heel Nederland. Onze EPA-adviseurs komen naar u toe, waar u ook woont.
           </p>
         </div>
 
@@ -120,14 +125,14 @@ const ServiceArea = () => {
           {/* Service details */}
           <div className="space-y-6">
             <div className="glass-card p-6 rounded-xl">
-              <h3 className="text-2xl font-semibold mb-4">Regio Midden-Nederland</h3>
+              <h3 className="text-2xl font-semibold mb-4">Landelijke dekking</h3>
               <p className="text-gray-600 mb-4">
-                Onze ervaren EPA-adviseurs zijn actief in een straal van 80 kilometer rond Amersfoort. 
-                Dit omvat grote steden als Amsterdam, Utrecht en Zwolle, evenals alle tussenliggende gemeenten.
+                Onze ervaren EPA-adviseurs zijn actief in heel Nederland. Of u nu in een drukke stad of een rustig dorp woont, 
+                wij komen bij u langs voor het opnemen en afgeven van een officieel energielabel.
               </p>
               <div className="flex items-start gap-3 text-gray-700">
                 <MapPin className="h-5 w-5 text-epa-green flex-shrink-0 mt-1" />
-                <p>Beschikbaar in provincies Utrecht, Gelderland, Noord-Holland, Flevoland en delen van Overijssel</p>
+                <p>Beschikbaar in alle provincies en gemeenten van Nederland</p>
               </div>
             </div>
 

@@ -62,22 +62,13 @@ const Hero = () => {
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="text-left z-10">
-          <div className="flex items-center mb-6">
-            <h1 
-              ref={titleRef}
-              className="text-3xl md:text-4xl lg:text-5xl opacity-0 font-bold leading-tight text-balance"
-            >
-              Energielabel voor uw woning <br/>
-              <span className="text-epa-green">Vanaf €285</span>
-            </h1>
-            <div className="ml-4 hidden md:block">
-              <img 
-                src="https://images.unsplash.com/photo-1550093786-fdca3c19c416?ixlib=rb-1.2.1&auto=format&fit=crop&w=640&q=80" 
-                alt="Energielabel kleuren A tot G" 
-                className="h-20 w-auto" 
-              />
-            </div>
-          </div>
+          <h1 
+            ref={titleRef}
+            className="opacity-0 font-bold mb-6 leading-tight text-balance"
+          >
+            Energielabel voor uw woning <br/>
+            <span className="text-epa-green">Vanaf €285</span>
+          </h1>
           
           <p 
             ref={subtitleRef}
@@ -109,8 +100,8 @@ const Hero = () => {
           className="opacity-0 relative h-[400px] lg:h-[500px] rounded-lg overflow-hidden shadow-2xl"
         >
           <img 
-            src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" 
-            alt="Nederlandse woning met energielabel" 
+            src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+            alt="Energiezuinige woning met energielabel" 
             className="w-full h-full object-cover"
             loading="eager"
             width="1170"
