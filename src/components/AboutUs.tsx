@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Check, Star, ArrowRight, Tool, Award, Clock } from 'lucide-react';
+import { Check, Star, ArrowRight, Wrench, Award, Clock } from 'lucide-react';
 import { useIntersectionAnimation } from '@/lib/animations';
 
 const AboutUs = () => {
@@ -41,7 +41,7 @@ const AboutUs = () => {
               <div className="glass-card p-6 rounded-xl">
                 <div className="flex gap-4">
                   <div className="w-12 h-12 bg-epa-green/10 text-epa-green rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Tool className="w-6 h-6" />
+                    <Wrench className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Diepgaand onderzoek</h3>
