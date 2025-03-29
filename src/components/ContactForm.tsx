@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import { Send, CheckCircle, Home, Building, Clock, Upload, Check, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,6 +40,18 @@ const PricingSection = () => {
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   
   const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
+
+  // Auto-lookup address when postcode and house number are filled
+  useEffect(() => {
+    const { postcode, houseNumber } = formData;
+    if (postcode && postcode.length >= 6 && houseNumber && !isLoadingAddress) {
+      const timeoutId = setTimeout(() => {
+        lookupAddress();
+      }, 500); // Delay to prevent too many requests while typing
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [formData.postcode, formData.houseNumber, formData.houseNumberAddition]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -129,7 +142,7 @@ const PricingSection = () => {
         
         if (buildingId) {
           try {
-            const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}`, {
+            const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}?acceptCrs=epsg:28992`, {
               headers: {
                 'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
                 'Accept': 'application/hal+json'
@@ -138,7 +151,12 @@ const PricingSection = () => {
             
             if (buildingResponse.ok) {
               const buildingData = await buildingResponse.json();
+              console.log('Building data:', buildingData);
               surfaceArea = buildingData.oppervlakte || 0;
+            } else {
+              console.error('Error fetching building data, status:', buildingResponse.status);
+              // Set default values based on property type
+              surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
             }
           } catch (buildingError) {
             console.error('Error fetching building data:', buildingError);
@@ -510,29 +528,20 @@ const PricingSection = () => {
                     />
                   </div>
                 </div>
-                <div className="mt-3 flex items-center justify-between">
-                  <button
-                    type="button"
-                    onClick={lookupAddress}
-                    disabled={isLoadingAddress}
-                    className="inline-flex items-center gap-2 text-sm py-2 px-4 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
-                  >
-                    {isLoadingAddress ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Adres ophalen...
-                      </>
-                    ) : (
-                      <>Adres zoeken</>
-                    )}
-                  </button>
-                  {addressError && (
-                    <div className="text-red-500 text-sm flex items-center gap-1">
-                      <AlertCircle className="h-4 w-4" />
-                      {addressError}
-                    </div>
-                  )}
-                </div>
+
+                {isLoadingAddress && (
+                  <div className="mt-3 flex items-center text-sm text-gray-600">
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Adres ophalen...
+                  </div>
+                )}
+
+                {addressError && (
+                  <div className="mt-3 text-red-500 text-sm flex items-center gap-1">
+                    <AlertCircle className="h-4 w-4" />
+                    {addressError}
+                  </div>
+                )}
 
                 {addressDetails && (
                   <div className="mt-3 text-sm">
