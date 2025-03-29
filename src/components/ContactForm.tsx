@@ -151,7 +151,8 @@ const PricingSection = () => {
             console.log(`Getting building data for ID: ${buildingId}`);
             
             // Make a separate call to get the verblijfsobject (building) details including surface area
-            const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}`, {
+            // Adding the acceptCrs parameter to fix the 412 error
+            const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}?acceptCrs=epsg:28992`, {
               headers: {
                 'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
                 'Accept': 'application/hal+json'
@@ -167,6 +168,9 @@ const PricingSection = () => {
               console.log(`Retrieved surface area: ${surfaceArea}m²`);
             } else {
               console.error('Error fetching building data, status:', buildingResponse.status);
+              const errorText = await buildingResponse.text();
+              console.error('Error response:', errorText);
+              
               // Fall back to default values
               surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
             }
