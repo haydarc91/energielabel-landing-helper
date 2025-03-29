@@ -106,89 +106,89 @@ const PricingSection = () => {
     setAddressError(null);
     
     try {
-      // In een echte implementatie zou je een API key moeten gebruiken voor postcodeapi.nu
-      // Dit is een gesimuleerde implementatie, in productie code zou je deze vervangen met echte API aanroep
-      console.log(`Looking up address: ${postcode} ${houseNumber} ${houseNumberAddition}`);
+      // Format postcode to meet BAG API requirements (remove spaces)
+      const formattedPostcode = postcode.replace(/\s+/g, '');
       
-      // Simuleren van verschillende adressen op basis van postcode
-      // In een echte implementatie zou je hier een API aanroep naar postcodeapi.nu doen
-      setTimeout(() => {
-        let mockAddress: Address;
+      // Call the BAG API to get the address data
+      const response = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?postcode=${formattedPostcode}&huisnummer=${houseNumber}${houseNumberAddition ? `&huisnummertoevoeging=${houseNumberAddition}` : ''}`, {
+        headers: {
+          'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
+          'Accept': 'application/hal+json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`BAG API returned status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('BAG API response:', data);
+      
+      if (data._embedded && data._embedded.adressen && data._embedded.adressen.length > 0) {
+        const addressData = data._embedded.adressen[0];
         
-        // Simuleer verschillende adressen op basis van postcode
-        const postcodePrefix = postcode.substring(0, 4);
+        // Extract address details
+        const street = addressData.openbareRuimte.naam;
+        const houseNumberFull = `${addressData.nummeraanduiding.huisnummer}${addressData.nummeraanduiding.huisnummertoevoeging || ''}`;
+        const city = addressData.woonplaats.naam;
+        const municipality = addressData.gemeenteWoonplaats?.naam || city;
         
-        if (postcodePrefix === "1000" || postcodePrefix === "1001") {
-          mockAddress = {
-            street: "Damrak",
-            city: "Amsterdam",
-            municipality: "Amsterdam",
-            province: "Noord-Holland",
-            surfaceArea: 85
-          };
-        } else if (postcodePrefix === "3800" || postcodePrefix === "3801") {
-          mockAddress = {
-            street: "Utrechtseweg",
-            city: "Amersfoort",
-            municipality: "Amersfoort",
-            province: "Utrecht",
-            surfaceArea: 180
-          };
-        } else if (postcodePrefix === "3500" || postcodePrefix === "3511") {
-          mockAddress = {
-            street: "Oudegracht",
-            city: "Utrecht",
-            municipality: "Utrecht",
-            province: "Utrecht",
-            surfaceArea: 95
-          };
-        } else if (postcodePrefix >= "2000" && postcodePrefix <= "2599") {
-          mockAddress = {
-            street: "Laan van Nieuw Oost-Indië",
-            city: "Den Haag",
-            municipality: "Den Haag",
-            province: "Zuid-Holland",
-            surfaceArea: 230
-          };
-        } else {
-          // Default adres voor alle andere postcodes
-          mockAddress = {
-            street: "Dorpsstraat",
-            city: "Voorbeeld",
-            municipality: "Voorbeeldgemeente",
-            province: "Utrecht",
-            surfaceArea: formData.propertyType === 'detached' ? 220 : 120
-          };
+        // Create a full address string
+        const fullAddress = `${street} ${houseNumberFull}, ${formattedPostcode} ${city}`;
+        
+        // Fetch additional building data to get the surface area
+        const buildingId = addressData.nummeraanduiding.identificatiecode;
+        let surfaceArea = 0;
+        
+        try {
+          // Try to get building info to retrieve surface area
+          const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}`, {
+            headers: {
+              'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
+              'Accept': 'application/hal+json'
+            }
+          });
+          
+          if (buildingResponse.ok) {
+            const buildingData = await buildingResponse.json();
+            surfaceArea = buildingData.oppervlakte || 0;
+          }
+        } catch (buildingError) {
+          console.error('Error fetching building data:', buildingError);
+          // If we can't get the surface area, use a reasonable default based on property type
+          surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
         }
         
-        setAddressDetails(mockAddress);
+        // Set address details in state
+        const address: Address = {
+          street,
+          city,
+          municipality,
+          province: 'Unknown', // BAG API doesn't directly provide province
+          surfaceArea
+        };
         
-        // Volledige adres in het formulier zetten
-        const fullAddress = `${mockAddress.street} ${houseNumber}${houseNumberAddition ? ' ' + houseNumberAddition : ''}, ${postcode} ${mockAddress.city}`;
+        setAddressDetails(address);
+        
+        // Update form data with full address
         setFormData(prev => ({ ...prev, address: fullAddress }));
         
-        // Prijs berekenen op basis van woningtype en oppervlakte
+        // Calculate price based on property type and surface area
         calculatePrice(
-          mockAddress.surfaceArea, 
-          formData.propertyType, 
-          formData.rushService, 
+          address.surfaceArea,
+          formData.propertyType,
+          formData.rushService,
           formData.floorplanDiscount
         );
         
         toast.success("Adres succesvol gevonden!");
-        setIsLoadingAddress(false);
-      }, 1000);
-      
-      // OPMERKING: In een echte implementatie, gebruik de werkelijke API:
-      // const response = await fetch(`https://api.postcodeapi.nu/v2/addresses/?postcode=${postcode}&number=${houseNumber}`, {
-      //   headers: {
-      //     'X-Api-Key': 'YOUR_API_KEY'
-      //   }
-      // });
-      // const data = await response.json();
-      // De werkelijke data van postcodeapi.nu verwerken
+      } else {
+        setAddressError("Geen adres gevonden. Controleer de gegevens.");
+      }
     } catch (error) {
+      console.error('Error fetching address:', error);
       setAddressError("Kon het adres niet vinden. Controleer de gegevens.");
+    } finally {
       setIsLoadingAddress(false);
     }
   };
