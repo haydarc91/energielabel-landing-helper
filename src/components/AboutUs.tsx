@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Check, Star, ArrowRight, Wrench, Award, Clock } from 'lucide-react';
+import { Check, Star, ArrowRight, Wrench, Award, Clock, Send } from 'lucide-react';
 import { useIntersectionAnimation } from '@/lib/animations';
 import { Button } from "@/components/ui/button";
 
