@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Send, CheckCircle, Home, Building, Clock, Upload, Check, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from "sonner";
@@ -49,15 +48,12 @@ const PricingSection = () => {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     
-    // If enabling floorplan discount
     if (name === 'floorplanDiscount' && checked && !uploadedFileName) {
-      // Prompt user to upload floorplan
       fileInputRef.current?.click();
     }
     
     setFormData(prev => ({ ...prev, [name]: checked }));
     
-    // Recalculate price when checkboxes change
     if (addressDetails) {
       calculatePrice(addressDetails.surfaceArea, formData.propertyType, name === 'rushService' ? checked : formData.rushService, name === 'floorplanDiscount' ? checked : formData.floorplanDiscount);
     }
@@ -66,26 +62,22 @@ const PricingSection = () => {
   const calculatePrice = (surfaceArea: number, propertyType: string, rushService: boolean, floorplanDiscount: boolean) => {
     let basePrice = 0;
     
-    // Determine base price by property type
     if (propertyType === 'detached' || propertyType === 'semi-detached') {
-      basePrice = 350; // Base price for detached homes up to 200m²
+      basePrice = 350;
       
-      // Add surcharges for larger properties
       if (surfaceArea > 200) {
         const extraSurface = surfaceArea - 200;
         const extraChunks = Math.ceil(extraSurface / 25);
         basePrice += extraChunks * 50;
       }
     } else {
-      basePrice = 285; // Apartments and terraced houses
+      basePrice = 285;
     }
     
-    // Add rush service fee if selected
     if (rushService) {
       basePrice += 95;
     }
     
-    // Apply floorplan discount if selected
     if (floorplanDiscount) {
       basePrice -= 10;
     }
@@ -106,10 +98,8 @@ const PricingSection = () => {
     setAddressError(null);
     
     try {
-      // Format postcode to meet BAG API requirements (remove spaces)
       const formattedPostcode = postcode.replace(/\s+/g, '');
       
-      // Call the BAG API to get the address data
       const response = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?postcode=${formattedPostcode}&huisnummer=${houseNumber}${houseNumberAddition ? `&huisnummertoevoeging=${houseNumberAddition}` : ''}`, {
         headers: {
           'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
@@ -127,53 +117,49 @@ const PricingSection = () => {
       if (data._embedded && data._embedded.adressen && data._embedded.adressen.length > 0) {
         const addressData = data._embedded.adressen[0];
         
-        // Extract address details
-        const street = addressData.openbareRuimte.naam;
-        const houseNumberFull = `${addressData.nummeraanduiding.huisnummer}${addressData.nummeraanduiding.huisnummertoevoeging || ''}`;
-        const city = addressData.woonplaats.naam;
-        const municipality = addressData.gemeenteWoonplaats?.naam || city;
+        const street = addressData.openbareRuimteNaam || '';
+        const houseNumberFull = `${addressData.huisnummer}${addressData.huisletter || ''}${addressData.toevoeging || ''}`;
+        const city = addressData.woonplaatsNaam || '';
+        const municipality = city;
         
-        // Create a full address string
         const fullAddress = `${street} ${houseNumberFull}, ${formattedPostcode} ${city}`;
         
-        // Fetch additional building data to get the surface area
-        const buildingId = addressData.nummeraanduiding.identificatiecode;
+        const buildingId = addressData.adresseerbaarObjectIdentificatie;
         let surfaceArea = 0;
         
-        try {
-          // Try to get building info to retrieve surface area
-          const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}`, {
-            headers: {
-              'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
-              'Accept': 'application/hal+json'
+        if (buildingId) {
+          try {
+            const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}`, {
+              headers: {
+                'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
+                'Accept': 'application/hal+json'
+              }
+            });
+            
+            if (buildingResponse.ok) {
+              const buildingData = await buildingResponse.json();
+              surfaceArea = buildingData.oppervlakte || 0;
             }
-          });
-          
-          if (buildingResponse.ok) {
-            const buildingData = await buildingResponse.json();
-            surfaceArea = buildingData.oppervlakte || 0;
+          } catch (buildingError) {
+            console.error('Error fetching building data:', buildingError);
+            surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
           }
-        } catch (buildingError) {
-          console.error('Error fetching building data:', buildingError);
-          // If we can't get the surface area, use a reasonable default based on property type
+        } else {
           surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
         }
         
-        // Set address details in state
         const address: Address = {
           street,
           city,
           municipality,
-          province: 'Unknown', // BAG API doesn't directly provide province
+          province: 'Unknown',
           surfaceArea
         };
         
         setAddressDetails(address);
         
-        // Update form data with full address
         setFormData(prev => ({ ...prev, address: fullAddress }));
         
-        // Calculate price based on property type and surface area
         calculatePrice(
           address.surfaceArea,
           formData.propertyType,
@@ -199,7 +185,6 @@ const PricingSection = () => {
       setUploadedFileName(files[0].name);
       setFormData(prev => ({ ...prev, floorplanDiscount: true }));
       
-      // Recalculate price with floorplan discount
       if (addressDetails) {
         calculatePrice(
           addressDetails.surfaceArea, 
@@ -217,13 +202,11 @@ const PricingSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
       toast.success("Bedankt voor uw aanvraag! We nemen zo snel mogelijk contact met u op.");
       
-      // Reset form after submission
       setFormData({
         name: '',
         email: '',
@@ -265,7 +248,6 @@ const PricingSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {/* Standard Housing Card */}
           <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div className="h-48 overflow-hidden relative">
               <img 
@@ -313,7 +295,6 @@ const PricingSection = () => {
             </CardContent>
           </Card>
 
-          {/* Detached Housing Card */}
           <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <div className="h-48 overflow-hidden relative">
               <img 
@@ -361,7 +342,6 @@ const PricingSection = () => {
             </CardContent>
           </Card>
 
-          {/* Rush Service Card */}
           <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-amber-200">
             <div className="h-48 overflow-hidden relative">
               <img 
@@ -410,7 +390,6 @@ const PricingSection = () => {
           </Card>
         </div>
 
-        {/* Contact Form Section */}
         <div id="contactForm" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 md:p-8">
@@ -485,7 +464,6 @@ const PricingSection = () => {
                 </div>
               </div>
               
-              {/* Postcode API lookup section */}
               <div className="mt-5 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <h4 className="text-md font-medium mb-3">Adresgegevens</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -556,7 +534,6 @@ const PricingSection = () => {
                   )}
                 </div>
 
-                {/* Show address details when available */}
                 {addressDetails && (
                   <div className="mt-3 text-sm">
                     <p className="text-gray-700">
@@ -625,7 +602,6 @@ const PricingSection = () => {
                   </label>
                 </div>
                 
-                {/* Hidden file input for floor plan */}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -635,7 +611,6 @@ const PricingSection = () => {
                   id="floorPlanUpload"
                 />
                 
-                {/* Show upload button if checkbox is checked */}
                 {formData.floorplanDiscount && (
                   <div className="ml-7">
                     <button
