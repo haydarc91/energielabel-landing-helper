@@ -44,6 +44,7 @@ const PricingSection = () => {
   // Auto-lookup address when postcode and house number are filled
   useEffect(() => {
     const { postcode, houseNumber } = formData;
+    // Make sure we have both postcode and house number with minimum length
     if (postcode && postcode.length >= 6 && houseNumber && !isLoadingAddress) {
       const timeoutId = setTimeout(() => {
         lookupAddress();
@@ -113,6 +114,9 @@ const PricingSection = () => {
     try {
       const formattedPostcode = postcode.replace(/\s+/g, '');
       
+      // First we need to get the address data
+      console.log(`Looking up address: ${formattedPostcode} ${houseNumber}${houseNumberAddition ? ' ' + houseNumberAddition : ''}`);
+      
       const response = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?postcode=${formattedPostcode}&huisnummer=${houseNumber}${houseNumberAddition ? `&huisnummertoevoeging=${houseNumberAddition}` : ''}`, {
         headers: {
           'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
@@ -125,24 +129,29 @@ const PricingSection = () => {
       }
       
       const data = await response.json();
-      console.log('BAG API response:', data);
+      console.log('BAG API address response:', data);
       
       if (data._embedded && data._embedded.adressen && data._embedded.adressen.length > 0) {
         const addressData = data._embedded.adressen[0];
         
         const street = addressData.openbareRuimteNaam || '';
-        const houseNumberFull = `${addressData.huisnummer}${addressData.huisletter || ''}${addressData.toevoeging || ''}`;
+        const houseNumberFull = `${addressData.huisnummer}${addressData.huisletter || ''}${addressData.huisnummertoevoeging || ''}`;
         const city = addressData.woonplaatsNaam || '';
         const municipality = city;
         
         const fullAddress = `${street} ${houseNumberFull}, ${formattedPostcode} ${city}`;
         
+        // Get the building ID - this contains the object which has the surface area
         const buildingId = addressData.adresseerbaarObjectIdentificatie;
         let surfaceArea = 0;
         
         if (buildingId) {
           try {
-            const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}?acceptCrs=epsg:28992`, {
+            // Get detailed building information using the building ID
+            console.log(`Getting building data for ID: ${buildingId}`);
+            
+            // Make a separate call to get the verblijfsobject (building) details including surface area
+            const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}`, {
               headers: {
                 'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
                 'Accept': 'application/hal+json'
@@ -151,11 +160,14 @@ const PricingSection = () => {
             
             if (buildingResponse.ok) {
               const buildingData = await buildingResponse.json();
-              console.log('Building data:', buildingData);
+              console.log('Building data response:', buildingData);
+              
+              // The surface area is in the 'oppervlakte' property
               surfaceArea = buildingData.oppervlakte || 0;
+              console.log(`Retrieved surface area: ${surfaceArea}m²`);
             } else {
               console.error('Error fetching building data, status:', buildingResponse.status);
-              // Set default values based on property type
+              // Fall back to default values
               surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
             }
           } catch (buildingError) {
@@ -163,6 +175,7 @@ const PricingSection = () => {
             surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
           }
         } else {
+          console.warn('No building ID found, using default surface area');
           surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
         }
         

@@ -16,6 +16,7 @@ import { Send, ArrowUp } from 'lucide-react';
 const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     // Update document title for SEO
@@ -51,16 +52,18 @@ const Index = () => {
 
     // Check scroll position for showing back-to-top and floating CTA
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
+      const newScrollPosition = window.scrollY;
+      setScrollPosition(newScrollPosition);
+      
       const contactSection = document.getElementById('contact');
       const contactPosition = contactSection?.offsetTop || 0;
       
-      setShowScrollTop(scrollPosition > 300);
+      setShowScrollTop(newScrollPosition > 300);
       
       // Show floating CTA when scrolled beyond hero but not yet at contact form
       setShowFloatingCTA(
-        scrollPosition > 600 && 
-        scrollPosition < (contactPosition - 300)
+        newScrollPosition > 600 && 
+        newScrollPosition < (contactPosition - 300)
       );
     };
 
@@ -90,6 +93,20 @@ const Index = () => {
       <main>
         <Hero />
         <Features />
+        
+        {/* First call to action after Features */}
+        <div className="py-8 bg-epa-green/5 text-center">
+          <div className="max-w-4xl mx-auto px-6">
+            <h3 className="mb-4 text-2xl font-medium">Weten wat een energielabel voor uw woning kost?</h3>
+            <Button 
+              className="bg-epa-green hover:bg-epa-green-dark text-white"
+              onClick={scrollToContact}
+            >
+              <Send className="mr-2 h-4 w-4" /> Direct aanvragen
+            </Button>
+          </div>
+        </div>
+        
         <Process />
         
         {/* Call to action after Process */}
@@ -133,6 +150,29 @@ const Index = () => {
         </div>
         
         <Testimonials />
+        
+        {/* Final call to action before FAQ */}
+        <div className="py-8 bg-epa-green/10 text-center">
+          <div className="max-w-4xl mx-auto px-6">
+            <h3 className="mb-4 text-2xl font-medium">Nog vragen over het energielabel?</h3>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Button 
+                variant="outline" 
+                className="border-epa-green text-epa-green hover:bg-epa-green/10"
+                onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Bekijk veelgestelde vragen
+              </Button>
+              <Button 
+                className="bg-epa-green hover:bg-epa-green-dark text-white"
+                onClick={scrollToContact}
+              >
+                <Send className="mr-2 h-4 w-4" /> Direct aanvragen
+              </Button>
+            </div>
+          </div>
+        </div>
+        
         <FAQ />
         <PricingSection />
       </main>
