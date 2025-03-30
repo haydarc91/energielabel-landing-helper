@@ -6,7 +6,7 @@ import Features from '@/components/Features';
 import Process from '@/components/Process';
 import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
-import PricingSection from '@/components/ContactForm';
+import PricingSection from '@/components/pricing/PricingSection';
 import ServiceArea from '@/components/ServiceArea';
 import AboutUs from '@/components/AboutUs';
 import Footer from '@/components/Footer';
