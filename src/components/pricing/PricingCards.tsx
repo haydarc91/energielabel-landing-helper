@@ -9,7 +9,7 @@ const PricingCards = () => {
       <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <div className="h-48 overflow-hidden relative">
           <img 
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+            src="https://images.unsplash.com/photo-1625244724120-1fd1d34d00f6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
             alt="Standaard woning" 
             className="w-full h-full object-cover"
           />
@@ -56,7 +56,7 @@ const PricingCards = () => {
       <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <div className="h-48 overflow-hidden relative">
           <img 
-            src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+            src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
             alt="Vrijstaande woning" 
             className="w-full h-full object-cover"
           />
@@ -103,7 +103,7 @@ const PricingCards = () => {
       <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-amber-200">
         <div className="h-48 overflow-hidden relative">
           <img 
-            src="https://images.unsplash.com/photo-1609921141835-710b7290f500?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
             alt="Spoedservice energielabel" 
             className="w-full h-full object-cover"
           />
