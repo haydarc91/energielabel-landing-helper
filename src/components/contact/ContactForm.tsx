@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import AddressLookup from './AddressLookup';
+import { supabase } from "@/integrations/supabase/client";
 
 interface Address {
   street: string;
@@ -220,59 +221,34 @@ const ContactForm = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const emailContent = `
-      Nieuwe energielabel aanvraag:
+    try {
+      const response = await supabase.functions.invoke('handle-submission', {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          propertyType: formData.propertyType,
+          surfaceArea: addressDetails?.surfaceArea,
+          rushService: formData.rushService,
+          message: formData.message,
+          calculatedPrice: calculatedPrice,
+          postcode: formData.postcode,
+          houseNumber: formData.houseNumber,
+          houseNumberAddition: formData.houseNumberAddition
+        }
+      });
       
-      Naam: ${formData.name}
-      Email: ${formData.email}
-      Telefoon: ${formData.phone}
-      
-      Adres: ${formData.address}
-      Type woning: ${formData.propertyType}
-      Oppervlakte: ${addressDetails?.surfaceArea || 'Niet bekend'} m²
-      
-      Spoedservice: ${formData.rushService ? 'Ja' : 'Nee'}
-      
-      Bericht: ${formData.message || 'Geen bericht'}
-      
-      Berekende prijs: €${calculatedPrice}
-    `;
-    
-    console.log('Sending email to haydarcay@gmail.com and', formData.email);
-    console.log('Email content:', emailContent);
-    
-    fetch('/api/send-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        to: 'haydarcay@gmail.com',
-        cc: formData.email,
-        subject: 'Nieuwe energielabel aanvraag',
-        content: emailContent,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        propertyType: formData.propertyType,
-        surfaceArea: addressDetails?.surfaceArea,
-        rushService: formData.rushService,
-        message: formData.message,
-        calculatedPrice: calculatedPrice
-      })
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      if (response.error) {
+        throw new Error(response.error.message);
       }
-      return response.json();
-    })
-    .then(data => {
+      
+      console.log('Submission response:', response.data);
+      
       setIsSubmitting(false);
       setSubmitted(true);
       toast.success("Bedankt voor uw aanvraag! We nemen zo snel mogelijk contact met u op.");
@@ -295,12 +271,11 @@ const ContactForm = ({
       setTimeout(() => {
         setSubmitted(false);
       }, 3000);
-    })
-    .catch(error => {
-      console.error('Error sending email:', error);
+    } catch (error) {
+      console.error('Error submitting form:', error);
       setIsSubmitting(false);
       toast.error("Er is een fout opgetreden bij het versturen van uw aanvraag. Probeer het later nog eens.");
-    });
+    }
   };
 
   return (

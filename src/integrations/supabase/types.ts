@@ -9,7 +9,84 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      contact_submissions: {
+        Row: {
+          address: string | null
+          calculated_price: number | null
+          created_at: string
+          email: string
+          house_number: string | null
+          house_number_addition: string | null
+          id: string
+          message: string | null
+          name: string
+          phone: string | null
+          postcode: string | null
+          property_type: string | null
+          rush_service: boolean | null
+          surface_area: number | null
+        }
+        Insert: {
+          address?: string | null
+          calculated_price?: number | null
+          created_at?: string
+          email: string
+          house_number?: string | null
+          house_number_addition?: string | null
+          id?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          postcode?: string | null
+          property_type?: string | null
+          rush_service?: boolean | null
+          surface_area?: number | null
+        }
+        Update: {
+          address?: string | null
+          calculated_price?: number | null
+          created_at?: string
+          email?: string
+          house_number?: string | null
+          house_number_addition?: string | null
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          postcode?: string | null
+          property_type?: string | null
+          rush_service?: boolean | null
+          surface_area?: number | null
+        }
+        Relationships: []
+      }
+      website_content: {
+        Row: {
+          content: string | null
+          id: string
+          last_updated: string
+          section_name: string
+          subtitle: string | null
+          title: string | null
+        }
+        Insert: {
+          content?: string | null
+          id?: string
+          last_updated?: string
+          section_name: string
+          subtitle?: string | null
+          title?: string | null
+        }
+        Update: {
+          content?: string | null
+          id?: string
+          last_updated?: string
+          section_name?: string
+          subtitle?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
