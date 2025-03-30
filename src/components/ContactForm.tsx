@@ -1,11 +1,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, CheckCircle, Home, Building, Clock, Upload, Check, Loader2, AlertCircle } from 'lucide-react';
+import { Send, CheckCircle, Home, Building, Clock, Loader2, AlertCircle, Mail, Edit2 } from 'lucide-react';
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useIntersectionAnimation } from '@/lib/animations';
+import { Button } from "@/components/ui/button";
 
 interface Address {
   street: string;
@@ -16,7 +17,6 @@ interface Address {
 }
 
 const PricingSection = () => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,7 +25,6 @@ const PricingSection = () => {
     message: '',
     propertyType: 'apartment',
     rushService: false,
-    floorplanDiscount: false,
     postcode: '',
     houseNumber: '',
     houseNumberAddition: ''
@@ -37,7 +36,8 @@ const PricingSection = () => {
   const [addressError, setAddressError] = useState<string | null>(null);
   const [addressDetails, setAddressDetails] = useState<Address | null>(null);
   const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [isEditingSurfaceArea, setIsEditingSurfaceArea] = useState(false);
+  const [manualSurfaceArea, setManualSurfaceArea] = useState<string>('');
   
   const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
 
@@ -61,19 +61,38 @@ const PricingSection = () => {
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    
-    if (name === 'floorplanDiscount' && checked && !uploadedFileName) {
-      fileInputRef.current?.click();
-    }
-    
     setFormData(prev => ({ ...prev, [name]: checked }));
     
     if (addressDetails) {
-      calculatePrice(addressDetails.surfaceArea, formData.propertyType, name === 'rushService' ? checked : formData.rushService, name === 'floorplanDiscount' ? checked : formData.floorplanDiscount);
+      calculatePrice(addressDetails.surfaceArea, formData.propertyType, name === 'rushService' ? checked : formData.rushService);
     }
   };
 
-  const calculatePrice = (surfaceArea: number, propertyType: string, rushService: boolean, floorplanDiscount: boolean) => {
+  const handleSurfaceAreaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setManualSurfaceArea(e.target.value);
+  };
+
+  const applyManualSurfaceArea = () => {
+    const surfaceValue = parseInt(manualSurfaceArea);
+    if (isNaN(surfaceValue) || surfaceValue <= 0) {
+      toast.error("Voer een geldig oppervlakte in");
+      return;
+    }
+    
+    if (addressDetails) {
+      const updatedAddressDetails = {
+        ...addressDetails,
+        surfaceArea: surfaceValue
+      };
+      setAddressDetails(updatedAddressDetails);
+      calculatePrice(surfaceValue, formData.propertyType, formData.rushService);
+      toast.success(`Oppervlakte bijgewerkt naar ${surfaceValue}m²`);
+    }
+    
+    setIsEditingSurfaceArea(false);
+  };
+
+  const calculatePrice = (surfaceArea: number, propertyType: string, rushService: boolean) => {
     let basePrice = 0;
     
     if (propertyType === 'detached' || propertyType === 'semi-detached') {
@@ -90,10 +109,6 @@ const PricingSection = () => {
     
     if (rushService) {
       basePrice += 95;
-    }
-    
-    if (floorplanDiscount) {
-      basePrice -= 10;
     }
     
     setCalculatedPrice(basePrice);
@@ -114,40 +129,44 @@ const PricingSection = () => {
     try {
       const formattedPostcode = postcode.replace(/\s+/g, '');
       
-      // First we need to get the address data
+      // Using the adressenuitgebreid endpoint for more detailed information
       console.log(`Looking up address: ${formattedPostcode} ${houseNumber}${houseNumberAddition ? ' ' + houseNumberAddition : ''}`);
       
-      const response = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?postcode=${formattedPostcode}&huisnummer=${houseNumber}${houseNumberAddition ? `&huisnummertoevoeging=${houseNumberAddition}` : ''}`, {
+      // Try using the adressenuitgebreid endpoint which includes surface area directly
+      const adressenResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode=${formattedPostcode}&huisnummer=${houseNumber}${houseNumberAddition ? `&huisnummertoevoeging=${houseNumberAddition}` : ''}`, {
         headers: {
           'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
-          'Accept': 'application/hal+json'
+          'Accept': 'application/hal+json',
+          'Accept-Crs': 'epsg:28992'
         }
       });
       
-      if (!response.ok) {
-        throw new Error(`BAG API returned status: ${response.status}`);
+      if (!adressenResponse.ok) {
+        throw new Error(`AdressenUitgebreid API returned status: ${adressenResponse.status}`);
       }
       
-      const data = await response.json();
-      console.log('BAG API address response:', data);
+      const adressenData = await adressenResponse.json();
+      console.log('AdressenUitgebreid API response:', adressenData);
       
-      if (data._embedded && data._embedded.adressen && data._embedded.adressen.length > 0) {
-        const addressData = data._embedded.adressen[0];
+      if (adressenData._embedded && adressenData._embedded.adressen && adressenData._embedded.adressen.length > 0) {
+        const addressData = adressenData._embedded.adressen[0];
         
         const street = addressData.openbareRuimteNaam || '';
         const houseNumberFull = `${addressData.huisnummer}${addressData.huisletter || ''}${addressData.huisnummertoevoeging || ''}`;
         const city = addressData.woonplaatsNaam || '';
         const municipality = city;
+        const oppervlakte = addressData.oppervlakte || 0;
         
         const fullAddress = `${street} ${houseNumberFull}, ${formattedPostcode} ${city}`;
         
-        // Get the building ID - this contains the object which has the surface area
-        const buildingId = addressData.adresseerbaarObjectIdentificatie;
-        let surfaceArea = 0;
+        // If oppervlakte is already present in the adressenuitgebreid response
+        let surfaceArea = oppervlakte;
         
-        if (buildingId) {
+        // If not, try to get it from the verblijfsobject endpoint
+        if (!surfaceArea && addressData.adresseerbaarObjectIdentificatie) {
+          const buildingId = addressData.adresseerbaarObjectIdentificatie;
+          
           try {
-            // Get detailed building information using the building ID
             console.log(`Getting building data for ID: ${buildingId}`);
             
             // Make a separate call to get the verblijfsobject (building) details including surface area
@@ -155,7 +174,8 @@ const PricingSection = () => {
             const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}?acceptCrs=epsg:28992`, {
               headers: {
                 'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
-                'Accept': 'application/hal+json'
+                'Accept': 'application/hal+json',
+                'Accept-Crs': 'epsg:28992'
               }
             });
             
@@ -178,9 +198,6 @@ const PricingSection = () => {
             console.error('Error fetching building data:', buildingError);
             surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
           }
-        } else {
-          console.warn('No building ID found, using default surface area');
-          surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
         }
         
         const address: Address = {
@@ -192,14 +209,14 @@ const PricingSection = () => {
         };
         
         setAddressDetails(address);
+        setManualSurfaceArea(surfaceArea.toString());
         
         setFormData(prev => ({ ...prev, address: fullAddress }));
         
         calculatePrice(
           address.surfaceArea,
           formData.propertyType,
-          formData.rushService,
-          formData.floorplanDiscount
+          formData.rushService
         );
         
         toast.success("Adres succesvol gevonden!");
@@ -214,29 +231,33 @@ const PricingSection = () => {
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setUploadedFileName(files[0].name);
-      setFormData(prev => ({ ...prev, floorplanDiscount: true }));
-      
-      if (addressDetails) {
-        calculatePrice(
-          addressDetails.surfaceArea, 
-          formData.propertyType, 
-          formData.rushService, 
-          true
-        );
-      }
-      
-      toast.success("Plattegrond succesvol geüpload!");
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
+    // Prepare email content
+    const emailContent = `
+      Nieuwe energielabel aanvraag:
+      
+      Naam: ${formData.name}
+      Email: ${formData.email}
+      Telefoon: ${formData.phone}
+      
+      Adres: ${formData.address}
+      Type woning: ${formData.propertyType}
+      Oppervlakte: ${addressDetails?.surfaceArea || 'Niet bekend'} m²
+      
+      Spoedservice: ${formData.rushService ? 'Ja' : 'Nee'}
+      
+      Bericht: ${formData.message || 'Geen bericht'}
+      
+      Berekende prijs: €${calculatedPrice}
+    `;
+    
+    console.log('Sending email to haydarcay@gmail.com and', formData.email);
+    console.log('Email content:', emailContent);
+    
+    // Simulate email sending
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
@@ -250,14 +271,12 @@ const PricingSection = () => {
         message: '',
         propertyType: 'apartment',
         rushService: false,
-        floorplanDiscount: false,
         postcode: '',
         houseNumber: '',
         houseNumberAddition: ''
       });
       setAddressDetails(null);
       setCalculatedPrice(null);
-      setUploadedFileName(null);
       
       setTimeout(() => {
         setSubmitted(false);
@@ -565,9 +584,47 @@ const PricingSection = () => {
                     <p className="text-gray-700">
                       <span className="font-medium">Gevonden adres:</span> {formData.address}
                     </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Oppervlakte:</span> {addressDetails.surfaceArea} m²
-                    </p>
+                    <div className="flex items-center">
+                      <p className="text-gray-700">
+                        <span className="font-medium">Oppervlakte:</span> {addressDetails.surfaceArea} m²
+                      </p>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="ml-2 text-epa-green flex items-center" 
+                        onClick={() => setIsEditingSurfaceArea(true)}
+                      >
+                        <Edit2 className="h-3 w-3 mr-1" /> Wijzigen
+                      </Button>
+                    </div>
+                    
+                    {isEditingSurfaceArea && (
+                      <div className="mt-2 flex items-start gap-2">
+                        <Input
+                          type="number"
+                          value={manualSurfaceArea}
+                          onChange={handleSurfaceAreaChange}
+                          className="w-24 text-sm"
+                          placeholder="Oppervlakte"
+                        />
+                        <span className="mt-2">m²</span>
+                        <Button 
+                          size="sm" 
+                          className="bg-epa-green text-white" 
+                          onClick={applyManualSurfaceArea}
+                        >
+                          Toepassen
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => setIsEditingSurfaceArea(false)}
+                        >
+                          Annuleren
+                        </Button>
+                      </div>
+                    )}
+                    
                     {calculatedPrice && (
                       <p className="mt-1 font-medium text-epa-green">
                         Berekende prijs: €{calculatedPrice} incl. BTW
@@ -610,51 +667,6 @@ const PricingSection = () => {
                     </p>
                   </label>
                 </div>
-                
-                <div className="flex items-start">
-                  <input
-                    id="floorplanDiscount"
-                    name="floorplanDiscount"
-                    type="checkbox"
-                    checked={formData.floorplanDiscount}
-                    onChange={handleCheckboxChange}
-                    className="h-5 w-5 text-epa-green rounded border-gray-300 focus-ring mt-0.5"
-                  />
-                  <label htmlFor="floorplanDiscount" className="ml-2 block text-sm text-gray-700">
-                    <span className="font-medium">Plattegrond uploaden (-€10 korting)</span>
-                    <p className="text-gray-500 text-xs mt-1">
-                      Upload een actuele plattegrond met duidelijke maatvoering en ontvang €10 korting
-                    </p>
-                  </label>
-                </div>
-                
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  onChange={handleFileUpload}
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  className="hidden"
-                  id="floorPlanUpload"
-                />
-                
-                {formData.floorplanDiscount && (
-                  <div className="ml-7">
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="inline-flex items-center gap-2 text-sm py-2 px-4 bg-epa-green/10 hover:bg-epa-green/20 text-epa-green-dark rounded-md transition-colors"
-                    >
-                      <Upload className="h-4 w-4" />
-                      {uploadedFileName ? 'Wijzig plattegrond' : 'Upload plattegrond'}
-                    </button>
-                    {uploadedFileName && (
-                      <p className="mt-1 text-xs text-gray-600 flex items-center gap-1">
-                        <Check className="h-3 w-3 text-epa-green" />
-                        Geüpload: {uploadedFileName}
-                      </p>
-                    )}
-                  </div>
-                )}
               </div>
               
               <div className="mt-5">
@@ -697,6 +709,10 @@ const PricingSection = () => {
                     </>
                   )}
                 </button>
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  <Mail className="h-3 w-3 inline mr-1" />
+                  Een kopie van uw aanvraag wordt verzonden naar haydarcay@gmail.com en uw e-mailadres
+                </p>
               </div>
             </form>
           </div>
@@ -751,13 +767,6 @@ const PricingSection = () => {
                       <div className="flex justify-between">
                         <span>Spoedservice:</span>
                         <span>+€95</span>
-                      </div>
-                    )}
-                    
-                    {formData.floorplanDiscount && (
-                      <div className="flex justify-between">
-                        <span>Korting plattegrond:</span>
-                        <span>-€10</span>
                       </div>
                     )}
                     
