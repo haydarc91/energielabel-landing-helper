@@ -42,7 +42,7 @@ const ContactInfo = ({ calculatedPrice, formData, addressDetails }: ContactInfoP
         
         {calculatedPrice && (
           <div className="mt-6 p-4 bg-epa-green/10 rounded-lg border border-epa-green/20">
-            <h4 className="font-medium text-epa-green-dark">Uw offerte</h4>
+            <h4 className="font-medium text-epa-green-dark">All-in tarief</h4>
             <div className="mt-2 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Basistarief:</span>

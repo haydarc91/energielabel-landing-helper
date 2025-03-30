@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Send, CheckCircle, Loader2, Mail } from 'lucide-react';
 import { toast } from "sonner";
@@ -40,15 +39,12 @@ const ContactForm = ({
   const [isEditingSurfaceArea, setIsEditingSurfaceArea] = useState(false);
   const [manualSurfaceArea, setManualSurfaceArea] = useState<string>('');
 
-  // Auto-lookup address when postcode and house number are filled
   useEffect(() => {
     const { postcode, houseNumber } = formData;
-    // Make sure we have both postcode and house number with minimum length
     if (postcode && postcode.length >= 6 && houseNumber && !isLoadingAddress) {
       const timeoutId = setTimeout(() => {
         lookupAddress();
-      }, 500); // Delay to prevent too many requests while typing
-      
+      }, 500);
       return () => clearTimeout(timeoutId);
     }
   }, [formData.postcode, formData.houseNumber, formData.houseNumberAddition]);
@@ -100,6 +96,12 @@ const ContactForm = ({
       }
     } else {
       basePrice = 285;
+      
+      if (surfaceArea > 150) {
+        const extraSurface = surfaceArea - 150;
+        const extraChunks = Math.ceil(extraSurface / 25);
+        basePrice += extraChunks * 35;
+      }
     }
     
     if (rushService) {
@@ -124,10 +126,8 @@ const ContactForm = ({
     try {
       const formattedPostcode = postcode.replace(/\s+/g, '');
       
-      // Using the adressenuitgebreid endpoint for more detailed information
       console.log(`Looking up address: ${formattedPostcode} ${houseNumber}${houseNumberAddition ? ' ' + houseNumberAddition : ''}`);
       
-      // Try using the adressenuitgebreid endpoint which includes surface area directly
       const adressenResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode=${formattedPostcode}&huisnummer=${houseNumber}${houseNumberAddition ? `&huisnummertoevoeging=${houseNumberAddition}` : ''}`, {
         headers: {
           'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
@@ -154,18 +154,14 @@ const ContactForm = ({
         
         const fullAddress = `${street} ${houseNumberFull}, ${formattedPostcode} ${city}`;
         
-        // If oppervlakte is already present in the adressenuitgebreid response
         let surfaceArea = oppervlakte;
         
-        // If not, try to get it from the verblijfsobject endpoint
         if (!surfaceArea && addressData.adresseerbaarObjectIdentificatie) {
           const buildingId = addressData.adresseerbaarObjectIdentificatie;
           
           try {
             console.log(`Getting building data for ID: ${buildingId}`);
             
-            // Make a separate call to get the verblijfsobject (building) details including surface area
-            // Adding the acceptCrs parameter to fix the 412 error
             const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}?acceptCrs=epsg:28992`, {
               headers: {
                 'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
@@ -178,7 +174,6 @@ const ContactForm = ({
               const buildingData = await buildingResponse.json();
               console.log('Building data response:', buildingData);
               
-              // The surface area is in the 'oppervlakte' property
               surfaceArea = buildingData.oppervlakte || 0;
               console.log(`Retrieved surface area: ${surfaceArea}m²`);
             } else {
@@ -186,7 +181,6 @@ const ContactForm = ({
               const errorText = await buildingResponse.text();
               console.error('Error response:', errorText);
               
-              // Fall back to default values
               surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
             }
           } catch (buildingError) {
@@ -230,7 +224,6 @@ const ContactForm = ({
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Prepare email content
     const emailContent = `
       Nieuwe energielabel aanvraag:
       
@@ -252,8 +245,34 @@ const ContactForm = ({
     console.log('Sending email to haydarcay@gmail.com and', formData.email);
     console.log('Email content:', emailContent);
     
-    // Simulate email sending
-    setTimeout(() => {
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: 'haydarcay@gmail.com',
+        cc: formData.email,
+        subject: 'Nieuwe energielabel aanvraag',
+        content: emailContent,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        propertyType: formData.propertyType,
+        surfaceArea: addressDetails?.surfaceArea,
+        rushService: formData.rushService,
+        message: formData.message,
+        calculatedPrice: calculatedPrice
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
       setIsSubmitting(false);
       setSubmitted(true);
       toast.success("Bedankt voor uw aanvraag! We nemen zo snel mogelijk contact met u op.");
@@ -276,7 +295,12 @@ const ContactForm = ({
       setTimeout(() => {
         setSubmitted(false);
       }, 3000);
-    }, 1500);
+    })
+    .catch(error => {
+      console.error('Error sending email:', error);
+      setIsSubmitting(false);
+      toast.error("Er is een fout opgetreden bij het versturen van uw aanvraag. Probeer het later nog eens.");
+    });
   };
 
   return (
