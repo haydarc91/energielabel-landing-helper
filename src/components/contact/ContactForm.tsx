@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, CheckCircle, Loader2, Mail } from 'lucide-react';
+import { Send, CheckCircle, Loader2, Mail, Edit2 } from 'lucide-react';
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -87,21 +87,21 @@ const ContactForm = ({
   const calculatePrice = (surfaceArea: number, propertyType: string, rushService: boolean) => {
     let basePrice = 0;
     
-    if (propertyType === 'detached' || propertyType === 'semi-detached') {
+    if (propertyType === 'detached') {
       basePrice = 350;
       
       if (surfaceArea > 200) {
         const extraSurface = surfaceArea - 200;
-        const extraChunks = Math.ceil(extraSurface / 25);
-        basePrice += extraChunks * 50;
+        const extraChunks = Math.ceil(extraSurface / 10);
+        basePrice += extraChunks * 15;
       }
     } else {
       basePrice = 285;
       
       if (surfaceArea > 150) {
         const extraSurface = surfaceArea - 150;
-        const extraChunks = Math.ceil(extraSurface / 25);
-        basePrice += extraChunks * 35;
+        const extraChunks = Math.ceil(extraSurface / 10);
+        basePrice += extraChunks * 15;
       }
     }
     
@@ -456,10 +456,6 @@ const ContactForm = ({
             </>
           )}
         </button>
-        <p className="text-xs text-gray-500 mt-2 text-center">
-          <Mail className="h-3 w-3 inline mr-1" />
-          Een kopie van uw aanvraag wordt verzonden naar haydarcay@gmail.com en uw e-mailadres
-        </p>
       </div>
     </form>
   );

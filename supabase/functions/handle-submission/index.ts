@@ -103,8 +103,10 @@ serve(async (req) => {
       Berekende prijs: €${formData.calculatedPrice}
     `;
     
-    console.log("Would send customer email:", customerEmailContent);
-    console.log("Would send owner email:", ownerEmailContent);
+    console.log("Would send customer email to:", formData.email);
+    console.log("Would send owner email to: haydarcay@gmail.com");
+    console.log("Customer email content:", customerEmailContent);
+    console.log("Owner email content:", ownerEmailContent);
     
     console.log("Successfully saved submission, would send email with data:", formData);
 
