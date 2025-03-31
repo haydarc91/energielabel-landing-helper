@@ -14,12 +14,49 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 
+// Define interfaces for our data types
+interface WebsiteContent {
+  id: string;
+  section_name: string;
+  title: string | null;
+  subtitle: string | null;
+  content: string | null;
+  last_updated: string;
+}
+
+interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  property_type: string | null;
+  surface_area: number | null;
+  rush_service: boolean | null;
+  message: string | null;
+  calculated_price: number | null;
+  created_at: string;
+  postcode: string | null;
+  house_number: string | null;
+  house_number_addition: string | null;
+}
+
+interface EditedValues {
+  title: string;
+  subtitle: string;
+  content: string;
+}
+
 const Admin = () => {
-  const [submissions, setSubmissions] = useState([]);
+  const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [webContent, setWebContent] = useState([]);
-  const [editingContent, setEditingContent] = useState(null);
-  const [editedValues, setEditedValues] = useState({});
+  const [webContent, setWebContent] = useState<WebsiteContent[]>([]);
+  const [editingContent, setEditingContent] = useState<string | null>(null);
+  const [editedValues, setEditedValues] = useState<EditedValues>({
+    title: '',
+    subtitle: '',
+    content: ''
+  });
 
   useEffect(() => {
     fetchSubmissions();
@@ -60,7 +97,7 @@ const Admin = () => {
     }
   };
 
-  const startEditing = (content) => {
+  const startEditing = (content: WebsiteContent) => {
     setEditingContent(content.id);
     setEditedValues({
       title: content.title || '',
@@ -69,7 +106,7 @@ const Admin = () => {
     });
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setEditedValues(prev => ({
       ...prev,
@@ -77,7 +114,7 @@ const Admin = () => {
     }));
   };
 
-  const saveContent = async (id) => {
+  const saveContent = async (id: string) => {
     try {
       const { error } = await supabase
         .from('website_content')
@@ -85,7 +122,7 @@ const Admin = () => {
           title: editedValues.title,
           subtitle: editedValues.subtitle,
           content: editedValues.content,
-          last_updated: new Date()
+          last_updated: new Date().toISOString() // Convert Date to string for ISO format
         })
         .eq('id', id);
       
@@ -104,7 +141,7 @@ const Admin = () => {
     setEditingContent(null);
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('nl-NL', {
       day: '2-digit',
@@ -125,7 +162,7 @@ const Admin = () => {
         </div>
         
         <div className="space-y-4">
-          {webContent.map(content => (
+          {webContent.map((content) => (
             <Card key={content.id} className="p-4">
               <div className="mb-2 flex justify-between items-center">
                 <h3 className="text-lg font-medium capitalize">{content.section_name} sectie</h3>
