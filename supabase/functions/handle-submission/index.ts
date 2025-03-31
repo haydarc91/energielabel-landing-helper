@@ -61,8 +61,51 @@ serve(async (req) => {
       );
     }
 
-    // Here you would typically add code to send the email
-    // For now, we'll just log it and return a success message
+    // Send confirmation emails
+    // This is a placeholder for actual email sending code
+    // In a real implementation, you would use a service like SendGrid, Mailgun, etc.
+    const customerEmailContent = `
+      Beste ${formData.name},
+      
+      Bedankt voor uw aanvraag voor een energielabel. We hebben de volgende informatie ontvangen:
+      
+      Adres: ${formData.address}
+      Type woning: ${formData.propertyType}
+      Oppervlakte: ${formData.surfaceArea} m²
+      Spoedservice: ${formData.rushService ? 'Ja' : 'Nee'}
+      
+      De totale kosten bedragen: €${formData.calculatedPrice} (incl. BTW)
+      
+      We nemen zo spoedig mogelijk contact met u op om een afspraak te maken voor de opname.
+      
+      Met vriendelijke groet,
+      EPA Woninglabel
+    `;
+    
+    const ownerEmailContent = `
+      Nieuwe energielabel aanvraag:
+      
+      Naam: ${formData.name}
+      Email: ${formData.email}
+      Telefoon: ${formData.phone || 'Niet opgegeven'}
+      
+      Adres: ${formData.address}
+      Postcode: ${formData.postcode}
+      Huisnummer: ${formData.houseNumber} ${formData.houseNumberAddition || ''}
+      
+      Type woning: ${formData.propertyType}
+      Oppervlakte: ${formData.surfaceArea} m²
+      
+      Spoedservice: ${formData.rushService ? 'Ja' : 'Nee'}
+      
+      Bericht: ${formData.message || 'Geen bericht'}
+      
+      Berekende prijs: €${formData.calculatedPrice}
+    `;
+    
+    console.log("Would send customer email:", customerEmailContent);
+    console.log("Would send owner email:", ownerEmailContent);
+    
     console.log("Successfully saved submission, would send email with data:", formData);
 
     return new Response(

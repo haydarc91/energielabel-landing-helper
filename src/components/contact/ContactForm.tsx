@@ -226,6 +226,21 @@ const ContactForm = ({
     setIsSubmitting(true);
     
     try {
+      console.log("Submitting form data:", {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        propertyType: formData.propertyType,
+        surfaceArea: addressDetails?.surfaceArea,
+        rushService: formData.rushService,
+        message: formData.message,
+        calculatedPrice: calculatedPrice,
+        postcode: formData.postcode,
+        houseNumber: formData.houseNumber,
+        houseNumberAddition: formData.houseNumberAddition
+      });
+      
       const response = await supabase.functions.invoke('handle-submission', {
         body: {
           name: formData.name,
@@ -244,6 +259,7 @@ const ContactForm = ({
       });
       
       if (response.error) {
+        console.error("Error from edge function:", response.error);
         throw new Error(response.error.message);
       }
       

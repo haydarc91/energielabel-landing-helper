@@ -72,42 +72,10 @@ const ContactInfo = ({ calculatedPrice, formData, addressDetails }: ContactInfoP
         {calculatedPrice && (
           <div className="mt-6 p-4 bg-epa-green/10 rounded-lg border border-epa-green/20">
             <h4 className="font-medium text-epa-green-dark">All-in tarief</h4>
-            <div className="mt-2 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>Basistarief:</span>
-                <span>€{
-                  formData.propertyType === 'detached' || formData.propertyType === 'semi-detached' ? 
-                  '350' : '285'
-                }</span>
-              </div>
-              
-              {addressDetails && addressDetails.surfaceArea > 200 && 
-               (formData.propertyType === 'detached' || formData.propertyType === 'semi-detached') && (
-                <div className="flex justify-between">
-                  <span>Toeslag grote woning:</span>
-                  <span>€{Math.ceil((addressDetails.surfaceArea - 200) / 25) * 50}</span>
-                </div>
-              )}
-              
-              {addressDetails && addressDetails.surfaceArea > 150 && 
-               !(formData.propertyType === 'detached' || formData.propertyType === 'semi-detached') && (
-                <div className="flex justify-between">
-                  <span>Toeslag grote woning:</span>
-                  <span>€{Math.ceil((addressDetails.surfaceArea - 150) / 25) * 35}</span>
-                </div>
-              )}
-              
-              {formData.rushService && (
-                <div className="flex justify-between">
-                  <span>Spoedservice:</span>
-                  <span>+€95</span>
-                </div>
-              )}
-              
-              <div className="border-t border-epa-green/20 pt-2 font-medium flex justify-between">
-                <span>Totaal (incl. BTW):</span>
-                <span>€{calculatedPrice}</span>
-              </div>
+            
+            <div className="border-t border-epa-green/20 pt-2 mt-2 font-medium flex justify-between">
+              <span>Totaal (incl. BTW):</span>
+              <span>€{calculatedPrice}</span>
             </div>
           </div>
         )}
