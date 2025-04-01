@@ -10,7 +10,7 @@ import ServiceArea from '@/components/ServiceArea';
 import AboutUs from '@/components/AboutUs';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { Send, ArrowUp, BrandWhatsapp } from 'lucide-react';
+import { Send, ArrowUp, MessageSquare } from 'lucide-react';
 
 const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -178,7 +178,7 @@ const Index = () => {
               rel="noopener noreferrer" 
               className="inline-flex items-center gap-3 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors text-lg shadow-md"
             >
-              <BrandWhatsapp className="h-6 w-6" />
+              <MessageSquare className="h-6 w-6" />
               Direct WhatsApp
               <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs ml-2">
                 Online
