@@ -9,16 +9,13 @@ const ServiceArea = () => {
   const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
   
   useEffect(() => {
-    // Only load and initialize if the map ref exists
     if (!mapRef.current) return;
 
-    // Initialize map script
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
     script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
     script.crossOrigin = '';
     
-    // Add CSS for the map
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
@@ -32,58 +29,45 @@ const ServiceArea = () => {
     
     script.onload = () => {
       if (mapRef.current && window.L) {
-        // Center coordinates for Amersfoort
-        const amersfoortCoords: [number, number] = [52.1561, 5.3878];
+        const centerCoords: [number, number] = [52.1561, 4.4855];
         
-        // Create the map centered on Amersfoort
-        mapInstance = window.L.map(mapRef.current).setView(amersfoortCoords, 9);
+        mapInstance = window.L.map(mapRef.current).setView(centerCoords, 9);
         leafletMapRef.current = mapInstance;
         
-        // Add the tile layer (map styling)
         window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(mapInstance);
         
-        // Add Amersfoort marker
-        const amersfoortMarker = window.L.marker(amersfoortCoords)
-          .addTo(mapInstance)
-          .bindPopup('<b>Amersfoort</b><br>Ons hoofdkantoor');
-        
-        // Draw 80km radius circle around Amersfoort
-        window.L.circle(amersfoortCoords, {
-          color: '#10B981',
-          fillColor: '#10B981',
-          fillOpacity: 0.1,
-          radius: 80000 // 80km in meters
-        }).addTo(mapInstance);
-        
-        // Add markers for cities within the service area
         const serviceCities = [
-          { name: "Utrecht", coords: [52.0907, 5.1214] as [number, number] },
+          { name: "Rotterdam", coords: [51.9225, 4.4792] as [number, number] },
           { name: "Amsterdam", coords: [52.3676, 4.9041] as [number, number] },
-          { name: "Apeldoorn", coords: [52.2112, 5.9699] as [number, number] },
-          { name: "Zwolle", coords: [52.5168, 6.0830] as [number, number] },
-          { name: "Enschede", coords: [52.2215, 6.8936] as [number, number] },
-          { name: "Arnhem", coords: [51.9851, 5.8987] as [number, number] },
-          { name: "Nijmegen", coords: [51.8425, 5.8372] as [number, number] },
-          { name: "Den Bosch", coords: [51.6998, 5.3042] as [number, number] }
+          { name: "Den Haag", coords: [52.0705, 4.3007] as [number, number] },
+          { name: "Leiden", coords: [52.1601, 4.4835] as [number, number] },
+          { name: "Haarlem", coords: [52.3874, 4.6462] as [number, number] },
+          { name: "Delft", coords: [52.0116, 4.3572] as [number, number] },
+          { name: "Alphen aan den Rijn", coords: [52.1389, 4.6667] as [number, number] },
+          { name: "Zaandam", coords: [52.4306, 4.8284] as [number, number] }
         ];
         
-        // Add markers for cities in service area
         serviceCities.forEach(city => {
           window.L.marker(city.coords)
             .addTo(mapInstance!)
             .bindPopup(`<b>${city.name}</b><br>Energielabel service beschikbaar`);
         });
         
-        // Disable zoom to keep the map clean and focused
+        window.L.circle(centerCoords, {
+          color: '#10B981',
+          fillColor: '#10B981',
+          fillOpacity: 0.1,
+          radius: 100000
+        }).addTo(mapInstance);
+        
         mapInstance!.scrollWheelZoom.disable();
         mapInstance!.doubleClickZoom.disable();
       }
     };
     
     return () => {
-      // Clean up
       if (leafletMapRef.current) {
         leafletMapRef.current.remove();
         leafletMapRef.current = null;
@@ -109,26 +93,26 @@ const ServiceArea = () => {
         <div className="text-center mb-12">
           <h2 className="mb-4">Ons werkgebied</h2>
           <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            Wij verlenen onze diensten in een straal van 80 kilometer rondom Amersfoort. Onze EPA-adviseurs komen naar u toe voor een professionele opname.
+            Wij verlenen onze diensten in de provincies Zuid-Holland en Noord-Holland. 
+            Onze EPA-adviseurs komen naar u toe voor een professionele opname in deze regio's.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Map container */}
           <div className="h-[500px] rounded-xl overflow-hidden shadow-xl">
             <div ref={mapRef} className="w-full h-full"></div>
           </div>
 
-          {/* Service details */}
           <div className="space-y-6">
             <div className="glass-card p-6 rounded-xl">
-              <h3 className="text-2xl font-semibold mb-4">Werkgebied Amersfoort en omgeving</h3>
+              <h3 className="text-2xl font-semibold mb-4">Werkgebied Zuid-Holland en Noord-Holland</h3>
               <p className="text-gray-600 mb-4">
-                Onze ervaren EPA-adviseurs zijn actief in een straal van 80 kilometer rondom Amersfoort. Dit omvat grote steden zoals Utrecht, Amsterdam, Apeldoorn en diverse gemeenten in de provincies Utrecht, Noord-Holland, Flevoland en Gelderland.
+                Onze ervaren EPA-adviseurs zijn actief in de provincies Zuid-Holland en Noord-Holland. 
+                Dit omvat grote steden zoals Rotterdam, Amsterdam, Den Haag, Leiden, Haarlem en diverse gemeenten in deze regio's.
               </p>
               <div className="flex items-start gap-3 text-gray-700">
                 <MapPin className="h-5 w-5 text-epa-green flex-shrink-0 mt-1" />
-                <p>Beschikbaar in Amersfoort en omliggende gemeenten binnen 80km</p>
+                <p>Beschikbaar in alle gemeenten van Zuid-Holland en Noord-Holland</p>
               </div>
             </div>
 
