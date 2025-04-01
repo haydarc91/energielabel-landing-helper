@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { MapPin, Clock, Check } from 'lucide-react';
 import { useIntersectionAnimation } from '@/lib/animations';
@@ -29,9 +30,9 @@ const ServiceArea = () => {
     
     script.onload = () => {
       if (mapRef.current && window.L) {
-        const centerCoords: [number, number] = [52.1561, 4.4855];
+        const amersfoortCoords: [number, number] = [52.1561, 5.3878];
         
-        mapInstance = window.L.map(mapRef.current).setView(centerCoords, 9);
+        mapInstance = window.L.map(mapRef.current).setView(amersfoortCoords, 8);
         leafletMapRef.current = mapInstance;
         
         window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -39,14 +40,14 @@ const ServiceArea = () => {
         }).addTo(mapInstance);
         
         const serviceCities = [
-          { name: "Rotterdam", coords: [51.9225, 4.4792] as [number, number] },
           { name: "Amsterdam", coords: [52.3676, 4.9041] as [number, number] },
+          { name: "Rotterdam", coords: [51.9225, 4.4792] as [number, number] },
+          { name: "Utrecht", coords: [52.0908, 5.1222] as [number, number] },
           { name: "Den Haag", coords: [52.0705, 4.3007] as [number, number] },
           { name: "Leiden", coords: [52.1601, 4.4835] as [number, number] },
           { name: "Haarlem", coords: [52.3874, 4.6462] as [number, number] },
-          { name: "Delft", coords: [52.0116, 4.3572] as [number, number] },
-          { name: "Alphen aan den Rijn", coords: [52.1389, 4.6667] as [number, number] },
-          { name: "Zaandam", coords: [52.4306, 4.8284] as [number, number] }
+          { name: "Zwolle", coords: [52.5200, 6.0833] as [number, number] },
+          { name: "Arnhem", coords: [51.9851, 5.8987] as [number, number] }
         ];
         
         serviceCities.forEach(city => {
@@ -55,11 +56,11 @@ const ServiceArea = () => {
             .bindPopup(`<b>${city.name}</b><br>Energielabel service beschikbaar`);
         });
         
-        window.L.circle(centerCoords, {
+        window.L.circle(amersfoortCoords, {
           color: '#10B981',
           fillColor: '#10B981',
           fillOpacity: 0.1,
-          radius: 100000
+          radius: 80000 // 80 km radius
         }).addTo(mapInstance);
         
         mapInstance!.scrollWheelZoom.disable();
@@ -93,7 +94,7 @@ const ServiceArea = () => {
         <div className="text-center mb-12">
           <h2 className="mb-4">Ons werkgebied</h2>
           <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            Wij verlenen onze diensten in de provincies Zuid-Holland en Noord-Holland. 
+            Wij verlenen onze diensten in alle provincies binnen een straal van 80 km rondom Amersfoort. 
             Onze EPA-adviseurs komen naar u toe voor een professionele opname in deze regio's.
           </p>
         </div>
@@ -105,14 +106,14 @@ const ServiceArea = () => {
 
           <div className="space-y-6">
             <div className="glass-card p-6 rounded-xl">
-              <h3 className="text-2xl font-semibold mb-4">Werkgebied Zuid-Holland en Noord-Holland</h3>
+              <h3 className="text-2xl font-semibold mb-4">Werkgebied rondom Amersfoort</h3>
               <p className="text-gray-600 mb-4">
-                Onze ervaren EPA-adviseurs zijn actief in de provincies Zuid-Holland en Noord-Holland. 
-                Dit omvat grote steden zoals Rotterdam, Amsterdam, Den Haag, Leiden, Haarlem en diverse gemeenten in deze regio's.
+                Onze service beslaat een gebied van 80 km rondom Amersfoort, 
+                wat nagenoeg de gehele provincies Utrecht, Gelderland, Noord-Holland en Zuid-Holland omvat.
               </p>
               <div className="flex items-start gap-3 text-gray-700">
                 <MapPin className="h-5 w-5 text-epa-green flex-shrink-0 mt-1" />
-                <p>Beschikbaar in alle gemeenten van Zuid-Holland en Noord-Holland</p>
+                <p>Beschikbaar in een groot deel van Midden- en West-Nederland</p>
               </div>
             </div>
 
