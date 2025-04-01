@@ -10,8 +10,7 @@ import ServiceArea from '@/components/ServiceArea';
 import AboutUs from '@/components/AboutUs';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { Send, ArrowUp } from 'lucide-react';
-import { BrandWhatsapp } from 'lucide-react/icons/brand-whatsapp';
+import { Send, ArrowUp, BrandWhatsapp } from 'lucide-react';
 
 const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
