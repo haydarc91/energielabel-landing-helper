@@ -5,13 +5,13 @@
 1. Ga naar [Formspark](https://formspark.io/) en registreer een account.
 2. Na registratie, klik op de knop "Create a new form".
 3. Geef je formulier een naam (bijvoorbeeld "EPA Woninglabel Aanvraag").
-4. Kopieer de formulier ID die Formspark genereert (het ziet eruit als een alfanumerieke reeks, bijvoorbeeld "xayqBlvx").
+4. Kopieer de formulier ID die Formspark genereert (het ziet eruit als een alfanumerieke reeks, bijvoorbeeld "hoSoiHD6n").
 
 ## Stap 2: Update de ContactForm.tsx code
 1. Open het bestand `src/components/contact/ContactForm.tsx`.
 2. Vervang de placeholder `FORMSPARK_FORM_ID` met jouw eigen formulier ID:
    ```javascript
-   const FORMSPARK_FORM_ID = "xayqBlvx"; // Vervang dit met jouw eigen ID van Formspark
+   const FORMSPARK_FORM_ID = "hoSoiHD6n"; // Vervang dit met jouw eigen ID van Formspark
    ```
 
 ## Stap 3: Configureer e-mail notificaties in Formspark
