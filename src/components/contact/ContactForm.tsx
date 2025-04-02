@@ -1,10 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Send, CheckCircle, Loader2, Mail, Edit2 } from 'lucide-react';
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import AddressLookup from './AddressLookup';
-import { supabase } from "@/integrations/supabase/client";
 
 interface Address {
   street: string;
@@ -13,6 +13,9 @@ interface Address {
   province: string;
   surfaceArea: number;
 }
+
+// Formspark form ID - dit moet worden vervangen door uw eigen Formspark formulier ID
+const FORMSPARK_FORM_ID = "uw-formspark-form-id";
 
 const ContactForm = ({
   calculatedPrice,
@@ -226,7 +229,7 @@ const ContactForm = ({
     setIsSubmitting(true);
     
     try {
-      console.log("Submitting form data:", {
+      console.log("Submitting form data to Formspark:", {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
@@ -241,29 +244,45 @@ const ContactForm = ({
         houseNumberAddition: formData.houseNumberAddition
       });
       
-      const response = await supabase.functions.invoke('handle-submission', {
-        body: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          propertyType: formData.propertyType,
-          surfaceArea: addressDetails?.surfaceArea,
-          rushService: formData.rushService,
-          message: formData.message,
-          calculatedPrice: calculatedPrice,
-          postcode: formData.postcode,
-          houseNumber: formData.houseNumber,
-          houseNumberAddition: formData.houseNumberAddition
+      // Formuliergegevens voorbereiden voor Formspark
+      const formsparkData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        propertyType: formData.propertyType,
+        surfaceArea: addressDetails?.surfaceArea,
+        rushService: formData.rushService ? 'Ja' : 'Nee',
+        message: formData.message,
+        calculatedPrice: calculatedPrice,
+        postcode: formData.postcode,
+        houseNumber: formData.houseNumber,
+        houseNumberAddition: formData.houseNumberAddition,
+        _redirect: window.location.href, // Redirect terug naar dezelfde pagina
+        _email: {
+          from: 'EPA Woninglabel <noreply@epawoninglabel.nl>',
+          subject: 'Nieuwe energielabel aanvraag',
+          replyTo: formData.email
         }
+      };
+      
+      // Verstuur data naar Formspark
+      const response = await fetch(`https://submit-form.com/${FORMSPARK_FORM_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formsparkData)
       });
       
-      if (response.error) {
-        console.error("Error from edge function:", response.error);
-        throw new Error(response.error.message);
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Error response from Formspark:", errorData);
+        throw new Error('Er ging iets mis bij het versturen van het formulier.');
       }
       
-      console.log('Submission response:', response.data);
+      console.log('Formspark submission successful');
       
       setIsSubmitting(false);
       setSubmitted(true);
