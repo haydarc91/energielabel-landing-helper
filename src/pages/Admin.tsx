@@ -9,6 +9,8 @@ import WebContentEditor, { WebsiteContent } from "@/components/admin/WebContentE
 import SubmissionsTable, { ContactSubmission } from "@/components/admin/SubmissionsTable";
 import SubmissionDetail from "@/components/admin/SubmissionDetail";
 import AdminAuth from "@/components/admin/AdminAuth";
+import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Admin = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
@@ -94,30 +96,50 @@ const Admin = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 py-16">
-      <h1 className="text-3xl font-bold mb-8">Administratie</h1>
-      
-      {/* Web Content Editor Section */}
-      <WebContentEditor 
-        webContent={webContent} 
-        onRefresh={fetchWebContent} 
-      />
-      
-      {/* Contact Submissions Section */}
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Energielabel aanvragen</h2>
-          <Button onClick={fetchSubmissions} variant="outline" className="gap-2">
-            <RefreshCw className="h-4 w-4" /> Vernieuwen
-          </Button>
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-epa-green py-6 px-4 sm:px-6 lg:px-8 shadow-md">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold text-white">EPA Woninglabel Admin</h1>
         </div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* Website Content Management */}
+        <Card className="mb-8 shadow-sm border-epa-gray">
+          <CardHeader>
+            <CardTitle className="text-2xl text-epa-green-dark">Website Inhoud Beheren</CardTitle>
+            <CardDescription>Bewerk de tekst en inhoud die op de website getoond wordt</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <WebContentEditor 
+              webContent={webContent} 
+              onRefresh={fetchWebContent} 
+            />
+          </CardContent>
+        </Card>
         
-        <SubmissionsTable 
-          submissions={submissions} 
-          loading={loading} 
-          formatDate={formatDateNL}
-          onSelectSubmission={handleSelectSubmission}
-        />
+        <Separator className="my-8" />
+        
+        {/* Contact Submissions Section */}
+        <Card className="shadow-sm border-epa-gray">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-2xl text-epa-green-dark">Energielabel Aanvragen</CardTitle>
+              <CardDescription>Beheer en verwerk inkomende aanvragen</CardDescription>
+            </div>
+            <Button onClick={fetchSubmissions} variant="outline" className="gap-2 bg-white hover:bg-epa-green-light hover:text-epa-green-dark">
+              <RefreshCw className="h-4 w-4" /> Vernieuwen
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <SubmissionsTable 
+              submissions={submissions} 
+              loading={loading} 
+              formatDate={formatDateNL}
+              onSelectSubmission={handleSelectSubmission}
+            />
+          </CardContent>
+        </Card>
       </div>
 
       {/* Submission Detail Dialog */}
