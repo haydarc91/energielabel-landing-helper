@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Edit2, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 
 interface Address {
   street: string;

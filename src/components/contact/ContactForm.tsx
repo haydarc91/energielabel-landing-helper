@@ -70,7 +70,11 @@ const ContactForm = ({
   const applyManualSurfaceArea = () => {
     const surfaceValue = parseInt(manualSurfaceArea);
     if (isNaN(surfaceValue) || surfaceValue <= 0) {
-      toast.error("Voer een geldig oppervlakte in");
+      toast({
+        title: "Fout",
+        description: "Voer een geldig oppervlakte in",
+        variant: "destructive"
+      });
       return;
     }
     
@@ -81,7 +85,11 @@ const ContactForm = ({
       };
       setAddressDetails(updatedAddressDetails);
       calculatePrice(surfaceValue, formData.propertyType, formData.rushService);
-      toast.success(`Oppervlakte bijgewerkt naar ${surfaceValue}m²`);
+      toast({
+        title: "Oppervlakte bijgewerkt",
+        description: `Oppervlakte bijgewerkt naar ${surfaceValue}m²`,
+        variant: "default"
+      });
     }
     
     setIsEditingSurfaceArea(false);
@@ -212,7 +220,11 @@ const ContactForm = ({
           formData.rushService
         );
         
-        toast.success("Adres succesvol gevonden!");
+        toast({
+          title: "Adres gevonden",
+          description: "Adres succesvol gevonden!",
+          variant: "default"
+        });
       } else {
         setAddressError("Geen adres gevonden. Controleer de gegevens.");
       }
@@ -244,7 +256,6 @@ const ContactForm = ({
         houseNumberAddition: formData.houseNumberAddition
       });
       
-      // Formuliergegevens voorbereiden voor Formspark
       const formsparkData = {
         name: formData.name,
         email: formData.email,
@@ -258,7 +269,7 @@ const ContactForm = ({
         postcode: formData.postcode,
         houseNumber: formData.houseNumber,
         houseNumberAddition: formData.houseNumberAddition,
-        _redirect: window.location.href, // Redirect terug naar dezelfde pagina
+        _redirect: window.location.href,
         _email: {
           from: 'EPA Woninglabel <noreply@epawoninglabel.nl>',
           subject: 'Nieuwe energielabel aanvraag',
@@ -266,7 +277,6 @@ const ContactForm = ({
         }
       };
       
-      // Verstuur data naar Formspark
       const response = await fetch(`https://submit-form.com/${FORMSPARK_FORM_ID}`, {
         method: 'POST',
         headers: {
@@ -284,7 +294,6 @@ const ContactForm = ({
       
       console.log('Formspark submission successful');
       
-      // Also store the submission in Supabase for the admin panel
       const { error: supabaseError } = await supabase
         .from('contact_submissions')
         .insert({
