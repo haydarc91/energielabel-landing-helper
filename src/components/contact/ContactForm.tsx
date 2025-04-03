@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Send, CheckCircle, Loader2, Mail, Edit2 } from 'lucide-react';
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import AddressLookup from './AddressLookup';
+import { supabase } from "@/integrations/supabase/client";
 
 interface Address {
   street: string;
@@ -284,9 +284,36 @@ const ContactForm = ({
       
       console.log('Formspark submission successful');
       
+      // Also store the submission in Supabase for the admin panel
+      const { error: supabaseError } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          property_type: formData.propertyType,
+          surface_area: addressDetails?.surfaceArea,
+          rush_service: formData.rushService,
+          message: formData.message,
+          calculated_price: calculatedPrice,
+          postcode: formData.postcode,
+          house_number: formData.houseNumber,
+          house_number_addition: formData.houseNumberAddition
+        });
+      
+      if (supabaseError) {
+        console.error("Error storing submission in Supabase:", supabaseError);
+      }
+      
       setIsSubmitting(false);
       setSubmitted(true);
-      toast.success("Bedankt voor uw aanvraag! We nemen zo snel mogelijk contact met u op.");
+      toast({
+        title: "Aanvraag succesvol verzonden!",
+        description: "Bedankt voor uw aanvraag. Wij nemen zo snel mogelijk contact met u op om een afspraak in te plannen.",
+        variant: "default",
+        duration: 5000,
+      });
       
       setFormData({
         name: '',
@@ -309,7 +336,12 @@ const ContactForm = ({
     } catch (error) {
       console.error('Error submitting form:', error);
       setIsSubmitting(false);
-      toast.error("Er is een fout opgetreden bij het versturen van uw aanvraag. Probeer het later nog eens.");
+      toast({
+        title: "Er is een fout opgetreden",
+        description: "Er is een fout opgetreden bij het versturen van uw aanvraag. Probeer het later nog eens of neem telefonisch contact met ons op.",
+        variant: "destructive",
+        duration: 5000,
+      });
     }
   };
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import { formatDateNL } from "@/utils/dateFormatters";
 import WebContentEditor, { WebsiteContent } from "@/components/admin/WebContentEditor";
 import SubmissionsTable, { ContactSubmission } from "@/components/admin/SubmissionsTable";
@@ -31,7 +31,11 @@ const Admin = () => {
       setSubmissions(data || []);
     } catch (error) {
       console.error('Error fetching submissions:', error);
-      toast.error('Kon aanvragen niet ophalen');
+      toast({
+        title: "Fout bij ophalen aanvragen",
+        description: "Kon aanvragen niet ophalen",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
@@ -48,7 +52,11 @@ const Admin = () => {
       setWebContent(data || []);
     } catch (error) {
       console.error('Error fetching web content:', error);
-      toast.error('Kon website inhoud niet ophalen');
+      toast({
+        title: "Fout bij ophalen website inhoud",
+        description: "Kon website inhoud niet ophalen",
+        variant: "destructive"
+      });
     }
   };
 
