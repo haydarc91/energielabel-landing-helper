@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -23,27 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export interface ContactSubmission {
-  id: string;
-  name: string;
-  email: string;
-  phone: string | null;
-  address: string | null;
-  property_type: string | null;
-  surface_area: number | null;
-  rush_service: boolean | null;
-  message: string | null;
-  calculated_price: number | null;
-  created_at: string;
-  postcode: string | null;
-  house_number: string | null;
-  house_number_addition: string | null;
-  status: string | null;
-  appointment_date: string | null;
-  appointment_time: string | null;
-  notes: string | null;
-}
+import { ContactSubmission } from "./SubmissionsTable";
 
 interface SubmissionDetailProps {
   submission: ContactSubmission;

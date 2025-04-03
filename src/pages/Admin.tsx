@@ -41,7 +41,7 @@ const Admin = () => {
       const processedData = data?.map(submission => ({
         ...submission,
         status: submission.status || 'new'
-      })) || [];
+      })) as ContactSubmission[];
       
       setSubmissions(processedData);
     } catch (error) {
