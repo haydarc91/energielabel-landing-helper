@@ -7,15 +7,24 @@ import { toast } from "@/components/ui/use-toast";
 import { formatDateNL } from "@/utils/dateFormatters";
 import WebContentEditor, { WebsiteContent } from "@/components/admin/WebContentEditor";
 import SubmissionsTable, { ContactSubmission } from "@/components/admin/SubmissionsTable";
+import SubmissionDetail from "@/components/admin/SubmissionDetail";
+import AdminAuth from "@/components/admin/AdminAuth";
 
 const Admin = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [webContent, setWebContent] = useState<WebsiteContent[]>([]);
+  const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    fetchSubmissions();
-    fetchWebContent();
+    // Check if user is already authenticated
+    const authStatus = localStorage.getItem('adminAuthenticated');
+    if (authStatus === 'true') {
+      setIsAuthenticated(true);
+      fetchSubmissions();
+      fetchWebContent();
+    }
   }, []);
 
   const fetchSubmissions = async () => {
@@ -28,7 +37,13 @@ const Admin = () => {
       
       if (error) throw error;
       
-      setSubmissions(data || []);
+      // Add default status if missing
+      const processedData = data?.map(submission => ({
+        ...submission,
+        status: submission.status || 'new'
+      })) || [];
+      
+      setSubmissions(processedData);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       toast({
@@ -60,6 +75,24 @@ const Admin = () => {
     }
   };
 
+  const handleSelectSubmission = (submission: ContactSubmission) => {
+    setSelectedSubmission(submission);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedSubmission(null);
+  };
+
+  const handleAuthenticated = () => {
+    setIsAuthenticated(true);
+    fetchSubmissions();
+    fetchWebContent();
+  };
+
+  if (!isAuthenticated) {
+    return <AdminAuth onAuthenticated={handleAuthenticated} />;
+  }
+
   return (
     <div className="container mx-auto p-4 py-16">
       <h1 className="text-3xl font-bold mb-8">Administratie</h1>
@@ -82,9 +115,20 @@ const Admin = () => {
         <SubmissionsTable 
           submissions={submissions} 
           loading={loading} 
-          formatDate={formatDateNL} 
+          formatDate={formatDateNL}
+          onSelectSubmission={handleSelectSubmission}
         />
       </div>
+
+      {/* Submission Detail Dialog */}
+      {selectedSubmission && (
+        <SubmissionDetail
+          submission={selectedSubmission}
+          isOpen={!!selectedSubmission}
+          onClose={handleCloseDetail}
+          onUpdate={fetchSubmissions}
+        />
+      )}
     </div>
   );
 };
