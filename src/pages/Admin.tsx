@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { RefreshCw } from "lucide-react";
@@ -42,7 +41,10 @@ const Admin = () => {
       // Add default status if missing
       const processedData = data?.map(submission => ({
         ...submission,
-        status: submission.status || 'new'
+        status: submission.status || 'new',
+        appointment_date: submission.appointment_date || '',
+        appointment_time: submission.appointment_time || '',
+        notes: submission.notes || ''
       })) as ContactSubmission[];
       
       setSubmissions(processedData);

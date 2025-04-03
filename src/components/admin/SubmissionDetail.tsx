@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Calendar, Clock, Save, Trash2 } from "lucide-react";
 import { formatDateNL } from "@/utils/dateFormatters";
+import { sendWebhook } from "@/utils/sendWebhook";
 import {
   Dialog,
   DialogContent,
@@ -40,6 +42,13 @@ const SubmissionDetail = ({ submission, isOpen, onClose, onUpdate }: SubmissionD
   const [notes, setNotes] = useState(submission.notes || '');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  // Effect to automatically update status when appointment date/time is set
+  useEffect(() => {
+    if (appointmentDate && appointmentTime && status !== 'scheduled') {
+      setStatus('scheduled');
+    }
+  }, [appointmentDate, appointmentTime, status]);
+
   const handleStatusChange = (value: string) => {
     setStatus(value);
   };
@@ -58,22 +67,34 @@ const SubmissionDetail = ({ submission, isOpen, onClose, onUpdate }: SubmissionD
         return;
       }
 
-      // If appointment is set, automatically change status to scheduled
-      if (appointmentDate && appointmentTime && status === 'new') {
-        setStatus('scheduled');
-      }
+      // Prepare updated data
+      const updatedData = {
+        status: status,
+        appointment_date: appointmentDate,
+        appointment_time: appointmentTime,
+        notes: notes
+      };
 
+      // Update in database
       const { error } = await supabase
         .from('contact_submissions')
-        .update({
-          status: status,
-          appointment_date: appointmentDate,
-          appointment_time: appointmentTime,
-          notes: notes
-        })
+        .update(updatedData)
         .eq('id', submission.id);
 
       if (error) throw error;
+
+      // Send webhook with updated submission data
+      const fullSubmissionData = {
+        ...submission,
+        ...updatedData
+      };
+      
+      // Send webhook notification
+      const webhookSuccess = await sendWebhook(fullSubmissionData);
+      
+      if (!webhookSuccess) {
+        console.warn("Failed to send webhook notification");
+      }
 
       toast({
         title: "Opgeslagen",
