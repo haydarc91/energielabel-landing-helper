@@ -10,15 +10,15 @@ import { Send, ArrowRight, Check, Map, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useParams } from 'react-router-dom';
 
+// Create a non-recursive type for section content
 interface PageSectionContent {
   title: string | null;
   subtitle: string | null;
   content: string | null;
 }
 
-interface PageContent {
-  [key: string]: PageSectionContent;
-}
+// Define PageContent as a simple Record type with string keys and PageSectionContent values
+type PageContent = Record<string, PageSectionContent>;
 
 const LandingPage = () => {
   const { location } = useParams();
@@ -50,7 +50,7 @@ const LandingPage = () => {
               content: item.content
             };
             return acc;
-          }, {});
+          }, {} as PageContent); // Explicitly type the initial value
           
           setPageContent(contentBySection);
         }
