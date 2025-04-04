@@ -1,0 +1,24 @@
+
+# Toestaan voor alle crawlers
+User-agent: *
+Allow: /
+
+# Sitemap locatie
+Sitemap: https://www.epawoninglabel.nl/sitemap.xml
+
+# Specifieke regels voor grote crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yandexbot
+Allow: /
+
+# Sociale media crawlers
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
