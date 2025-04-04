@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -10,17 +11,15 @@ import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
 import { useParams } from 'react-router-dom';
 
-// Define content for a section directly without nesting
-type SectionContent = {
+// Define content for a section without recursive types
+interface SectionContent {
   title: string | null;
   subtitle: string | null;
   content: string | null;
-};
+}
 
-// Simple flat map of section names to their content
-type PageContentMap = {
-  [sectionName: string]: SectionContent;
-};
+// Use Record type to avoid recursive type definition
+type PageContentMap = Record<string, SectionContent>;
 
 const LandingPage = () => {
   const { location } = useParams();
@@ -41,15 +40,14 @@ const LandingPage = () => {
         
         if (data && data.length > 0) {
           // Transform the array into an object with section names as keys
-          const contentMap: PageContentMap = {};
-          
-          for (const item of data) {
-            contentMap[item.section_name] = {
+          const contentMap = data.reduce<PageContentMap>((acc, item) => {
+            acc[item.section_name] = {
               title: item.title,
               subtitle: item.subtitle,
               content: item.content
             };
-          }
+            return acc;
+          }, {});
           
           setPageContent(contentMap);
         }
@@ -72,42 +70,12 @@ const LandingPage = () => {
     <div className="min-h-screen bg-white overflow-x-hidden">
       <Navbar />
       <main>
-        {pageContent.hero && (
-          <Hero
-            title={pageContent.hero.title}
-            subtitle={pageContent.hero.subtitle}
-            description={pageContent.hero.content}
-          />
-        )}
-        {pageContent.features && (
-          <Features
-            title={pageContent.features.title}
-            subtitle={pageContent.features.subtitle}
-            content={pageContent.features.content}
-          />
-        )}
-        {pageContent.process && (
-          <Process
-            title={pageContent.process.title}
-            subtitle={pageContent.process.subtitle}
-            content={pageContent.process.content}
-          />
-        )}
-        {pageContent.faq && (
-          <FAQ
-            title={pageContent.faq.title}
-            subtitle={pageContent.faq.subtitle}
-            content={pageContent.faq.content}
-          />
-        )}
+        <Hero />
+        <Features />
+        <Process />
+        <FAQ />
         <PricingSection />
-        {pageContent.about && (
-          <AboutUs
-            title={pageContent.about.title}
-            subtitle={pageContent.about.subtitle}
-            content={pageContent.about.content}
-          />
-        )}
+        <AboutUs />
       </main>
       <Footer />
     </div>
