@@ -11,17 +11,17 @@ import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
 import { useParams } from 'react-router-dom';
 
-// Define content for a section without recursive types
+// Define content for a section as a simple interface
 interface SectionContent {
   title: string | null;
   subtitle: string | null;
   content: string | null;
 }
 
-// Use a simple non-recursive type definition
-type PageContentMap = {
+// Define the page content map as a plain object type with string keys
+interface PageContentMap {
   [key: string]: SectionContent;
-};
+}
 
 const LandingPage = () => {
   const { location } = useParams();
@@ -49,7 +49,7 @@ const LandingPage = () => {
               content: item.content
             };
             return acc;
-          }, {});
+          }, {} as PageContentMap); // Explicitly type the initial accumulator
           
           setPageContent(contentMap);
         }
