@@ -4,7 +4,9 @@ import './App.css';
 import Index from '@/pages/Index';
 import NotFound from '@/pages/NotFound';
 import Admin from '@/pages/Admin';
-import { Toaster } from "@/components/ui/toaster";
+import Login from '@/pages/Login';
+import { Toaster } from "sonner";
+import LandingPage from '@/components/LandingPage';
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/energielabel-:location" element={<LandingPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />

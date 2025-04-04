@@ -1,31 +1,52 @@
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { formatDateNL } from "@/utils/dateFormatters";
 import WebContentEditor, { WebsiteContent } from "@/components/admin/WebContentEditor";
 import SubmissionsTable, { ContactSubmission } from "@/components/admin/SubmissionsTable";
 import SubmissionDetail from "@/components/admin/SubmissionDetail";
-import AdminAuth from "@/components/admin/AdminAuth";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Navigate, useNavigate } from 'react-router-dom';
+import Logo from '@/components/Logo';
 
 const Admin = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [webContent, setWebContent] = useState<WebsiteContent[]>([]);
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [session, setSession] = useState<any>(null);
+  const [isSessionLoading, setIsSessionLoading] = useState(true);
+  const navigate = useNavigate();
+  
   useEffect(() => {
-    // Check if user is already authenticated
-    const authStatus = localStorage.getItem('adminAuthenticated');
-    if (authStatus === 'true') {
-      setIsAuthenticated(true);
-      fetchSubmissions();
-      fetchWebContent();
-    }
+    // Get initial session
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+      setIsSessionLoading(false);
+
+      if (data.session) {
+        fetchSubmissions();
+        fetchWebContent();
+      }
+    };
+
+    getSession();
+
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setSession(session);
+      if (session) {
+        fetchSubmissions();
+        fetchWebContent();
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchSubmissions = async () => {
@@ -50,11 +71,7 @@ const Admin = () => {
       setSubmissions(processedData);
     } catch (error) {
       console.error('Error fetching submissions:', error);
-      toast({
-        title: "Fout bij ophalen aanvragen",
-        description: "Kon aanvragen niet ophalen",
-        variant: "destructive"
-      });
+      toast.error('Kon aanvragen niet ophalen');
     } finally {
       setLoading(false);
     }
@@ -71,11 +88,7 @@ const Admin = () => {
       setWebContent(data || []);
     } catch (error) {
       console.error('Error fetching web content:', error);
-      toast({
-        title: "Fout bij ophalen website inhoud",
-        description: "Kon website inhoud niet ophalen",
-        variant: "destructive"
-      });
+      toast.error('Kon website inhoud niet ophalen');
     }
   };
 
@@ -87,21 +100,49 @@ const Admin = () => {
     setSelectedSubmission(null);
   };
 
-  const handleAuthenticated = () => {
-    setIsAuthenticated(true);
-    fetchSubmissions();
-    fetchWebContent();
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+      toast.error('Kon niet uitloggen');
+      return;
+    }
+    navigate('/login');
   };
 
-  if (!isAuthenticated) {
-    return <AdminAuth onAuthenticated={handleAuthenticated} />;
+  // If session is loading, show loading state
+  if (isSessionLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="spinner h-12 w-12 border-4 border-t-epa-green border-gray-200 rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-gray-600">Bezig met laden...</p>
+        </div>
+      </div>
+    );
   }
 
+  // If no session, redirect to login
+  if (!session) {
+    return <Navigate to="/login" />;
+  }
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-epa-green py-6 px-4 sm:px-6 lg:px-8 shadow-md">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-white">EPA Woninglabel Admin</h1>
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center">
+            <Logo className="mr-3" />
+            <h1 className="text-3xl font-bold text-white ml-2">Admin</h1>
+          </div>
+          <Button 
+            variant="outline" 
+            className="bg-white text-epa-green-dark hover:bg-gray-100 flex items-center gap-2" 
+            onClick={handleSignOut}
+          >
+            <LogOut className="h-4 w-4" />
+            Uitloggen
+          </Button>
         </div>
       </div>
       

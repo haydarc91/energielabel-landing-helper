@@ -1,5 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+
+interface HeroContent {
+  title: string | null;
+  subtitle: string | null;
+  content: string | null;
+}
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -7,8 +15,39 @@ const Hero = () => {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const [content, setContent] = useState<HeroContent>({
+    title: '',
+    subtitle: '',
+    content: 'Innovatief energielabel voor moderne, duurzame woningen'
+  });
 
   useEffect(() => {
+    // Fetch content from Supabase
+    const fetchContent = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('website_content')
+          .select('title, subtitle, content')
+          .eq('section_name', 'hero')
+          .is('page_path', null)
+          .single();
+        
+        if (error) throw error;
+        
+        if (data) {
+          setContent({
+            title: data.title,
+            subtitle: data.subtitle,
+            content: data.content
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching hero content:', error);
+      }
+    };
+    
+    fetchContent();
+
     const hero = heroRef.current;
     const title = titleRef.current;
     const subtitle = subtitleRef.current;
@@ -50,7 +89,7 @@ const Hero = () => {
           </h1>
           
           <p ref={subtitleRef} className="opacity-0 text-lg md:text-xl text-gray-600 max-w-3xl mb-10 text-balance">
-            Krijg snel en professioneel uw energielabel voor uw woning. EPA gecertificeerde adviseurs. Geldig voor 10 jaar en geregistreerd bij RVO.
+            {content.subtitle || 'Krijg snel en professioneel uw energielabel voor uw woning. EPA gecertificeerde adviseurs. Geldig voor 10 jaar en geregistreerd bij RVO.'}
           </p>
           
           <div ref={ctaRef} className="opacity-0 flex flex-col sm:flex-row items-start gap-4">
@@ -75,8 +114,8 @@ const Hero = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" aria-hidden="true" />
           <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur rounded-lg p-4 shadow-lg max-w-[260px]">
-            <div className="text-epa-green font-bold text-xl mb-1">A++ Energielabel</div>
-            <p className="text-gray-700 text-sm">Hoogste energiezuinigheidsscore met zonnepanelen.</p>
+            <div className="text-epa-green font-bold text-xl mb-1">Energie-efficiënt</div>
+            <p className="text-gray-700 text-sm">{content.content || 'Innovatief energielabel voor moderne, duurzame woningen'}</p>
           </div>
         </div>
       </div>

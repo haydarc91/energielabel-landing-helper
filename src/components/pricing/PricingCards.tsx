@@ -1,23 +1,19 @@
 
 import React from 'react';
-import { Send, CheckCircle, Home, Building, Clock } from 'lucide-react';
+import { Send, CheckCircle, Home, Building, Clock, CircleDollarSign, Gauge, BarChart4 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 
 const PricingCards = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
       <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 h-full">
-        <div className="h-48 overflow-hidden relative">
-          <img 
-            src="https://images.unsplash.com/photo-1625244724120-1fd1d34d00f6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-            alt="Standaard woning" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-          <div className="absolute bottom-4 left-4 text-white">
-            <div className="flex items-center">
-              <Building className="h-5 w-5 mr-2" />
-              <span className="font-medium">Woningen tot 150m²</span>
+        <div className="h-48 bg-gradient-to-br from-green-50 to-green-100 relative flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center h-20 w-20 rounded-full bg-epa-green/10 mb-4">
+                <Building className="h-10 w-10 text-epa-green" strokeWidth={1.5} />
+              </div>
+              <div className="font-medium text-gray-700">Woningen tot 150m²</div>
             </div>
           </div>
         </div>
@@ -56,17 +52,13 @@ const PricingCards = () => {
       </Card>
 
       <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 h-full">
-        <div className="h-48 overflow-hidden relative">
-          <img 
-            src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-            alt="Vrijstaande woning" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-          <div className="absolute bottom-4 left-4 text-white">
-            <div className="flex items-center">
-              <Home className="h-5 w-5 mr-2" />
-              <span className="font-medium">Vrijstaande woningen</span>
+        <div className="h-48 bg-gradient-to-br from-blue-50 to-blue-100 relative flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center h-20 w-20 rounded-full bg-blue-500/10 mb-4">
+                <Home className="h-10 w-10 text-blue-500" strokeWidth={1.5} />
+              </div>
+              <div className="font-medium text-gray-700">Vrijstaande woningen</div>
             </div>
           </div>
         </div>
@@ -105,17 +97,13 @@ const PricingCards = () => {
       </Card>
 
       <Card className="overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-amber-200 h-full">
-        <div className="h-48 overflow-hidden relative">
-          <img 
-            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-            alt="Spoedservice energielabel" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-          <div className="absolute bottom-4 left-4 text-white">
-            <div className="flex items-center">
-              <Clock className="h-5 w-5 mr-2" />
-              <span className="font-medium">Spoedservice</span>
+        <div className="h-48 bg-gradient-to-br from-amber-50 to-amber-100 relative flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center h-20 w-20 rounded-full bg-amber-500/10 mb-4">
+                <Clock className="h-10 w-10 text-amber-600" strokeWidth={1.5} />
+              </div>
+              <div className="font-medium text-gray-700">Spoedservice</div>
             </div>
           </div>
         </div>
