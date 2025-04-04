@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -173,7 +174,7 @@ const Index = () => {
               Wij zijn bereikbaar van 08:00 tot 22:00 uur en staan klaar om u te helpen.
             </p>
             <a 
-              href="https://wa.me/31612345678" 
+              href="https://wa.me/31332007617" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="inline-flex items-center gap-3 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors text-lg shadow-md"

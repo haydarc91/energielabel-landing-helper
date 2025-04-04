@@ -31,7 +31,7 @@ const ContactInfo = ({ calculatedPrice, formData, addressDetails }: ContactInfoP
           </p>
           <p>
             <span className="font-medium block">Telefoon:</span>
-            020 - 123 4567
+            033-2007617
           </p>
           <p>
             <span className="font-medium block">Openingstijden:</span>
@@ -40,7 +40,7 @@ const ContactInfo = ({ calculatedPrice, formData, addressDetails }: ContactInfoP
           
           {/* WhatsApp button with online status - more prominent */}
           <a 
-            href="https://wa.me/31612345678" 
+            href="https://wa.me/31332007617" 
             target="_blank" 
             rel="noopener noreferrer" 
             className="block mt-4 bg-green-50 border border-green-200 rounded-lg p-3 hover:bg-green-100 transition-colors"

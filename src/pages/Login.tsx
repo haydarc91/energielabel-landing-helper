@@ -5,13 +5,14 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Logo from '@/components/Logo';
-import { GithubIcon, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,6 +33,7 @@ const Login = () => {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -43,25 +45,9 @@ const Login = () => {
       navigate('/admin');
     } catch (error: any) {
       console.error('Error logging in:', error.message);
-      alert('Fout bij inloggen: ' + error.message);
+      setError(error.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleGithubLogin = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: `${window.location.origin}/admin`
-        }
-      });
-      
-      if (error) throw error;
-    } catch (error: any) {
-      console.error('Error logging in with GitHub:', error.message);
-      alert('Fout bij inloggen met GitHub: ' + error.message);
     }
   };
 
@@ -84,24 +70,11 @@ const Login = () => {
         </div>
         
         <div className="mt-8 space-y-6">
-          <Button 
-            type="button"
-            onClick={handleGithubLogin}
-            className="w-full flex items-center justify-center gap-2"
-            variant="outline"
-          >
-            <GithubIcon className="h-5 w-5" />
-            Inloggen met GitHub
-          </Button>
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+              {error}
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Of log in met e-mail</span>
-            </div>
-          </div>
+          )}
           
           <form className="mt-8 space-y-6" onSubmit={handleEmailLogin}>
             <div className="space-y-4 rounded-md shadow-sm">

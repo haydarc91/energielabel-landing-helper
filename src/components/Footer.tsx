@@ -83,13 +83,13 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 text-left">Contact</h3>
             <address className="not-italic text-gray-600 space-y-2 text-left">
               <p className="flex items-center"><MapPin className="h-4 w-4 mr-2" />Waterscheerling 93, 3824 GB Amersfoort</p>
-              <p className="flex items-center"><Phone className="h-4 w-4 mr-2" />020 - 123 4567</p>
+              <p className="flex items-center"><Phone className="h-4 w-4 mr-2" />033-2007617</p>
               <p className="flex items-center"><Mail className="h-4 w-4 mr-2" />info@epawoninglabel.nl</p>
               <p className="flex items-center"><Clock className="h-4 w-4 mr-2" />Ma-vr: 9:00 - 17:00</p>
               
               {/* WhatsApp link with updated number */}
               <a 
-                href="https://wa.me/310332007617" 
+                href="https://wa.me/31332007617" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-center mt-2 text-gray-700 hover:text-green-600 transition-colors"
