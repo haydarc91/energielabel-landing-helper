@@ -11,17 +11,15 @@ import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
 import { useParams } from 'react-router-dom';
 
-// Define content for a section as a simple interface
+// Simple interface for section content
 interface SectionContent {
   title: string | null;
   subtitle: string | null;
   content: string | null;
 }
 
-// Define the page content map as a plain object type with string keys
-interface PageContentMap {
-  [key: string]: SectionContent;
-}
+// Simple record type to avoid recursive type definition
+type PageContentMap = Record<string, SectionContent>;
 
 const LandingPage = () => {
   const { location } = useParams();
@@ -42,14 +40,14 @@ const LandingPage = () => {
         
         if (data && data.length > 0) {
           // Transform the array into an object with section names as keys
-          const contentMap = data.reduce((acc: PageContentMap, item) => {
+          const contentMap = data.reduce<PageContentMap>((acc, item) => {
             acc[item.section_name] = {
               title: item.title,
               subtitle: item.subtitle,
               content: item.content
             };
             return acc;
-          }, {} as PageContentMap); // Explicitly type the initial accumulator
+          }, {});
           
           setPageContent(contentMap);
         }
