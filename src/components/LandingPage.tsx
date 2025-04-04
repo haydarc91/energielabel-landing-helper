@@ -18,7 +18,7 @@ interface SectionContent {
   content: string | null;
 }
 
-// Simple record type to avoid recursive type definition
+// Define page content as a simple record to avoid recursive type definition
 type PageContentMap = Record<string, SectionContent>;
 
 const LandingPage = () => {
@@ -40,7 +40,8 @@ const LandingPage = () => {
         
         if (data && data.length > 0) {
           // Transform the array into an object with section names as keys
-          const contentMap = data.reduce<PageContentMap>((acc, item) => {
+          // Explicitly type the accumulator to avoid excessive type instantiation
+          const contentMap = data.reduce<Record<string, SectionContent>>((acc, item) => {
             acc[item.section_name] = {
               title: item.title,
               subtitle: item.subtitle,
