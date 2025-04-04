@@ -10,12 +10,14 @@ import { Send, ArrowRight, Check, Map, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useParams } from 'react-router-dom';
 
+interface PageSectionContent {
+  title: string | null;
+  subtitle: string | null;
+  content: string | null;
+}
+
 interface PageContent {
-  [key: string]: {
-    title: string | null;
-    subtitle: string | null;
-    content: string | null;
-  };
+  [key: string]: PageSectionContent;
 }
 
 const LandingPage = () => {
@@ -41,7 +43,7 @@ const LandingPage = () => {
         
         if (data && data.length > 0) {
           // Transform data into structured format by section_name
-          const contentBySection = data.reduce((acc: any, item) => {
+          const contentBySection = data.reduce((acc: PageContent, item) => {
             acc[item.section_name] = {
               title: item.title,
               subtitle: item.subtitle,
