@@ -18,8 +18,10 @@ interface SectionContent {
   content: string | null;
 }
 
-// Use Record type to avoid recursive type definition
-type PageContentMap = Record<string, SectionContent>;
+// Use a simple non-recursive type definition
+type PageContentMap = {
+  [key: string]: SectionContent;
+};
 
 const LandingPage = () => {
   const { location } = useParams();
@@ -40,7 +42,7 @@ const LandingPage = () => {
         
         if (data && data.length > 0) {
           // Transform the array into an object with section names as keys
-          const contentMap = data.reduce<PageContentMap>((acc, item) => {
+          const contentMap = data.reduce((acc: PageContentMap, item) => {
             acc[item.section_name] = {
               title: item.title,
               subtitle: item.subtitle,
