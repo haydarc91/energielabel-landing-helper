@@ -4,6 +4,7 @@ import { Send, CheckCircle, Loader2, Mail, Edit2 } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import AddressLookup from './AddressLookup';
 import { supabase } from "@/integrations/supabase/client";
 
