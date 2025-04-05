@@ -1,264 +1,257 @@
 
-import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Loader2, MapPin, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
-import { toast } from "@/components/ui/use-toast";
+import React, { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
 
-interface Address {
-  street: string;
-  city: string;
-  municipality: string;
-  province: string;
-  surfaceArea: number;
-}
-
+// Component for the hero section address lookup
 const AddressLookupHero = () => {
-  const [formData, setFormData] = useState({
-    postcode: '',
-    houseNumber: '',
-    houseNumberAddition: ''
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [propertyInfo, setPropertyInfo] = useState<any>(null);
+  const [showPropertyInfo, setShowPropertyInfo] = useState(false);
+  
+  const formSchema = z.object({
+    postcode: z.string()
+      .min(6, { message: "Postcode moet minimaal 6 karakters zijn" })
+      .max(7, { message: "Postcode kan maximaal 7 karakters zijn" })
+      .regex(/^[1-9][0-9]{3}\s?[a-zA-Z]{2}$/, { 
+        message: "Voer een geldige postcode in (bijv. 1234AB)" 
+      }),
+    houseNumber: z.string()
+      .min(1, { message: "Huisnummer is verplicht" })
+      .regex(/^[0-9]+$/, { message: "Alleen cijfers toegestaan voor huisnummer" }),
+    houseNumberAddition: z.string().optional(),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      postcode: "",
+      houseNumber: "",
+      houseNumberAddition: "",
+    },
   });
   
-  const [isLoading, setIsLoading] = useState(false);
-  const [addressError, setAddressError] = useState<string | null>(null);
-  const [addressDetails, setAddressDetails] = useState<Address | null>(null);
-  const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const lookupAddress = async () => {
-    const { postcode, houseNumber, houseNumberAddition } = formData;
+  // Helper function to format postcode
+  const formatPostcode = (postcode: string) => {
+    // Remove all spaces
+    let formatted = postcode.replace(/\s/g, '');
+    // Convert to uppercase
+    formatted = formatted.toUpperCase();
     
-    if (!postcode || !houseNumber) {
-      setAddressError("Vul een postcode en huisnummer in");
-      return;
+    // If the postcode has the correct length, add a space after the first 4 characters
+    if (formatted.length >= 6) {
+      formatted = formatted.substring(0, 4) + ' ' + formatted.substring(4);
     }
     
+    return formatted;
+  };
+  
+  // Handle postcode input changes
+  const handlePostcodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPostcode(e.target.value);
+    form.setValue('postcode', formatted);
+  };
+  
+  // Fetch address information from BAG API
+  const fetchAddress = async (postcode: string, houseNumber: string) => {
     setIsLoading(true);
-    setAddressError(null);
     
     try {
-      const formattedPostcode = postcode.replace(/\s+/g, '');
+      // Format the postcode by removing spaces and converting to lowercase
+      const formattedPostcode = postcode.replace(/\s/g, '').toLowerCase();
       
-      // Using the adressenuitgebreid endpoint for more detailed information
-      const adressenResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode=${formattedPostcode}&huisnummer=${houseNumber}${houseNumberAddition ? `&huisnummertoevoeging=${houseNumberAddition}` : ''}`, {
+      // API Key for BAG API
+      const apiKey = 'l7f8360199ce744def90a8439b335344d6';
+      
+      // Build API URL
+      const url = `https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode=${formattedPostcode}&huisnummer=${houseNumber}`;
+      
+      // Make API request
+      const response = await fetch(url, {
+        method: 'GET',
         headers: {
-          'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
           'Accept': 'application/hal+json',
-          'Accept-Crs': 'epsg:28992'
+          'Accept-Crs': 'epsg:28992',
+          'X-Api-Key': apiKey
         }
       });
       
-      if (!adressenResponse.ok) {
-        throw new Error(`AdressenUitgebreid API returned status: ${adressenResponse.status}`);
+      if (!response.ok) {
+        throw new Error(`BAG API responded with status ${response.status}`);
       }
       
-      const adressenData = await adressenResponse.json();
+      const data = await response.json();
       
-      if (adressenData._embedded && adressenData._embedded.adressen && adressenData._embedded.adressen.length > 0) {
-        const addressData = adressenData._embedded.adressen[0];
+      if (data._embedded && data._embedded.adressen && data._embedded.adressen.length > 0) {
+        const address = data._embedded.adressen[0];
         
-        const street = addressData.openbareRuimteNaam || '';
-        const houseNumberFull = `${addressData.huisnummer}${addressData.huisletter || ''}${addressData.huisnummertoevoeging || ''}`;
-        const city = addressData.woonplaatsNaam || '';
-        const municipality = city;
-        const oppervlakte = addressData.oppervlakte || 0;
+        // Create formatted address
+        const formattedAddress = `${address.openbareRuimteNaam} ${address.huisnummer}${form.getValues('houseNumberAddition') || ''}`;
+        const fullAddress = `${formattedAddress}, ${address.postcode} ${address.woonplaatsNaam}`;
         
-        const fullAddress = `${street} ${houseNumberFull}, ${formattedPostcode} ${city}`;
-        
-        // If oppervlakte is already present in the adressenuitgebreid response
-        let surfaceArea = oppervlakte;
-        
-        // If not, try to get it from the verblijfsobject endpoint
-        if (!surfaceArea && addressData.adresseerbaarObjectIdentificatie) {
-          const buildingId = addressData.adresseerbaarObjectIdentificatie;
-          
-          try {
-            console.log(`Getting building data for ID: ${buildingId}`);
-            
-            // Make a separate call to get the verblijfsobject (building) details including surface area
-            const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}?acceptCrs=epsg:28992`, {
-              headers: {
-                'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
-                'Accept': 'application/hal+json',
-                'Accept-Crs': 'epsg:28992'
-              }
-            });
-            
-            if (buildingResponse.ok) {
-              const buildingData = await buildingResponse.json();
-              
-              // The surface area is in the 'oppervlakte' property
-              surfaceArea = buildingData.oppervlakte || 0;
-            } else {
-              // Fall back to default values
-              surfaceArea = 85;
-            }
-          } catch (buildingError) {
-            console.error('Error fetching building data:', buildingError);
-            surfaceArea = 85;
-          }
-        }
-        
-        const address: Address = {
-          street,
-          city,
-          municipality,
-          province: 'Unknown',
-          surfaceArea
+        // Extract property information
+        const propertyData = {
+          address: formattedAddress,
+          postcode: address.postcode,
+          city: address.woonplaatsNaam,
+          houseNumber: address.huisnummer,
+          houseNumberAddition: form.getValues('houseNumberAddition') || '',
+          propertyType: address.gebruiksdoelen && address.gebruiksdoelen[0] === 'woonfunctie' ? 'Woning' : 'Anders',
+          surfaceArea: address.oppervlakte || 0,
+          constructionYear: address.oorspronkelijkBouwjaar && address.oorspronkelijkBouwjaar[0] || 'onbekend'
         };
         
-        setAddressDetails(address);
+        setPropertyInfo(propertyData);
+        setShowPropertyInfo(true);
         
-        // Calculate price based on surface area
-        const basePrice = surfaceArea > 150 ? 350 : 285;
-        setCalculatedPrice(basePrice);
+        // Store in localStorage for use in contact form
+        localStorage.setItem('propertyInfo', JSON.stringify(propertyData));
         
-        // Store in localStorage for persistence and for the contact form to use
-        localStorage.setItem('epaSearchPostcode', postcode);
-        localStorage.setItem('epaSearchHouseNumber', houseNumber);
-        localStorage.setItem('epaSearchHouseNumberAddition', houseNumberAddition || '');
-        localStorage.setItem('epaSearchFullAddress', fullAddress);
-        localStorage.setItem('epaSearchSurfaceArea', surfaceArea.toString());
-        
-        toast({
-          title: "Adres gevonden",
-          description: "Adres succesvol gevonden!",
-          variant: "default"
-        });
+        return propertyData;
       } else {
-        setAddressError("Geen adres gevonden. Controleer de gegevens.");
+        throw new Error('Geen adres gevonden voor deze combinatie van postcode en huisnummer.');
       }
     } catch (error) {
       console.error('Error fetching address:', error);
-      setAddressError("Kon het adres niet vinden. Controleer de gegevens.");
+      toast({
+        title: "Fout bij ophalen adresgegevens",
+        description: error.message || "Er is een fout opgetreden bij het ophalen van het adres. Controleer de postcode en het huisnummer.",
+        variant: "destructive",
+      });
+      return null;
     } finally {
       setIsLoading(false);
     }
   };
-
-  const continueWithApplication = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-      
-      // Highlight the contact form section when scrolled to it
+  
+  // Handle form submission
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const propertyData = await fetchAddress(values.postcode, values.houseNumber);
+    
+    if (propertyData) {
+      // Success, auto-scroll to contact section
       setTimeout(() => {
-        const addressLookupSection = document.querySelector('.address-lookup-section');
-        if (addressLookupSection) {
-          addressLookupSection.classList.add('highlight-section');
-          setTimeout(() => {
-            addressLookupSection.classList.remove('highlight-section');
-          }, 2000);
-        }
-      }, 1000); // Wait for the scroll to complete
+        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      }, 1000);
     }
   };
-
+  
   return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="col-span-1 sm:col-span-1">
-          <label htmlFor="postcode" className="block text-sm font-medium text-gray-700 mb-1">
-            Postcode
-          </label>
-          <Input
-            id="postcode"
-            name="postcode"
-            value={formData.postcode}
-            onChange={handleChange}
-            placeholder="1234 AB"
-            className="w-full"
-          />
-        </div>
-        <div className="col-span-1 sm:col-span-1">
-          <label htmlFor="houseNumber" className="block text-sm font-medium text-gray-700 mb-1">
-            Huisnummer
-          </label>
-          <Input
-            id="houseNumber"
-            name="houseNumber"
-            value={formData.houseNumber}
-            onChange={handleChange}
-            placeholder="123"
-            className="w-full"
-          />
-        </div>
-        <div className="col-span-1 sm:col-span-1">
-          <label htmlFor="houseNumberAddition" className="block text-sm font-medium text-gray-700 mb-1">
-            Toevoeging
-          </label>
-          <Input
-            id="houseNumberAddition"
-            name="houseNumberAddition"
-            value={formData.houseNumberAddition}
-            onChange={handleChange}
-            placeholder="A"
-            className="w-full"
-          />
-        </div>
-      </div>
-      
-      {addressError && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-3 flex items-start">
-          <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 mr-2" />
-          <p className="text-sm text-red-600">{addressError}</p>
-        </div>
-      )}
-      
-      {!addressDetails && (
-        <Button 
-          onClick={lookupAddress} 
-          className="w-full bg-epa-green hover:bg-epa-green-dark text-white"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              Zoeken...
-            </>
-          ) : (
-            <>
-              <MapPin className="h-4 w-4 mr-2" />
-              Zoek adres
-            </>
-          )}
-        </Button>
-      )}
-      
-      {addressDetails && (
-        <>
-          <div className="bg-green-50 border border-green-100 rounded-md p-4">
-            <div className="flex items-center mb-2">
-              <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-              <h4 className="font-medium text-green-800">Adres gevonden</h4>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <FormField
+              control={form.control}
+              name="postcode"
+              render={({ field }) => (
+                <FormItem className="col-span-2 sm:col-span-1">
+                  <FormLabel>Postcode</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="1234 AB" 
+                      {...field} 
+                      onChange={handlePostcodeChange}
+                      className="bg-white"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="col-span-2 sm:col-span-1 grid grid-cols-3 gap-2">
+              <FormField
+                control={form.control}
+                name="houseNumber"
+                render={({ field }) => (
+                  <FormItem className="col-span-1">
+                    <FormLabel>Huisnr</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="123" 
+                        {...field} 
+                        className="bg-white"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="houseNumberAddition"
+                render={({ field }) => (
+                  <FormItem className="col-span-2">
+                    <FormLabel>Toevoeging</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="A" 
+                        {...field} 
+                        className="bg-white"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-            <p className="text-green-700 mb-1">
-              {formData.postcode.toUpperCase()} {formData.houseNumber}{formData.houseNumberAddition}
-            </p>
-            <p className="text-sm text-green-600">
-              Oppervlakte: {addressDetails.surfaceArea} m²
-            </p>
-            {calculatedPrice && (
-              <div className="mt-2 pt-2 border-t border-green-100">
-                <p className="font-medium text-green-800">
-                  Geschat tarief: €{calculatedPrice}
-                </p>
-              </div>
-            )}
           </div>
           
+          <div className="pt-2">
+            <Button 
+              type="submit" 
+              className="w-full bg-epa-green hover:bg-epa-green-dark" 
+              disabled={isLoading}
+            >
+              {isLoading ? "Laden..." : "Bereken prijs"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+      
+      {showPropertyInfo && propertyInfo && (
+        <div className="highlight-section mt-4 p-4 bg-white/90 rounded-lg">
+          <h4 className="font-medium text-lg mb-2">Gegevens gevonden!</h4>
+          <p className="text-sm text-gray-700 mb-1">
+            <strong>Adres:</strong> {propertyInfo.address}
+          </p>
+          <p className="text-sm text-gray-700 mb-1">
+            <strong>Postcode:</strong> {propertyInfo.postcode}
+          </p>
+          <p className="text-sm text-gray-700 mb-1">
+            <strong>Plaats:</strong> {propertyInfo.city}
+          </p>
+          <p className="text-sm text-gray-700 mb-1">
+            <strong>Oppervlakte:</strong> {propertyInfo.surfaceArea} m²
+          </p>
+          <p className="text-sm text-gray-700 mb-3">
+            <strong>Bouwjaar:</strong> {propertyInfo.constructionYear}
+          </p>
+          
           <Button 
-            onClick={continueWithApplication} 
-            className="w-full bg-epa-green hover:bg-epa-green-dark text-white"
+            className="w-full text-sm mt-2 bg-epa-green hover:bg-epa-green-dark"
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            Verder met aanvraag <ArrowRight className="h-4 w-4 ml-2" />
+            Aanvragen voor €{Math.max(285, Math.round(propertyInfo.surfaceArea * 2.3))},-
           </Button>
-        </>
+        </div>
       )}
       
       <style>
@@ -270,7 +263,7 @@ const AddressLookupHero = () => {
         }
         `}
       </style>
-    </div>
+    </>
   );
 };
 
