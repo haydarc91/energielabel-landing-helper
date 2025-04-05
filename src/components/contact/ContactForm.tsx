@@ -346,7 +346,7 @@ const ContactForm = ({
       
       toast({
         title: "Aanvraag succesvol verzonden!",
-        description: "Bedankt voor uw aanvraag. Wij nemen zo spoedig mogelijk contact met u op om een afspraak in te plannen.",
+        description: "Dank voor uw aanvraag. Er wordt binnen 4 uur contact met u opgenomen.",
         variant: "default",
         duration: 5000,
       });
@@ -571,13 +571,15 @@ const ContactForm = ({
         </form>
       )}
       
-      <style jsx="true">{`
+      <style>
+        {`
         .highlight-section {
           border: 2px solid #10b981;
           box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
           transform: scale(1.01);
         }
-      `}</style>
+        `}
+      </style>
     </>
   );
 };

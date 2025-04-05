@@ -9,7 +9,6 @@ import Admin from './pages/Admin';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import { supabase } from '@/integrations/supabase/client';
-import LandingPage from './components/LandingPage';
 import CreateAdminUser from './pages/CreateAdminUser';
 
 const queryClient = new QueryClient();
@@ -48,7 +47,6 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/energielabel-:location" element={<LandingPage />} />
           
           {/* Protected routes */}
           <Route

@@ -77,22 +77,24 @@ const Hero = () => {
           </div>
           
           <div className="order-1 md:order-2">
-            <div className="relative overflow-hidden rounded-xl shadow-xl">
+            <div className="relative rounded-xl shadow-xl overflow-hidden">
               {/* Background image for the form */}
               <div 
-                className="absolute inset-0 bg-cover bg-center opacity-30" 
+                className="absolute inset-0 bg-cover bg-center" 
                 style={{ 
-                  backgroundImage: "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80')" 
+                  backgroundImage: "url('https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1200&q=80')" 
                 }}
               ></div>
               
               {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-epa-green/30 to-blue-500/20"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-epa-green/60 to-blue-500/40"></div>
               
               {/* Form content */}
               <div className="relative p-6 backdrop-blur-sm">
-                <h3 className="text-xl font-semibold mb-4 text-gray-900">Bereken uw energielabel</h3>
-                <AddressLookupHero />
+                <h3 className="text-xl font-semibold mb-4 text-white">Bereken uw energielabel</h3>
+                <div className="bg-white/90 p-5 rounded-lg shadow-lg">
+                  <AddressLookupHero />
+                </div>
               </div>
             </div>
           </div>
