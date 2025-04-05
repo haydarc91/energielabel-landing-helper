@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Edit2, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +29,6 @@ interface AddressLookupProps {
   setManualSurfaceArea: (value: string) => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   applyManualSurfaceArea: () => void;
-  lookupAddress?: () => void; // Optional prop for manual lookup
 }
 
 const AddressLookup = ({
@@ -44,8 +42,7 @@ const AddressLookup = ({
   setIsEditingSurfaceArea,
   setManualSurfaceArea,
   handleChange,
-  applyManualSurfaceArea,
-  lookupAddress
+  applyManualSurfaceArea
 }: AddressLookupProps) => {
   
   const handleSurfaceAreaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,16 +96,6 @@ const AddressLookup = ({
           />
         </div>
       </div>
-
-      {lookupAddress && (
-        <Button 
-          onClick={lookupAddress} 
-          className="mt-3 bg-epa-green hover:bg-epa-green-dark text-white"
-          disabled={isLoadingAddress}
-        >
-          {isLoadingAddress ? 'Zoeken...' : 'Adres controleren'}
-        </Button>
-      )}
 
       {isLoadingAddress && (
         <div className="mt-3 flex items-center text-sm text-gray-600">
