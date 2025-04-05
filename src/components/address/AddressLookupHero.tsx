@@ -261,13 +261,15 @@ const AddressLookupHero = () => {
         </>
       )}
       
-      <style jsx="true">{`
+      <style>
+        {`
         .highlight-section {
           border: 2px solid #10b981;
           box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
           transform: scale(1.01);
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

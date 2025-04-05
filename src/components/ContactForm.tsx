@@ -41,7 +41,6 @@ const ContactForm = () => {
   
   const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
 
-  // Load data from localStorage on initial render
   useEffect(() => {
     const savedPostcode = localStorage.getItem('epaSearchPostcode');
     const savedHouseNumber = localStorage.getItem('epaSearchHouseNumber');
@@ -58,7 +57,6 @@ const ContactForm = () => {
         address: savedFullAddress || ''
       }));
       
-      // If the address was already looked up in the hero section
       if (savedFullAddress && savedSurfaceArea) {
         const surfaceArea = parseInt(savedSurfaceArea);
         
@@ -73,23 +71,19 @@ const ContactForm = () => {
         setAddressDetails(addressObj);
         setManualSurfaceArea(savedSurfaceArea);
         
-        // Calculate price
         calculatePrice(surfaceArea, formData.propertyType, formData.rushService);
       } else {
-        // Auto lookup if we have postcode and house number but no full address yet
         lookupAddress();
       }
     }
   }, []);
 
-  // Auto-lookup address when postcode and house number are filled
   useEffect(() => {
     const { postcode, houseNumber } = formData;
-    // Make sure we have both postcode and house number with minimum length
     if (postcode && postcode.length >= 6 && houseNumber && !isLoadingAddress) {
       const timeoutId = setTimeout(() => {
         lookupAddress();
-      }, 500); // Delay to prevent too many requests while typing
+      }, 500);
       
       return () => clearTimeout(timeoutId);
     }
@@ -170,10 +164,8 @@ const ContactForm = () => {
     try {
       const formattedPostcode = postcode.replace(/\s+/g, '');
       
-      // Using the adressenuitgebreid endpoint for more detailed information
       console.log(`Looking up address: ${formattedPostcode} ${houseNumber}${houseNumberAddition ? ' ' + houseNumberAddition : ''}`);
       
-      // Try using the adressenuitgebreid endpoint which includes surface area directly
       const adressenResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode=${formattedPostcode}&huisnummer=${houseNumber}${houseNumberAddition ? `&huisnummertoevoeging=${houseNumberAddition}` : ''}`, {
         headers: {
           'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
@@ -200,18 +192,14 @@ const ContactForm = () => {
         
         const fullAddress = `${street} ${houseNumberFull}, ${formattedPostcode} ${city}`;
         
-        // If oppervlakte is already present in the adressenuitgebreid response
         let surfaceArea = oppervlakte;
         
-        // If not, try to get it from the verblijfsobject endpoint
         if (!surfaceArea && addressData.adresseerbaarObjectIdentificatie) {
           const buildingId = addressData.adresseerbaarObjectIdentificatie;
           
           try {
             console.log(`Getting building data for ID: ${buildingId}`);
             
-            // Make a separate call to get the verblijfsobject (building) details including surface area
-            // Adding the acceptCrs parameter to fix the 412 error
             const buildingResponse = await fetch(`https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/verblijfsobjecten/${buildingId}?acceptCrs=epsg:28992`, {
               headers: {
                 'X-Api-Key': 'l7f8360199ce744def90a8439b335344d6',
@@ -224,7 +212,6 @@ const ContactForm = () => {
               const buildingData = await buildingResponse.json();
               console.log('Building data response:', buildingData);
               
-              // The surface area is in the 'oppervlakte' property
               surfaceArea = buildingData.oppervlakte || 0;
               console.log(`Retrieved surface area: ${surfaceArea}m²`);
             } else {
@@ -232,7 +219,6 @@ const ContactForm = () => {
               const errorText = await buildingResponse.text();
               console.error('Error response:', errorText);
               
-              // Fall back to default values
               surfaceArea = formData.propertyType === 'detached' ? 150 : 85;
             }
           } catch (buildingError) {
@@ -260,7 +246,6 @@ const ContactForm = () => {
           formData.rushService
         );
         
-        // Store in localStorage for persistence
         localStorage.setItem('epaSearchPostcode', postcode);
         localStorage.setItem('epaSearchHouseNumber', houseNumber);
         localStorage.setItem('epaSearchHouseNumberAddition', houseNumberAddition || '');
@@ -283,7 +268,6 @@ const ContactForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Prepare email content
     const emailContent = `
       Nieuwe energielabel aanvraag:
       
@@ -305,11 +289,10 @@ const ContactForm = () => {
     console.log('Sending email to haydarcay@gmail.com and', formData.email);
     console.log('Email content:', emailContent);
     
-    // Simulate email sending
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
-      toast.success("Bedankt voor uw aanvraag! We nemen zo snel mogelijk contact met u op.");
+      toast.success("Dank voor uw aanvraag. Er wordt binnen 4 uur contact met u opgenomen.");
       
       setFormData({
         name: '',
@@ -326,7 +309,6 @@ const ContactForm = () => {
       setAddressDetails(null);
       setCalculatedPrice(null);
       
-      // Clear localStorage
       localStorage.removeItem('epaSearchPostcode');
       localStorage.removeItem('epaSearchHouseNumber');
       localStorage.removeItem('epaSearchHouseNumberAddition');
@@ -719,6 +701,15 @@ const ContactForm = () => {
           </div>
         </div>
       </div>
+      <style>
+        {`
+        .highlight-section {
+          border: 2px solid #10b981;
+          box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+          transform: scale(1.01);
+        }
+        `}
+      </style>
     </section>
   );
 };

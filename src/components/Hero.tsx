@@ -22,7 +22,6 @@ const Hero = () => {
           .from('website_content')
           .select('title, subtitle, content')
           .eq('section_name', 'hero')
-          .is('page_path', null)
           .single();
         
         if (error) {
@@ -78,9 +77,23 @@ const Hero = () => {
           </div>
           
           <div className="order-1 md:order-2">
-            <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-xl p-6">
-              <h3 className="text-xl font-semibold mb-4">Bereken uw energielabel</h3>
-              <AddressLookupHero />
+            <div className="relative overflow-hidden rounded-xl shadow-xl">
+              {/* Background image for the form */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center opacity-30" 
+                style={{ 
+                  backgroundImage: "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80')" 
+                }}
+              ></div>
+              
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-epa-green/30 to-blue-500/20"></div>
+              
+              {/* Form content */}
+              <div className="relative p-6 backdrop-blur-sm">
+                <h3 className="text-xl font-semibold mb-4 text-gray-900">Bereken uw energielabel</h3>
+                <AddressLookupHero />
+              </div>
             </div>
           </div>
         </div>
