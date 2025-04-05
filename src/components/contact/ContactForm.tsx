@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Send, CheckCircle, Loader2, Mail, Edit2 } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
@@ -16,7 +15,6 @@ interface Address {
   surfaceArea: number;
 }
 
-// Formspark form ID - dit moet worden vervangen door uw eigen Formspark formulier ID
 const FORMSPARK_FORM_ID = "hoSoiHD6n";
 
 const ContactForm = ({
@@ -45,6 +43,30 @@ const ContactForm = ({
   const [isEditingSurfaceArea, setIsEditingSurfaceArea] = useState(false);
   const [manualSurfaceArea, setManualSurfaceArea] = useState<string>('');
   const [showThankYouMessage, setShowThankYouMessage] = useState(false);
+
+  useEffect(() => {
+    const savedPostcode = localStorage.getItem('epaSearchPostcode');
+    const savedHouseNumber = localStorage.getItem('epaSearchHouseNumber');
+    
+    if (savedPostcode && savedHouseNumber) {
+      setFormData(prev => ({
+        ...prev,
+        postcode: savedPostcode,
+        houseNumber: savedHouseNumber
+      }));
+      
+      localStorage.removeItem('epaSearchPostcode');
+      localStorage.removeItem('epaSearchHouseNumber');
+      
+      const addressLookupSection = document.querySelector('.address-lookup-section');
+      if (addressLookupSection) {
+        addressLookupSection.classList.add('highlight-section');
+        setTimeout(() => {
+          addressLookupSection.classList.remove('highlight-section');
+        }, 2000);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const { postcode, houseNumber } = formData;
@@ -324,7 +346,7 @@ const ContactForm = ({
       
       toast({
         title: "Aanvraag succesvol verzonden!",
-        description: "Bedankt voor uw aanvraag. Wij nemen zo snel mogelijk contact met u op om een afspraak in te plannen.",
+        description: "Bedankt voor uw aanvraag. Wij nemen zo spoedig mogelijk contact met u op om een afspraak in te plannen.",
         variant: "default",
         duration: 5000,
       });
@@ -457,19 +479,21 @@ const ContactForm = ({
             </div>
           </div>
           
-          <AddressLookup 
-            formData={formData}
-            isLoadingAddress={isLoadingAddress}
-            addressError={addressError}
-            addressDetails={addressDetails}
-            calculatedPrice={calculatedPrice}
-            isEditingSurfaceArea={isEditingSurfaceArea}
-            manualSurfaceArea={manualSurfaceArea}
-            setIsEditingSurfaceArea={setIsEditingSurfaceArea}
-            setManualSurfaceArea={setManualSurfaceArea}
-            handleChange={handleChange}
-            applyManualSurfaceArea={applyManualSurfaceArea}
-          />
+          <div className="address-lookup-section transition-all duration-300">
+            <AddressLookup 
+              formData={formData}
+              isLoadingAddress={isLoadingAddress}
+              addressError={addressError}
+              addressDetails={addressDetails}
+              calculatedPrice={calculatedPrice}
+              isEditingSurfaceArea={isEditingSurfaceArea}
+              manualSurfaceArea={manualSurfaceArea}
+              setIsEditingSurfaceArea={setIsEditingSurfaceArea}
+              setManualSurfaceArea={setManualSurfaceArea}
+              handleChange={handleChange}
+              applyManualSurfaceArea={applyManualSurfaceArea}
+            />
+          </div>
           
           <div className="mt-5">
             <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
@@ -549,6 +573,14 @@ const ContactForm = ({
           </div>
         </form>
       )}
+      
+      <style jsx="true">{`
+        .highlight-section {
+          border: 2px solid #10b981;
+          box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+          transform: scale(1.01);
+        }
+      `}</style>
     </>
   );
 };
