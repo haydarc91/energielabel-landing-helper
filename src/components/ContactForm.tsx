@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, CheckCircle, Home, Building, Clock, Loader2, AlertCircle, Mail, Edit2 } from 'lucide-react';
 import { toast } from "sonner";
@@ -7,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useIntersectionAnimation } from '@/lib/animations';
 import { Button } from "@/components/ui/button";
+import AddressLookup from './contact/AddressLookup';
 
 interface Address {
   street: string;
@@ -16,7 +16,7 @@ interface Address {
   surfaceArea: number;
 }
 
-const PricingSection = () => {
+const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -40,6 +40,47 @@ const PricingSection = () => {
   const [manualSurfaceArea, setManualSurfaceArea] = useState<string>('');
   
   const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
+
+  // Load data from localStorage on initial render
+  useEffect(() => {
+    const savedPostcode = localStorage.getItem('epaSearchPostcode');
+    const savedHouseNumber = localStorage.getItem('epaSearchHouseNumber');
+    const savedHouseNumberAddition = localStorage.getItem('epaSearchHouseNumberAddition');
+    const savedFullAddress = localStorage.getItem('epaSearchFullAddress');
+    const savedSurfaceArea = localStorage.getItem('epaSearchSurfaceArea');
+    
+    if (savedPostcode && savedHouseNumber) {
+      setFormData(prev => ({
+        ...prev,
+        postcode: savedPostcode,
+        houseNumber: savedHouseNumber,
+        houseNumberAddition: savedHouseNumberAddition || '',
+        address: savedFullAddress || ''
+      }));
+      
+      // If the address was already looked up in the hero section
+      if (savedFullAddress && savedSurfaceArea) {
+        const surfaceArea = parseInt(savedSurfaceArea);
+        
+        const addressObj: Address = {
+          street: '',
+          city: '',
+          municipality: '',
+          province: '',
+          surfaceArea: surfaceArea || 0
+        };
+        
+        setAddressDetails(addressObj);
+        setManualSurfaceArea(savedSurfaceArea);
+        
+        // Calculate price
+        calculatePrice(surfaceArea, formData.propertyType, formData.rushService);
+      } else {
+        // Auto lookup if we have postcode and house number but no full address yet
+        lookupAddress();
+      }
+    }
+  }, []);
 
   // Auto-lookup address when postcode and house number are filled
   useEffect(() => {
@@ -219,6 +260,13 @@ const PricingSection = () => {
           formData.rushService
         );
         
+        // Store in localStorage for persistence
+        localStorage.setItem('epaSearchPostcode', postcode);
+        localStorage.setItem('epaSearchHouseNumber', houseNumber);
+        localStorage.setItem('epaSearchHouseNumberAddition', houseNumberAddition || '');
+        localStorage.setItem('epaSearchFullAddress', fullAddress);
+        localStorage.setItem('epaSearchSurfaceArea', surfaceArea.toString());
+        
         toast.success("Adres succesvol gevonden!");
       } else {
         setAddressError("Geen adres gevonden. Controleer de gegevens.");
@@ -277,6 +325,13 @@ const PricingSection = () => {
       });
       setAddressDetails(null);
       setCalculatedPrice(null);
+      
+      // Clear localStorage
+      localStorage.removeItem('epaSearchPostcode');
+      localStorage.removeItem('epaSearchHouseNumber');
+      localStorage.removeItem('epaSearchHouseNumberAddition');
+      localStorage.removeItem('epaSearchFullAddress');
+      localStorage.removeItem('epaSearchSurfaceArea');
       
       setTimeout(() => {
         setSubmitted(false);
@@ -518,137 +573,20 @@ const PricingSection = () => {
                 </div>
               </div>
               
-              <div className="mt-5 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <h4 className="text-md font-medium mb-3">Adresgegevens</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div>
-                    <label htmlFor="postcode" className="block text-sm font-medium text-gray-700 mb-1">
-                      Postcode
-                    </label>
-                    <Input
-                      id="postcode"
-                      name="postcode"
-                      type="text"
-                      value={formData.postcode}
-                      onChange={handleChange}
-                      className="w-full"
-                      placeholder="1234 AB"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="houseNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                      Huisnummer
-                    </label>
-                    <Input
-                      id="houseNumber"
-                      name="houseNumber"
-                      type="text"
-                      value={formData.houseNumber}
-                      onChange={handleChange}
-                      className="w-full"
-                      placeholder="123"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="houseNumberAddition" className="block text-sm font-medium text-gray-700 mb-1">
-                      Toevoeging
-                    </label>
-                    <Input
-                      id="houseNumberAddition"
-                      name="houseNumberAddition"
-                      type="text"
-                      value={formData.houseNumberAddition}
-                      onChange={handleChange}
-                      className="w-full"
-                      placeholder="A"
-                    />
-                  </div>
-                </div>
-
-                {isLoadingAddress && (
-                  <div className="mt-3 flex items-center text-sm text-gray-600">
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Adres ophalen...
-                  </div>
-                )}
-
-                {addressError && (
-                  <div className="mt-3 text-red-500 text-sm flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
-                    {addressError}
-                  </div>
-                )}
-
-                {addressDetails && (
-                  <div className="mt-3 text-sm">
-                    <p className="text-gray-700">
-                      <span className="font-medium">Gevonden adres:</span> {formData.address}
-                    </p>
-                    <div className="flex items-center">
-                      <p className="text-gray-700">
-                        <span className="font-medium">Oppervlakte:</span> {addressDetails.surfaceArea} m²
-                      </p>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="ml-2 text-epa-green flex items-center" 
-                        onClick={() => setIsEditingSurfaceArea(true)}
-                      >
-                        <Edit2 className="h-3 w-3 mr-1" /> Wijzigen
-                      </Button>
-                    </div>
-                    
-                    {isEditingSurfaceArea && (
-                      <div className="mt-2 flex items-start gap-2">
-                        <Input
-                          type="number"
-                          value={manualSurfaceArea}
-                          onChange={handleSurfaceAreaChange}
-                          className="w-24 text-sm"
-                          placeholder="Oppervlakte"
-                        />
-                        <span className="mt-2">m²</span>
-                        <Button 
-                          size="sm" 
-                          className="bg-epa-green text-white" 
-                          onClick={applyManualSurfaceArea}
-                        >
-                          Toepassen
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => setIsEditingSurfaceArea(false)}
-                        >
-                          Annuleren
-                        </Button>
-                      </div>
-                    )}
-                    
-                    {calculatedPrice && (
-                      <p className="mt-1 font-medium text-epa-green">
-                        Berekende prijs: €{calculatedPrice} incl. BTW
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-              
-              <div className="mt-5">
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                  Volledig adres
-                </label>
-                <Input
-                  id="address"
-                  name="address"
-                  type="text"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full"
-                  placeholder="Adres wordt automatisch ingevuld na postcode check"
-                  readOnly={!!addressDetails}
-                />
-              </div>
+              <AddressLookup
+                formData={formData}
+                isLoadingAddress={isLoadingAddress}
+                addressError={addressError}
+                addressDetails={addressDetails}
+                calculatedPrice={calculatedPrice}
+                isEditingSurfaceArea={isEditingSurfaceArea}
+                manualSurfaceArea={manualSurfaceArea}
+                setIsEditingSurfaceArea={setIsEditingSurfaceArea}
+                setManualSurfaceArea={setManualSurfaceArea}
+                handleChange={handleChange}
+                applyManualSurfaceArea={applyManualSurfaceArea}
+                lookupAddress={lookupAddress}
+              />
               
               <div className="mt-5 space-y-3">
                 <div className="flex items-start">
@@ -685,10 +623,10 @@ const PricingSection = () => {
               </div>
               
               <div className="mt-6">
-                <button
+                <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full button-transition py-3 px-6 rounded-md flex items-center justify-center gap-2 font-medium ${
+                  className={`w-full py-3 px-6 flex items-center justify-center gap-2 font-medium ${
                     submitted 
                       ? 'bg-green-600 hover:bg-green-700 text-white' 
                       : 'bg-epa-green hover:bg-epa-green-dark text-white'
@@ -708,7 +646,7 @@ const PricingSection = () => {
                       <Send className="h-5 w-5" /> Aanvraag versturen
                     </>
                   )}
-                </button>
+                </Button>
                 <p className="text-xs text-gray-500 mt-2 text-center">
                   <Mail className="h-3 w-3 inline mr-1" />
                   Een kopie van uw aanvraag wordt verzonden naar haydarcay@gmail.com en uw e-mailadres
@@ -728,7 +666,7 @@ const PricingSection = () => {
                 </p>
                 <p>
                   <span className="font-medium block">Telefoon:</span>
-                  020 - 123 4567
+                  085-250 2302
                 </p>
                 <p>
                   <span className="font-medium block">Openingstijden:</span>
@@ -785,4 +723,4 @@ const PricingSection = () => {
   );
 };
 
-export default PricingSection;
+export default ContactForm;

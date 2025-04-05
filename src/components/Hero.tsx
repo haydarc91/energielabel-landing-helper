@@ -1,28 +1,21 @@
 
-import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-
-interface HeroContent {
-  title: string | null;
-  subtitle: string | null;
-  content: string | null;
-}
+import { useIntersectionAnimation } from '@/lib/animations';
+import AddressLookupHero from './address/AddressLookupHero';
+import { Button } from "@/components/ui/button";
+import { MapPin } from 'lucide-react';
 
 const Hero = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const [content, setContent] = useState<HeroContent>({
-    title: '',
-    subtitle: '',
-    content: 'Innovatief energielabel voor moderne, duurzame woningen'
+  const [heroContent, setHeroContent] = useState({
+    title: 'Energielabel voor uw woning',
+    subtitle: 'Vanaf €285',
+    content: 'Krijg snel en professioneel uw energielabel voor uw woning. EPA gecertificeerde adviseurs. Geldig voor 10 jaar en geregistreerd bij RVO.'
   });
+  
+  const sectionRef = useIntersectionAnimation('animate-fade-in', 0.1, 0);
 
   useEffect(() => {
-    // Fetch content from Supabase
     const fetchContent = async () => {
       try {
         const { data, error } = await supabase
@@ -32,13 +25,16 @@ const Hero = () => {
           .is('page_path', null)
           .single();
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching hero content:', error);
+          return;
+        }
         
         if (data) {
-          setContent({
-            title: data.title,
-            subtitle: data.subtitle,
-            content: data.content
+          setHeroContent({
+            title: data.title || heroContent.title,
+            subtitle: data.subtitle || heroContent.subtitle,
+            content: data.content || heroContent.content
           });
         }
       } catch (error) {
@@ -47,88 +43,69 @@ const Hero = () => {
     };
     
     fetchContent();
-
-    const hero = heroRef.current;
-    const title = titleRef.current;
-    const subtitle = subtitleRef.current;
-    const cta = ctaRef.current;
-    const image = imageRef.current;
-
-    if (hero && title && subtitle && cta && image) {
-      hero.style.opacity = '1';
-      setTimeout(() => {
-        title.classList.add('animate-fade-in');
-      }, 200);
-      setTimeout(() => {
-        subtitle.classList.add('animate-fade-in');
-      }, 400);
-      setTimeout(() => {
-        cta.classList.add('animate-fade-in');
-      }, 600);
-      setTimeout(() => {
-        image.classList.add('animate-fade-in');
-      }, 800);
-    }
   }, []);
 
-  return <section ref={heroRef} id="home" aria-label="Energielabel voor woningen" className="min-h-screen flex flex-col justify-center items-center relative pt-20 pb-16 px-6 md:px-8 lg:px-12 transition-opacity duration-1000 opacity-0 overflow-hidden" style={{
-    background: 'linear-gradient(180deg, #FFFFFF 0%, #F5F9F7 100%)'
-  }}>
-      <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-epa-green-light blur-3xl opacity-40 animate-float" style={{
-      animationDelay: '0s'
-    }} aria-hidden="true" />
-      <div className="absolute top-1/2 -left-32 w-64 h-64 rounded-full bg-epa-green-light blur-3xl opacity-30 animate-float" style={{
-      animationDelay: '2s'
-    }} aria-hidden="true" />
+  const scrollToProcess = () => {
+    document.getElementById('process')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="text-left z-10">
-          <h1 ref={titleRef} className="opacity-0 font-bold mb-6 leading-tight text-balance">
-            Energielabel voor uw woning <br />
-            <span className="text-epa-green">Vanaf €285</span>
-          </h1>
-          
-          <p ref={subtitleRef} className="opacity-0 text-lg md:text-xl text-gray-600 max-w-3xl mb-10 text-balance">
-            {content.subtitle || 'Krijg snel en professioneel uw energielabel voor uw woning. EPA gecertificeerde adviseurs. Geldig voor 10 jaar en geregistreerd bij RVO.'}
-          </p>
-          
-          <div ref={ctaRef} className="opacity-0 flex flex-col sm:flex-row items-start gap-4">
-            <a href="#contact" className="button-transition bg-epa-green hover:bg-epa-green-dark text-white px-8 py-3 rounded-md text-base md:text-lg font-medium flex items-center gap-2 group w-64 sm:w-auto justify-center" rel="nofollow">
-              Direct aanvragen
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </a>
-            <a href="#process" className="button-transition border border-gray-300 hover:border-epa-green-dark text-gray-800 px-8 py-3 rounded-md text-base md:text-lg font-medium w-64 sm:w-auto text-center">
-              Bekijk werkwijze
-            </a>
+  return (
+    <section id="hero" className="pt-32 pb-24 relative overflow-hidden" ref={sectionRef as React.RefObject<HTMLDivElement>}>
+      <div className="absolute inset-0 bg-gradient-to-b from-epa-green-light/20 to-white -z-10"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{heroContent.title}</h1>
+            <p className="text-2xl text-epa-green font-semibold mb-4">{heroContent.subtitle}</p>
+            <p className="text-lg text-gray-600 mb-8">{heroContent.content}</p>
+            
+            <AddressLookupHero />
+            
+            <div className="mt-6 flex flex-col sm:flex-row gap-4">
+              <Button 
+                className="bg-epa-green hover:bg-epa-green-dark text-white"
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Direct aanvragen
+              </Button>
+              <Button 
+                variant="outline" 
+                className="border-epa-green text-epa-green hover:bg-epa-green-light"
+                onClick={scrollToProcess}
+              >
+                Bekijk werkwijze
+              </Button>
+            </div>
           </div>
-        </div>
-        
-        <div ref={imageRef} className="opacity-0 relative h-[400px] lg:h-[500px] rounded-lg overflow-hidden shadow-2xl">
-          <img 
-            src="/lovable-uploads/b8ea83af-2c34-4288-ae0d-4fbe4f13a608.png" 
-            alt="Energielabel A++ woning met zonnepanelen" 
-            loading="eager" 
-            width="1170" 
-            height="780" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" aria-hidden="true" />
-          <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur rounded-lg p-4 shadow-lg max-w-[260px]">
-            <div className="text-epa-green font-bold text-xl mb-1">Energie-efficiënt</div>
-            <p className="text-gray-700 text-sm">{content.content || 'Innovatief energielabel voor moderne, duurzame woningen'}</p>
+          
+          <div className="hidden md:block">
+            <div className="relative rounded-lg overflow-hidden shadow-xl">
+              <img 
+                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                alt="Modern home with energy label" 
+                className="w-full h-[500px] object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute bottom-6 left-6 right-6 text-white">
+                <div className="flex items-center mb-2">
+                  <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center font-bold text-2xl mr-3">A</div>
+                  <div>
+                    <span className="block font-medium">Energielabel A</span>
+                    <span className="text-sm text-green-200">Zeer energiezuinig</span>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <MapPin className="h-5 w-5 text-epa-green mr-1" />
+                  <span className="text-sm">Woningen in heel Nederland</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="mt-20 md:mt-32 text-center w-full max-w-4xl mx-auto">
-        <p className="text-sm text-gray-500 mb-6 uppercase tracking-wider">Erkend en geregistreerd bij</p>
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-          <div className="w-24 h-12 bg-gray-200 rounded-md flex items-center justify-center text-sm font-medium text-gray-500">RVO</div>
-          <div className="w-24 h-12 bg-gray-200 rounded-md flex items-center justify-center text-sm font-medium text-gray-500">Rijksoverheid</div>
-          <div className="w-24 h-12 bg-gray-200 rounded-md flex items-center justify-center text-sm font-medium text-gray-500">EPBD</div>
-        </div>
-      </div>
-    </section>;
+    </section>
+  );
 };
 
 export default Hero;
