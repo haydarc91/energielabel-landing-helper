@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,12 +13,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from 'react-router-dom';
 
 // Component for the hero section address lookup
 const AddressLookupHero = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [propertyInfo, setPropertyInfo] = useState<any>(null);
   const [showPropertyInfo, setShowPropertyInfo] = useState(false);

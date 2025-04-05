@@ -2,8 +2,8 @@
 import React, { useState, useRef } from 'react';
 import { useIntersectionAnimation } from '@/lib/animations';
 import PricingCards from './PricingCards';
-import ContactForm from '../contact/ContactForm';
 import ContactInfo from '../contact/ContactInfo';
+import ContactForm from '../contact/ContactForm';
 
 interface Address {
   street: string;
@@ -39,12 +39,7 @@ const PricingSection = () => {
 
         <div id="contactForm" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <ContactForm 
-              calculatedPrice={calculatedPrice}
-              setCalculatedPrice={setCalculatedPrice}
-              addressDetails={addressDetails}
-              setAddressDetails={setAddressDetails}
-            />
+            <ContactForm />
           </div>
 
           <ContactInfo 

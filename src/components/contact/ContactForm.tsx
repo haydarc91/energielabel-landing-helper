@@ -24,7 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { enUS } from 'date-fns/locale';
@@ -33,7 +33,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { sendWebhook } from '@/utils/sendWebhook';
-import { CheckCircledIcon, CircleIcon } from '@radix-ui/react-icons';
 
 const ContactForm = () => {
   const { toast } = useToast();
@@ -62,6 +61,7 @@ const ContactForm = () => {
     postcode: z.string().optional(),
     houseNumber: z.string().optional(),
     houseNumberAddition: z.string().optional(),
+    time: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -81,13 +81,11 @@ const ContactForm = () => {
   });
 
   useEffect(() => {
-    // Load property info from localStorage
     const storedPropertyInfo = localStorage.getItem('propertyInfo');
     if (storedPropertyInfo) {
       const parsedInfo = JSON.parse(storedPropertyInfo);
       setPropertyInfo(parsedInfo);
       
-      // Set default values for address fields
       form.setValue('address', parsedInfo.address || '');
       form.setValue('postcode', parsedInfo.postcode || '');
       form.setValue('houseNumber', parsedInfo.houseNumber || '');
@@ -95,7 +93,6 @@ const ContactForm = () => {
       form.setValue('propertyType', parsedInfo.propertyType || '');
       form.setValue('surfaceArea', parsedInfo.surfaceArea ? parsedInfo.surfaceArea.toString() : '');
       
-      // Calculate initial price
       calculatePrice(parsedInfo.surfaceArea);
     }
   }, [form.setValue]);
@@ -355,7 +352,13 @@ const ContactForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tijd afspraak</FormLabel>
-                    <Select onValueChange={setTime} defaultValue={time}>
+                    <Select 
+                      onValueChange={(value) => {
+                        setTime(value);
+                        field.onChange(value);
+                      }} 
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger className="bg-white">
                           <SelectValue placeholder="Kies een tijd" />
