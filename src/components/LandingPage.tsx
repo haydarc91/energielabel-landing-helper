@@ -18,9 +18,12 @@ interface SectionContent {
   content: string | null;
 }
 
+// Explicitly define the type for the content map
+type ContentMap = Record<string, SectionContent>;
+
 const LandingPage = () => {
   const { location } = useParams();
-  const [pageContent, setPageContent] = useState<Record<string, SectionContent>>({});
+  const [pageContent, setPageContent] = useState<ContentMap>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +40,8 @@ const LandingPage = () => {
         
         if (data && data.length > 0) {
           // Transform the array into an object with section names as keys
-          const contentMap = data.reduce((acc: Record<string, SectionContent>, item) => {
+          // Use explicit type annotation for the accumulator
+          const contentMap = data.reduce((acc: ContentMap, item) => {
             acc[item.section_name] = {
               title: item.title,
               subtitle: item.subtitle,

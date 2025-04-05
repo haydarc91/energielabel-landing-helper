@@ -55,12 +55,10 @@ const Hero = () => {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
+          <div className="order-2 md:order-1">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{heroContent.title}</h1>
             <p className="text-2xl text-epa-green font-semibold mb-4">{heroContent.subtitle}</p>
             <p className="text-lg text-gray-600 mb-8">{heroContent.content}</p>
-            
-            <AddressLookupHero />
             
             <div className="mt-6 flex flex-col sm:flex-row gap-4">
               <Button 
@@ -79,27 +77,10 @@ const Hero = () => {
             </div>
           </div>
           
-          <div className="hidden md:block">
-            <div className="relative rounded-lg overflow-hidden shadow-xl">
-              <img 
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-                alt="Modern home with energy label" 
-                className="w-full h-[500px] object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div className="absolute bottom-6 left-6 right-6 text-white">
-                <div className="flex items-center mb-2">
-                  <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center font-bold text-2xl mr-3">A</div>
-                  <div>
-                    <span className="block font-medium">Energielabel A</span>
-                    <span className="text-sm text-green-200">Zeer energiezuinig</span>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="h-5 w-5 text-epa-green mr-1" />
-                  <span className="text-sm">Woningen in heel Nederland</span>
-                </div>
-              </div>
+          <div className="order-1 md:order-2">
+            <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-xl p-6">
+              <h3 className="text-xl font-semibold mb-4">Bereken uw energielabel</h3>
+              <AddressLookupHero />
             </div>
           </div>
         </div>

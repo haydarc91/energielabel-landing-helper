@@ -393,10 +393,7 @@ const ContactForm = ({
             </div>
             <h3 className="text-2xl font-semibold mb-2">Aanvraag verstuurd!</h3>
             <p className="text-gray-600 mb-4">
-              Hartelijk dank voor uw aanvraag voor een energielabel. Wij zullen zo spoedig mogelijk contact met u opnemen om een afspraak in te plannen.
-            </p>
-            <p className="text-gray-600">
-              U ontvangt een bevestiging per e-mail met de details van uw aanvraag.
+              Dank voor uw aanvraag. Er wordt binnen 4 uur contact met u opgenomen.
             </p>
           </div>
           <Button 
