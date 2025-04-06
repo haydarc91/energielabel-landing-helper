@@ -19,11 +19,11 @@ const PricingCards = () => {
         </div>
         <CardContent className="p-6 flex flex-col justify-between h-[calc(100%-12rem)]">
           <div>
-            <div className="mb-4">
+            <div className="mb-4 text-center">
               <span className="text-3xl font-bold text-epa-green">€285</span>
               <span className="text-gray-500 ml-2">incl. BTW</span>
             </div>
-            <ul className="space-y-2 mb-6">
+            <ul className="space-y-2 mb-6 text-left">
               <li className="flex items-start">
                 <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
                 <span>Appartementen, tussenwoningen, hoekwoningen</span>
@@ -64,11 +64,11 @@ const PricingCards = () => {
         </div>
         <CardContent className="p-6 flex flex-col justify-between h-[calc(100%-12rem)]">
           <div>
-            <div className="mb-4">
+            <div className="mb-4 text-center">
               <span className="text-3xl font-bold text-epa-green">€350</span>
               <span className="text-gray-500 ml-2">incl. BTW</span>
             </div>
-            <ul className="space-y-2 mb-6">
+            <ul className="space-y-2 mb-6 text-left">
               <li className="flex items-start">
                 <CheckCircle className="h-5 w-5 text-epa-green mr-2 flex-shrink-0 mt-0.5" />
                 <span>Vrijstaande woningen tot 200m²</span>
@@ -109,11 +109,11 @@ const PricingCards = () => {
         </div>
         <CardContent className="p-6 flex flex-col justify-between h-[calc(100%-12rem)]">
           <div>
-            <div className="mb-4">
+            <div className="mb-4 text-center">
               <span className="text-3xl font-bold text-amber-600">+€95</span>
               <span className="text-gray-500 ml-2">incl. BTW</span>
             </div>
-            <ul className="space-y-2 mb-6">
+            <ul className="space-y-2 mb-6 text-left">
               <li className="flex items-start">
                 <CheckCircle className="h-5 w-5 text-amber-600 mr-2 flex-shrink-0 mt-0.5" />
                 <span>Binnen 24 uur een opname en energielabel</span>
