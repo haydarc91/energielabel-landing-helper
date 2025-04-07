@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { Send, CheckCircle, Loader2, Mail, Edit2 } from 'lucide-react';
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import AddressLookup from './AddressLookup';
+import { supabase } from "@/integrations/supabase/client";
 
 interface Address {
   street: string;
@@ -42,6 +44,7 @@ const ContactForm = ({
   const [addressError, setAddressError] = useState<string | null>(null);
   const [isEditingSurfaceArea, setIsEditingSurfaceArea] = useState(false);
   const [manualSurfaceArea, setManualSurfaceArea] = useState<string>('');
+  const [showThankYouMessage, setShowThankYouMessage] = useState(false);
 
   useEffect(() => {
     const { postcode, houseNumber } = formData;
@@ -70,7 +73,11 @@ const ContactForm = ({
   const applyManualSurfaceArea = () => {
     const surfaceValue = parseInt(manualSurfaceArea);
     if (isNaN(surfaceValue) || surfaceValue <= 0) {
-      toast.error("Voer een geldig oppervlakte in");
+      toast({
+        title: "Fout",
+        description: "Voer een geldig oppervlakte in",
+        variant: "destructive"
+      });
       return;
     }
     
@@ -81,7 +88,11 @@ const ContactForm = ({
       };
       setAddressDetails(updatedAddressDetails);
       calculatePrice(surfaceValue, formData.propertyType, formData.rushService);
-      toast.success(`Oppervlakte bijgewerkt naar ${surfaceValue}m²`);
+      toast({
+        title: "Oppervlakte bijgewerkt",
+        description: `Oppervlakte bijgewerkt naar ${surfaceValue}m²`,
+        variant: "default"
+      });
     }
     
     setIsEditingSurfaceArea(false);
@@ -212,7 +223,11 @@ const ContactForm = ({
           formData.rushService
         );
         
-        toast.success("Adres succesvol gevonden!");
+        toast({
+          title: "Adres gevonden",
+          description: "Adres succesvol gevonden!",
+          variant: "default"
+        });
       } else {
         setAddressError("Geen adres gevonden. Controleer de gegevens.");
       }
@@ -244,7 +259,6 @@ const ContactForm = ({
         houseNumberAddition: formData.houseNumberAddition
       });
       
-      // Formuliergegevens voorbereiden voor Formspark
       const formsparkData = {
         name: formData.name,
         email: formData.email,
@@ -258,7 +272,7 @@ const ContactForm = ({
         postcode: formData.postcode,
         houseNumber: formData.houseNumber,
         houseNumberAddition: formData.houseNumberAddition,
-        _redirect: window.location.href, // Redirect terug naar dezelfde pagina
+        _redirect: window.location.href,
         _email: {
           from: 'EPA Woninglabel <noreply@epawoninglabel.nl>',
           subject: 'Nieuwe energielabel aanvraag',
@@ -266,7 +280,6 @@ const ContactForm = ({
         }
       };
       
-      // Verstuur data naar Formspark
       const response = await fetch(`https://submit-form.com/${FORMSPARK_FORM_ID}`, {
         method: 'POST',
         headers: {
@@ -284,24 +297,54 @@ const ContactForm = ({
       
       console.log('Formspark submission successful');
       
+      const { error: supabaseError } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          property_type: formData.propertyType,
+          surface_area: addressDetails?.surfaceArea,
+          rush_service: formData.rushService,
+          message: formData.message,
+          calculated_price: calculatedPrice,
+          postcode: formData.postcode,
+          house_number: formData.houseNumber,
+          house_number_addition: formData.houseNumberAddition
+        });
+      
+      if (supabaseError) {
+        console.error("Error storing submission in Supabase:", supabaseError);
+      }
+      
       setIsSubmitting(false);
       setSubmitted(true);
-      toast.success("Bedankt voor uw aanvraag! We nemen zo snel mogelijk contact met u op.");
+      setShowThankYouMessage(true);
       
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        message: '',
-        propertyType: 'apartment',
-        rushService: false,
-        postcode: '',
-        houseNumber: '',
-        houseNumberAddition: ''
+      toast({
+        title: "Aanvraag succesvol verzonden!",
+        description: "Bedankt voor uw aanvraag. Wij nemen zo snel mogelijk contact met u op om een afspraak in te plannen.",
+        variant: "default",
+        duration: 5000,
       });
-      setAddressDetails(null);
-      setCalculatedPrice(null);
+      
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          message: '',
+          propertyType: 'apartment',
+          rushService: false,
+          postcode: '',
+          houseNumber: '',
+          houseNumberAddition: ''
+        });
+        setAddressDetails(null);
+        setCalculatedPrice(null);
+      }, 1000);
       
       setTimeout(() => {
         setSubmitted(false);
@@ -309,174 +352,204 @@ const ContactForm = ({
     } catch (error) {
       console.error('Error submitting form:', error);
       setIsSubmitting(false);
-      toast.error("Er is een fout opgetreden bij het versturen van uw aanvraag. Probeer het later nog eens.");
+      toast({
+        title: "Er is een fout opgetreden",
+        description: "Er is een fout opgetreden bij het versturen van uw aanvraag. Probeer het later nog eens of neem telefonisch contact met ons op.",
+        variant: "destructive",
+        duration: 5000,
+      });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 md:p-8">
-      <h3 className="text-xl font-semibold mb-6">Aanvraagformulier</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Naam
-          </label>
-          <Input
-            id="name"
-            name="name"
-            type="text"
-            required
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full"
-            placeholder="Uw volledige naam"
-          />
-        </div>
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            E-mail
-          </label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full"
-            placeholder="uw@email.nl"
-          />
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
-        <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-            Telefoonnummer
-          </label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full"
-            placeholder="06 - 12345678"
-          />
-        </div>
-        <div>
-          <label htmlFor="propertyType" className="block text-sm font-medium text-gray-700 mb-1">
-            Type woning
-          </label>
-          <select
-            id="propertyType"
-            name="propertyType"
-            required
-            value={formData.propertyType}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus-ring bg-white"
-          >
-            <option value="apartment">Appartement</option>
-            <option value="terraced">Tussenwoning</option>
-            <option value="semi-detached">Hoekwoning</option>
-            <option value="detached">Vrijstaande woning</option>
-            <option value="other">Anders</option>
-          </select>
-        </div>
-      </div>
-      
-      <AddressLookup 
-        formData={formData}
-        isLoadingAddress={isLoadingAddress}
-        addressError={addressError}
-        addressDetails={addressDetails}
-        calculatedPrice={calculatedPrice}
-        isEditingSurfaceArea={isEditingSurfaceArea}
-        manualSurfaceArea={manualSurfaceArea}
-        setIsEditingSurfaceArea={setIsEditingSurfaceArea}
-        setManualSurfaceArea={setManualSurfaceArea}
-        handleChange={handleChange}
-        applyManualSurfaceArea={applyManualSurfaceArea}
-      />
-      
-      <div className="mt-5">
-        <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-          Volledig adres
-        </label>
-        <Input
-          id="address"
-          name="address"
-          type="text"
-          value={formData.address}
-          onChange={handleChange}
-          className="w-full"
-          placeholder="Adres wordt automatisch ingevuld na postcode check"
-          readOnly={!!addressDetails}
-        />
-      </div>
-      
-      <div className="mt-5 space-y-3">
-        <div className="flex items-start">
-          <input
-            id="rushService"
-            name="rushService"
-            type="checkbox"
-            checked={formData.rushService}
-            onChange={handleCheckboxChange}
-            className="h-5 w-5 text-amber-600 rounded border-gray-300 focus-ring mt-0.5"
-          />
-          <label htmlFor="rushService" className="ml-2 block text-sm text-gray-700">
-            <span className="font-medium">Spoedservice (+€95 incl. BTW)</span>
-            <p className="text-gray-500 text-xs mt-1">
-              Opname en afgifte van het energielabel binnen 24 uur
+    <>
+      {showThankYouMessage ? (
+        <div className="glass-card rounded-xl p-6 md:p-8 text-center">
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle className="h-10 w-10 text-green-500" />
+            </div>
+            <h3 className="text-2xl font-semibold mb-2">Aanvraag verstuurd!</h3>
+            <p className="text-gray-600 mb-4">
+              Hartelijk dank voor uw aanvraag voor een energielabel. Wij zullen zo spoedig mogelijk contact met u opnemen om een afspraak in te plannen.
             </p>
-          </label>
+            <p className="text-gray-600">
+              U ontvangt een bevestiging per e-mail met de details van uw aanvraag.
+            </p>
+          </div>
+          <Button 
+            onClick={() => setShowThankYouMessage(false)}
+            className="bg-epa-green hover:bg-epa-green-dark text-white"
+          >
+            Nieuwe aanvraag
+          </Button>
         </div>
-      </div>
-      
-      <div className="mt-5">
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-          Bericht (optioneel)
-        </label>
-        <Textarea
-          id="message"
-          name="message"
-          rows={4}
-          value={formData.message}
-          onChange={handleChange}
-          className="w-full"
-          placeholder="Eventuele opmerkingen of vragen"
-        />
-      </div>
-      
-      <div className="mt-6">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`w-full button-transition py-3 px-6 rounded-md flex items-center justify-center gap-2 font-medium ${
-            submitted 
-              ? 'bg-green-600 hover:bg-green-700 text-white' 
-              : 'bg-epa-green hover:bg-epa-green-dark text-white'
-          }`}
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Verzenden...
-            </>
-          ) : submitted ? (
-            <>
-              <CheckCircle className="h-5 w-5" /> Verzonden
-            </>
-          ) : (
-            <>
-              <Send className="h-5 w-5" /> Aanvraag versturen
-            </>
-          )}
-        </button>
-      </div>
-    </form>
+      ) : (
+        <form onSubmit={handleSubmit} className="glass-card rounded-xl p-6 md:p-8">
+          <h3 className="text-xl font-semibold mb-6">Aanvraagformulier</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Naam
+              </label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full"
+                placeholder="Uw volledige naam"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                E-mail
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full"
+                placeholder="uw@email.nl"
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                Telefoonnummer
+              </label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full"
+                placeholder="06 - 12345678"
+              />
+            </div>
+            <div>
+              <label htmlFor="propertyType" className="block text-sm font-medium text-gray-700 mb-1">
+                Type woning
+              </label>
+              <select
+                id="propertyType"
+                name="propertyType"
+                required
+                value={formData.propertyType}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus-ring bg-white"
+              >
+                <option value="apartment">Appartement</option>
+                <option value="terraced">Tussenwoning</option>
+                <option value="semi-detached">Hoekwoning</option>
+                <option value="detached">Vrijstaande woning</option>
+                <option value="other">Anders</option>
+              </select>
+            </div>
+          </div>
+          
+          <AddressLookup 
+            formData={formData}
+            isLoadingAddress={isLoadingAddress}
+            addressError={addressError}
+            addressDetails={addressDetails}
+            calculatedPrice={calculatedPrice}
+            isEditingSurfaceArea={isEditingSurfaceArea}
+            manualSurfaceArea={manualSurfaceArea}
+            setIsEditingSurfaceArea={setIsEditingSurfaceArea}
+            setManualSurfaceArea={setManualSurfaceArea}
+            handleChange={handleChange}
+            applyManualSurfaceArea={applyManualSurfaceArea}
+          />
+          
+          <div className="mt-5">
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+              Volledig adres
+            </label>
+            <Input
+              id="address"
+              name="address"
+              type="text"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full"
+              placeholder="Adres wordt automatisch ingevuld na postcode check"
+              readOnly={!!addressDetails}
+            />
+          </div>
+          
+          <div className="mt-5 space-y-3">
+            <div className="flex items-start">
+              <input
+                id="rushService"
+                name="rushService"
+                type="checkbox"
+                checked={formData.rushService}
+                onChange={handleCheckboxChange}
+                className="h-5 w-5 text-amber-600 rounded border-gray-300 focus-ring mt-0.5"
+              />
+              <label htmlFor="rushService" className="ml-2 block text-sm text-gray-700">
+                <span className="font-medium">Spoedservice (+€95 incl. BTW)</span>
+                <p className="text-gray-500 text-xs mt-1">
+                  Opname en afgifte van het energielabel binnen 24 uur
+                </p>
+              </label>
+            </div>
+          </div>
+          
+          <div className="mt-5">
+            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+              Bericht (optioneel)
+            </label>
+            <Textarea
+              id="message"
+              name="message"
+              rows={4}
+              value={formData.message}
+              onChange={handleChange}
+              className="w-full"
+              placeholder="Eventuele opmerkingen of vragen"
+            />
+          </div>
+          
+          <div className="mt-6">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full button-transition py-3 px-6 rounded-md flex items-center justify-center gap-2 font-medium ${
+                submitted 
+                  ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  : 'bg-epa-green hover:bg-epa-green-dark text-white'
+              }`}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Verzenden...
+                </>
+              ) : submitted ? (
+                <>
+                  <CheckCircle className="h-5 w-5" /> Verzonden
+                </>
+              ) : (
+                <>
+                  <Send className="h-5 w-5" /> Aanvraag versturen
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      )}
+    </>
   );
 };
 

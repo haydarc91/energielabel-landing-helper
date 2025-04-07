@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -16,6 +17,8 @@ const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const phoneNumber = '085-250 2302';
+  const whatsappNumber = '31852502302'; // Without spaces or dashes for WhatsApp link
 
   useEffect(() => {
     document.title = "EPA Woninglabel | Officieel Energielabel Vanaf €285";
@@ -82,9 +85,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen w-full overflow-x-hidden bg-white">
       <Navbar />
-      <main>
+      <main className="w-full">
         <Hero />
         <Features />
         
@@ -173,7 +176,7 @@ const Index = () => {
               Wij zijn bereikbaar van 08:00 tot 22:00 uur en staan klaar om u te helpen.
             </p>
             <a 
-              href="https://wa.me/31612345678" 
+              href={`https://wa.me/${whatsappNumber}`}
               target="_blank" 
               rel="noopener noreferrer" 
               className="inline-flex items-center gap-3 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors text-lg shadow-md"

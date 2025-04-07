@@ -32,7 +32,11 @@ const ServiceArea = () => {
       if (mapRef.current && window.L) {
         const amersfoortCoords: [number, number] = [52.1561, 5.3878];
         
-        mapInstance = window.L.map(mapRef.current).setView(amersfoortCoords, 8);
+        // Use a smaller zoom level (7 instead of 8) to show more area on mobile
+        const isMobile = window.innerWidth < 640;
+        const zoomLevel = isMobile ? 7 : 7.5;
+        
+        mapInstance = window.L.map(mapRef.current).setView(amersfoortCoords, zoomLevel);
         leafletMapRef.current = mapInstance;
         
         window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

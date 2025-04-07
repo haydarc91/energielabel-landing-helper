@@ -42,7 +42,8 @@ serve(async (req) => {
         calculated_price: formData.calculatedPrice || null,
         postcode: formData.postcode || null,
         house_number: formData.houseNumber || null,
-        house_number_addition: formData.houseNumberAddition || null
+        house_number_addition: formData.houseNumberAddition || null,
+        status: 'new' // Set default status
       })
       .select();
 
@@ -59,6 +60,27 @@ serve(async (req) => {
           status: 500,
         }
       );
+    }
+
+    // Send data to webhook
+    try {
+      const webhookUrl = 'https://hook.eu2.make.com/y65lrc33vukmnh9eewt8r6b3p4ppw2rq';
+      const webhookResponse = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!webhookResponse.ok) {
+        console.error("Webhook error:", webhookResponse.status);
+      } else {
+        console.log("Webhook sent successfully");
+      }
+    } catch (webhookError) {
+      console.error("Error sending webhook:", webhookError);
+      // Continue with the function even if webhook fails
     }
 
     // Send confirmation emails
