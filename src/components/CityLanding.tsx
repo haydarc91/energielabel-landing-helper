@@ -1,11 +1,13 @@
+
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { MapPin, Check, Star, ArrowRight } from 'lucide-react';
+import { MapPin, Check, Star, ArrowRight, Building, Clock, User, Euro } from 'lucide-react';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInfo from '@/components/contact/ContactInfo';
 import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface CityLandingProps {
   city: string;
@@ -107,46 +109,94 @@ const CityLanding = ({
           <div className="max-w-6xl mx-auto px-6 md:px-8 lg:px-12">
             <h2 className="text-3xl font-bold mb-10 text-center">Energielabel in {city}</h2>
             
-            <div className="prose max-w-4xl mx-auto">
-              <p>
-                {description}
-              </p>
+            <div className="max-w-4xl mx-auto">
+              {/* City Description Card */}
+              <Card className="mb-10 border-t-4 border-t-epa-green shadow-md hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-2xl text-epa-green">Over {city}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 leading-relaxed">
+                    {description}
+                  </p>
+                  
+                  {specialFeature && (
+                    <div className="mt-4 p-3 bg-epa-green/5 rounded-md border border-epa-green/10">
+                      {specialFeature}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
               
-              {specialFeature && (
-                <div className="my-6">
-                  {specialFeature}
-                </div>
-              )}
+              {/* Local Expertise Card */}
+              <Card className="mb-10 shadow-md hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-2xl flex items-center gap-2">
+                    <Building className="text-epa-green h-5 w-5" />
+                    <span>Lokale expertise voor {city}se woningen</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 leading-relaxed">
+                    Onze EPA-adviseurs zijn bekend met de typische woningen in {city}
+                    {neighborhoods.length > 0 && (
+                      <>, van de oudere woningen in {neighborhoods[0]} tot de nieuwere woningen in {neighborhoods[1]}</>
+                    )}. 
+                    Deze lokale kennis helpt ons om een nauwkeurige beoordeling te maken van uw woning.
+                  </p>
+                </CardContent>
+              </Card>
               
-              <h3>Lokale expertise voor {city}se woningen</h3>
-              <p>
-                Onze EPA-adviseurs zijn bekend met de typische woningen in {city}
-                {neighborhoods.length > 0 && (
-                  <>, van de oudere woningen in {neighborhoods[0]} tot de nieuwere woningen in {neighborhoods[1]}</>
-                )}. 
-                Deze lokale kennis helpt ons om een nauwkeurige beoordeling te maken van uw woning.
-              </p>
+              {/* How It Works Card */}
+              <Card className="mb-10 shadow-md hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-2xl flex items-center gap-2">
+                    <Clock className="text-epa-green h-5 w-5" />
+                    <span>Energielabel aanvragen in {city}: hoe werkt het?</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 mb-4">
+                    Het proces is eenvoudig:
+                  </p>
+                  <ol className="space-y-3 list-decimal ml-5 text-gray-700">
+                    <li className="pl-2">Vraag een energielabel aan via ons contactformulier</li>
+                    <li className="pl-2">Wij nemen contact op om een afspraak in te plannen</li>
+                    <li className="pl-2">Een EPA-adviseur komt bij u langs voor de opname (ca. 45-60 minuten)</li>
+                    <li className="pl-2">U ontvangt het officiële energielabel binnen 3 werkdagen</li>
+                  </ol>
+                </CardContent>
+              </Card>
               
-              <h3>Energielabel aanvragen in {city}: hoe werkt het?</h3>
-              <p>
-                Het proces is eenvoudig:
-              </p>
-              <ol>
-                <li>Vraag een energielabel aan via ons contactformulier</li>
-                <li>Wij nemen contact op om een afspraak in te plannen</li>
-                <li>Een EPA-adviseur komt bij u langs voor de opname (ca. 45-60 minuten)</li>
-                <li>U ontvangt het officiële energielabel binnen 3 werkdagen</li>
-              </ol>
-              
-              <div className="bg-epa-green/5 p-6 rounded-lg my-8">
-                <h3 className="text-epa-green">Waarom kiezen voor EPA Woninglabel in {city}?</h3>
-                <ul>
-                  <li>Lokale expertise en kennis van {city}se woningen</li>
-                  <li>Snelle service: binnen 3 werkdagen uw energielabel</li>
-                  <li>Persoonlijke aanpak en duidelijke communicatie</li>
-                  <li>Transparante prijzen vanaf €285 inclusief BTW</li>
-                </ul>
-              </div>
+              {/* Why Choose Us Card */}
+              <Card className="bg-epa-green/5 border border-epa-green/20 shadow-md hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-2xl text-epa-green flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    <span>Waarom kiezen voor EPA Woninglabel in {city}?</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
+                      <span>Lokale expertise en kennis van {city}se woningen</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
+                      <span>Snelle service: binnen 3 werkdagen uw energielabel</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
+                      <span>Persoonlijke aanpak en duidelijke communicatie</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
+                      <span>Transparante prijzen vanaf €285 inclusief BTW</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
