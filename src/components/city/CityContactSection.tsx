@@ -13,6 +13,7 @@ interface CityContactSectionProps {
     propertyType: string;
     rushService: boolean;
   };
+  id?: string; // Added id property as optional
 }
 
 const CityContactSection = ({ 
@@ -21,10 +22,11 @@ const CityContactSection = ({
   setCalculatedPrice, 
   addressDetails, 
   setAddressDetails,
-  formData
+  formData,
+  id
 }: CityContactSectionProps) => {
   return (
-    <section id="contact-section" className="py-16 md:py-20 bg-white">
+    <section id={id} className="py-16 md:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-6 md:px-8 lg:px-12">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Vraag direct een energielabel aan in {city}</h2>
