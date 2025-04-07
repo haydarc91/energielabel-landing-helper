@@ -29,7 +29,6 @@ const Hero = () => {
           .from('website_content')
           .select('title, subtitle, content')
           .eq('section_name', 'hero')
-          .is('page_path', null)
           .single();
         
         if (error) throw error;
@@ -104,14 +103,27 @@ const Hero = () => {
         </div>
         
         <div ref={imageRef} className="opacity-0 relative h-[400px] lg:h-[500px] rounded-lg overflow-hidden shadow-2xl">
-          <img 
-            src="/lovable-uploads/b8ea83af-2c34-4288-ae0d-4fbe4f13a608.png" 
-            alt="Energielabel A++ woning met zonnepanelen" 
-            loading="eager" 
-            width="1170" 
-            height="780" 
-            className="w-full h-full object-cover"
-          />
+          <picture>
+            <source 
+              media="(min-width: 1024px)" 
+              srcSet="/lovable-uploads/b8ea83af-2c34-4288-ae0d-4fbe4f13a608.png 1200w" 
+              sizes="(min-width: 1024px) 600px" 
+            />
+            <source 
+              media="(min-width: 640px)" 
+              srcSet="/lovable-uploads/b8ea83af-2c34-4288-ae0d-4fbe4f13a608.png 800w" 
+              sizes="(min-width: 640px) 500px" 
+            />
+            <img 
+              src="/lovable-uploads/b8ea83af-2c34-4288-ae0d-4fbe4f13a608.png" 
+              alt="Energielabel woning aanvragen" 
+              loading="eager" 
+              width="1170" 
+              height="780" 
+              className="w-full h-full object-cover"
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 500px, 600px"
+            />
+          </picture>
           <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" aria-hidden="true" />
           <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur rounded-lg p-4 shadow-lg max-w-[260px]">
             <div className="text-epa-green font-bold text-xl mb-1">Energie-efficiënt</div>

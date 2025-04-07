@@ -105,7 +105,7 @@ const ServiceArea = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="h-[500px] rounded-xl overflow-hidden shadow-xl">
-            <div ref={mapRef} className="w-full h-full"></div>
+            <div ref={mapRef} className="w-full h-full" aria-label="Kaart van werkgebied rondom Amersfoort"></div>
           </div>
 
           <div className="space-y-6">

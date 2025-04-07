@@ -10,6 +10,8 @@ import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import { supabase } from '@/integrations/supabase/client';
 import CreateAdminUser from './pages/CreateAdminUser';
+import Werkgebieden from './pages/Werkgebieden';
+import AmersfoortLanding from './pages/AmersfoortLanding';
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,8 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/werkgebieden" element={<Werkgebieden />} />
+          <Route path="/werkgebieden/amersfoort" element={<AmersfoortLanding />} />
           
           {/* Protected routes */}
           <Route
