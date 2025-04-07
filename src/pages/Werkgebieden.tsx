@@ -9,14 +9,16 @@ import { Link } from 'react-router-dom';
 const Werkgebieden = () => {
   const cities = [
     { name: "Amersfoort", url: "/werkgebieden/amersfoort" },
-    { name: "Utrecht", url: "#" },
-    { name: "Amsterdam", url: "#" },
-    { name: "Rotterdam", url: "#" },
-    { name: "Den Haag", url: "#" },
-    { name: "Leiden", url: "#" },
-    { name: "Haarlem", url: "#" },
-    { name: "Zwolle", url: "#" },
-    { name: "Arnhem", url: "#" },
+    { name: "Utrecht", url: "/werkgebieden/utrecht" },
+    { name: "Amsterdam", url: "/werkgebieden/amsterdam" },
+    { name: "Rotterdam", url: "/werkgebieden/rotterdam" },
+    { name: "Den Haag", url: "/werkgebieden/den-haag" },
+    { name: "Apeldoorn", url: "/werkgebieden/apeldoorn" },
+    { name: "Arnhem", url: "/werkgebieden/arnhem" },
+    { name: "Nijmegen", url: "/werkgebieden/nijmegen" },
+    { name: "Hilversum", url: "/werkgebieden/hilversum" },
+    { name: "Zwolle", url: "/werkgebieden/zwolle" },
+    { name: "Amstelveen", url: "/werkgebieden/amstelveen" },
   ];
 
   return (
@@ -39,7 +41,7 @@ const Werkgebieden = () => {
                 <Link 
                   key={city.name}
                   to={city.url}
-                  className={`p-6 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all ${city.url === '#' ? 'pointer-events-none opacity-70' : ''}`}
+                  className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-epa-green/10 flex items-center justify-center">
@@ -49,9 +51,7 @@ const Werkgebieden = () => {
                       <h3 className="font-medium text-lg">{city.name}</h3>
                       <p className="text-gray-500 text-sm">Energielabel voor woningen</p>
                     </div>
-                    {city.url !== '#' && (
-                      <ChevronRight className="h-5 w-5 text-gray-400" />
-                    )}
+                    <ChevronRight className="h-5 w-5 text-gray-400" />
                   </div>
                 </Link>
               ))}

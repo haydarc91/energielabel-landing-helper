@@ -85,12 +85,6 @@ const Footer = () => {
                   Werkgebieden
                 </Link>
               </li>
-              <li>
-                <Link to="/werkgebieden/amersfoort" className="hover:text-epa-green flex items-center">
-                  <ChevronRight className="h-4 w-4 mr-1" />
-                  Amersfoort
-                </Link>
-              </li>
             </ul>
           </div>
           
