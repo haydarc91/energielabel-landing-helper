@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -30,6 +29,10 @@ const CityLanding = ({
 }: CityLandingProps) => {
   const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
   const [addressDetails, setAddressDetails] = useState(null);
+  const [formData, setFormData] = useState({
+    propertyType: 'apartment',
+    rushService: false
+  });
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -192,7 +195,11 @@ const CityLanding = ({
                 />
               </div>
               <div className="lg:col-span-2">
-                <ContactInfo />
+                <ContactInfo 
+                  calculatedPrice={calculatedPrice}
+                  formData={formData}
+                  addressDetails={addressDetails}
+                />
               </div>
             </div>
           </div>
