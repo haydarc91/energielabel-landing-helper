@@ -3,11 +3,12 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { MapPin, Check, Star, ArrowRight, Building, Clock, User, Euro } from 'lucide-react';
+import { MapPin, Check, Star, ArrowRight, Building, Clock, User, Euro, Home, Shield, ChevronRight } from 'lucide-react';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInfo from '@/components/contact/ContactInfo';
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 
 interface CityLandingProps {
   city: string;
@@ -45,6 +46,18 @@ const CityLanding = ({
           <div className="max-w-6xl mx-auto px-6 md:px-8 lg:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Link to="/" className="text-sm font-medium text-gray-600 hover:text-epa-green flex items-center gap-1">
+                    <Home size={14} />
+                    <span>Home</span>
+                  </Link>
+                  <ChevronRight size={14} className="text-gray-400" />
+                  <Link to="/werkgebieden" className="text-sm font-medium text-gray-600 hover:text-epa-green">
+                    Werkgebieden
+                  </Link>
+                  <ChevronRight size={14} className="text-gray-400" />
+                  <span className="text-sm font-medium text-epa-green">{city}</span>
+                </div>
                 <div className="text-sm font-medium text-epa-green flex items-center gap-2 mb-4">
                   <MapPin className="h-4 w-4" />
                   <span>{city}</span>
@@ -109,9 +122,9 @@ const CityLanding = ({
           <div className="max-w-6xl mx-auto px-6 md:px-8 lg:px-12">
             <h2 className="text-3xl font-bold mb-10 text-center">Energielabel in {city}</h2>
             
-            <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* City Description Card */}
-              <Card className="mb-10 border-t-4 border-t-epa-green shadow-md hover:shadow-lg transition-shadow">
+              <Card className="border-t-4 border-t-epa-green shadow-md hover:shadow-lg transition-shadow h-full">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-2xl text-epa-green">Over {city}</CardTitle>
                 </CardHeader>
@@ -121,80 +134,142 @@ const CityLanding = ({
                   </p>
                   
                   {specialFeature && (
-                    <div className="mt-4 p-3 bg-epa-green/5 rounded-md border border-epa-green/10">
-                      {specialFeature}
+                    <div className="mt-4 p-4 bg-epa-green/5 rounded-md border border-epa-green/10">
+                      <p className="font-medium text-epa-green-dark">{specialFeature}</p>
                     </div>
                   )}
                 </CardContent>
               </Card>
               
               {/* Local Expertise Card */}
-              <Card className="mb-10 shadow-md hover:shadow-lg transition-shadow">
+              <Card className="shadow-md hover:shadow-lg transition-shadow h-full">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-2xl flex items-center gap-2">
+                  <CardTitle className="text-xl flex items-center gap-2">
                     <Building className="text-epa-green h-5 w-5" />
                     <span>Lokale expertise voor {city}se woningen</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-700 leading-relaxed">
-                    Onze EPA-adviseurs zijn bekend met de typische woningen in {city}
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    Onze gecertificeerde EPA-adviseurs kennen de typische woningen in {city} door en door
                     {neighborhoods.length > 0 && (
                       <>, van de oudere woningen in {neighborhoods[0]} tot de nieuwere woningen in {neighborhoods[1]}</>
                     )}. 
-                    Deze lokale kennis helpt ons om een nauwkeurige beoordeling te maken van uw woning.
                   </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    Deze lokale kennis helpt ons om snel en accuraat:
+                  </p>
+                  <ul className="mt-3 space-y-2">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
+                      <span>Een nauwkeurige energieprestatie te berekenen</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
+                      <span>Passend advies te geven voor verduurzaming</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
+                      <span>De waarde van uw woning te optimaliseren</span>
+                    </li>
+                  </ul>
                 </CardContent>
               </Card>
-              
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-8">
               {/* How It Works Card */}
-              <Card className="mb-10 shadow-md hover:shadow-lg transition-shadow">
+              <Card className="shadow-md hover:shadow-lg transition-shadow h-full">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-2xl flex items-center gap-2">
+                  <CardTitle className="text-xl flex items-center gap-2">
                     <Clock className="text-epa-green h-5 w-5" />
                     <span>Energielabel aanvragen in {city}: hoe werkt het?</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-700 mb-4">
-                    Het proces is eenvoudig:
+                    Ons proces is eenvoudig en efficiënt:
                   </p>
-                  <ol className="space-y-3 list-decimal ml-5 text-gray-700">
-                    <li className="pl-2">Vraag een energielabel aan via ons contactformulier</li>
-                    <li className="pl-2">Wij nemen contact op om een afspraak in te plannen</li>
-                    <li className="pl-2">Een EPA-adviseur komt bij u langs voor de opname (ca. 45-60 minuten)</li>
-                    <li className="pl-2">U ontvangt het officiële energielabel binnen 3 werkdagen</li>
+                  <ol className="space-y-4 text-gray-700">
+                    <li className="flex items-start">
+                      <div className="bg-epa-green text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">1</div>
+                      <div>
+                        <p className="font-medium">Aanvraag indienen</p>
+                        <p className="text-sm text-gray-600">Vul het contactformulier in of bel ons</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-epa-green text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">2</div>
+                      <div>
+                        <p className="font-medium">Afspraak inplannen</p>
+                        <p className="text-sm text-gray-600">Wij nemen snel contact op voor een afspraak</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-epa-green text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">3</div>
+                      <div>
+                        <p className="font-medium">Opname door EPA-adviseur</p>
+                        <p className="text-sm text-gray-600">De opname duurt ongeveer 45-60 minuten</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-epa-green text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">4</div>
+                      <div>
+                        <p className="font-medium">Energielabel ontvangen</p>
+                        <p className="text-sm text-gray-600">Binnen 3 werkdagen uw officiële label</p>
+                      </div>
+                    </li>
                   </ol>
                 </CardContent>
               </Card>
               
               {/* Why Choose Us Card */}
-              <Card className="bg-epa-green/5 border border-epa-green/20 shadow-md hover:shadow-lg transition-shadow">
+              <Card className="bg-epa-green/5 border border-epa-green/20 shadow-md hover:shadow-lg transition-shadow h-full">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-2xl text-epa-green flex items-center gap-2">
-                    <User className="h-5 w-5" />
+                  <CardTitle className="text-xl text-epa-green flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
                     <span>Waarom kiezen voor EPA Woninglabel in {city}?</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-3 text-gray-700">
-                    <li className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
-                      <span>Lokale expertise en kennis van {city}se woningen</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
-                      <span>Snelle service: binnen 3 werkdagen uw energielabel</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
-                      <span>Persoonlijke aanpak en duidelijke communicatie</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-epa-green flex-shrink-0 mt-0.5" />
-                      <span>Transparante prijzen vanaf €285 inclusief BTW</span>
-                    </li>
-                  </ul>
+                  <div className="space-y-5 text-gray-700">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-white rounded-full p-2 shadow-sm flex-shrink-0 mt-0.5">
+                        <MapPin className="h-4 w-4 text-epa-green" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Lokale expertise</p>
+                        <p className="text-sm text-gray-600">Specialistische kennis van {city}se woningen en hun karakteristieken</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="bg-white rounded-full p-2 shadow-sm flex-shrink-0 mt-0.5">
+                        <Clock className="h-4 w-4 text-epa-green" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Snelle service</p>
+                        <p className="text-sm text-gray-600">Binnen 3 werkdagen uw energielabel in huis</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="bg-white rounded-full p-2 shadow-sm flex-shrink-0 mt-0.5">
+                        <User className="h-4 w-4 text-epa-green" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Persoonlijke aanpak</p>
+                        <p className="text-sm text-gray-600">Duidelijke communicatie en service op maat</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="bg-white rounded-full p-2 shadow-sm flex-shrink-0 mt-0.5">
+                        <Euro className="h-4 w-4 text-epa-green" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Transparante prijzen</p>
+                        <p className="text-sm text-gray-600">Vanaf €285 inclusief BTW, zonder verborgen kosten</p>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -215,7 +290,7 @@ const CityLanding = ({
                   </div>
                   <div>
                     <p className="italic text-gray-600">
-                      {testimonial.text}
+                      "{testimonial.text}"
                     </p>
                     <p className="text-gray-700 font-medium mt-2">{testimonial.author}</p>
                   </div>
