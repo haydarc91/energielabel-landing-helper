@@ -11,7 +11,7 @@ interface CityTestimonialProps {
 
 const CityTestimonial = ({ testimonial }: CityTestimonialProps) => {
   return (
-    <section className="py-12 bg-gray-50">
+    <section className="py-12 bg-gray-50" id="testimonial">
       <div className="max-w-6xl mx-auto px-6 md:px-8 lg:px-12">
         <div className="bg-white rounded-xl p-8 shadow-md">
           <div className="flex items-start gap-4 mb-4">

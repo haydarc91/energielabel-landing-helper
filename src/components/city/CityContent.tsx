@@ -12,7 +12,7 @@ interface CityContentProps {
 
 const CityContent = ({ city, description, specialFeature, neighborhoods }: CityContentProps) => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white" id="city-content">
       <div className="max-w-6xl mx-auto px-6 md:px-8 lg:px-12">
         <h2 className="text-3xl font-bold mb-10 text-center">Energielabel in {city}</h2>
         <CityInfo 

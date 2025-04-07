@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, X, Home } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Home, ChevronRight } from 'lucide-react';
+import { Link, useLocation, NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,6 +11,7 @@ const Navbar = () => {
   
   // Check if we're on a landing page
   const isLandingPage = location.pathname.includes('/werkgebieden/');
+  const isWerkgebiedenPage = location.pathname === '/werkgebieden';
   
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +25,11 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Reset mobile menu when changing routes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <header
@@ -42,7 +48,33 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
-          {isLandingPage ? (
+          {isLandingPage && (
+            <div className="flex items-center text-sm text-gray-500 mr-2">
+              <NavLink to="/" className="hover:text-epa-green">Home</NavLink>
+              <ChevronRight className="h-3 w-3 mx-1" />
+              <NavLink to="/werkgebieden" className="hover:text-epa-green">Werkgebieden</NavLink>
+              <ChevronRight className="h-3 w-3 mx-1" />
+              <span className="text-epa-green-dark">{location.pathname.split('/').pop()?.charAt(0).toUpperCase() + location.pathname.split('/').pop()?.slice(1)}</span>
+            </div>
+          )}
+
+          {isWerkgebiedenPage ? (
+            <>
+              <Link to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
+                <Home className="h-4 w-4" />
+                <span>Home</span>
+              </Link>
+              <Link to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Voordelen
+              </Link>
+              <Link to="/#process" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Werkwijze
+              </Link>
+              <Link to="/#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
+                FAQ
+              </Link>
+            </>
+          ) : isLandingPage ? (
             <>
               <Link to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
                 <Home className="h-4 w-4" />
@@ -99,7 +131,61 @@ const Navbar = () => {
         )}
       >
         <div className="pt-2 pb-4 px-4 space-y-1">
-          {isLandingPage ? (
+          {isLandingPage && (
+            <div className="flex items-center flex-wrap text-sm text-gray-500 px-3 py-2">
+              <NavLink 
+                to="/" 
+                className="hover:text-epa-green"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </NavLink>
+              <ChevronRight className="h-3 w-3 mx-1" />
+              <NavLink 
+                to="/werkgebieden" 
+                className="hover:text-epa-green"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Werkgebieden
+              </NavLink>
+              <ChevronRight className="h-3 w-3 mx-1" />
+              <span className="text-epa-green-dark">{location.pathname.split('/').pop()?.charAt(0).toUpperCase() + location.pathname.split('/').pop()?.slice(1)}</span>
+            </div>
+          )}
+
+          {isWerkgebiedenPage ? (
+            <>
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Home className="h-4 w-4" />
+                <span>Home</span>
+              </Link>
+              <Link 
+                to="/#features" 
+                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Voordelen
+              </Link>
+              <Link 
+                to="/#process" 
+                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Werkwijze
+              </Link>
+              <Link 
+                to="/#faq" 
+                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                FAQ
+              </Link>
+            </>
+          ) : isLandingPage ? (
             <>
               <Link 
                 to="/" 

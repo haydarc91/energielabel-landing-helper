@@ -57,6 +57,7 @@ const CityLanding = ({
           addressDetails={addressDetails}
           setAddressDetails={setAddressDetails}
           formData={formData}
+          id="contact-section"
         />
       </main>
       
