@@ -28,32 +28,15 @@ const Index = () => {
       metaDescription.setAttribute("content", "Krijg snel en professioneel een officieel energielabel voor uw woning. EPA gecertificeerde adviseurs, geldig voor 10 jaar en geregistreerd bij RVO.");
     }
     
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest('a');
-      
-      if (!anchor) return;
-      
-      const href = anchor.getAttribute('href');
-      if (!href || !href.startsWith('#')) return;
-      
-      const id = href.substring(1);
-      const element = document.getElementById(id);
-      
-      if (element) {
-        e.preventDefault();
-        window.scrollTo({
-          top: element.offsetTop - 80,
-          behavior: 'smooth'
-        });
-      }
-    };
-
     const handleScroll = () => {
       const newScrollPosition = window.scrollY;
       setScrollPosition(newScrollPosition);
       
-      const contactSection = document.getElementById('contact');
+      // Debugging - log which sections are visible
+      console.log("Scroll position:", newScrollPosition);
+      console.log("Features section position:", document.getElementById('features')?.offsetTop);
+      
+      const contactSection = document.getElementById('contact-section');
       const contactPosition = contactSection?.offsetTop || 0;
       
       setShowScrollTop(newScrollPosition > 300);
@@ -64,11 +47,9 @@ const Index = () => {
       );
     };
 
-    document.addEventListener('click', handleAnchorClick);
     window.addEventListener('scroll', handleScroll);
     
     return () => {
-      document.removeEventListener('click', handleAnchorClick);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -81,7 +62,7 @@ const Index = () => {
   };
 
   const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -190,7 +171,9 @@ const Index = () => {
           </div>
         </div>
         
-        <PricingSection />
+        <div id="contact-section">
+          <PricingSection />
+        </div>
       </main>
       <Footer />
       

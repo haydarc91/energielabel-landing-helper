@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -19,12 +20,14 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
         href={to} 
         className={className} 
         onClick={(e) => {
+          e.preventDefault(); // Always prevent default
           // Find the element
           const element = document.getElementById(to.substring(1));
           if (element) {
-            e.preventDefault();
             element.scrollIntoView({ behavior: 'smooth' });
             if (onClick) onClick();
+          } else {
+            console.error(`Element with id "${to.substring(1)}" not found`);
           }
         }}
       >

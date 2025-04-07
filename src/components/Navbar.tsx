@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Menu, X, Home, ChevronRight } from 'lucide-react';
 import { Link, useLocation, NavLink } from 'react-router-dom';
+import NavigationLink from './ui/navigation-link';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +13,7 @@ const Navbar = () => {
   // Check if we're on a landing page
   const isLandingPage = location.pathname.includes('/werkgebieden/');
   const isWerkgebiedenPage = location.pathname === '/werkgebieden';
+  const isHomePage = location.pathname === '/';
   
   useEffect(() => {
     const handleScroll = () => {
@@ -64,15 +66,15 @@ const Navbar = () => {
                 <Home className="h-4 w-4" />
                 <span>Home</span>
               </Link>
-              <Link to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
+              <NavigationLink to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Voordelen
-              </Link>
-              <Link to="/#process" className="text-sm font-medium hover:text-epa-green transition-colors">
+              </NavigationLink>
+              <NavigationLink to="/#process" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Werkwijze
-              </Link>
-              <Link to="/#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
+              </NavigationLink>
+              <NavigationLink to="/#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
                 FAQ
-              </Link>
+              </NavigationLink>
             </>
           ) : isLandingPage ? (
             <>
@@ -83,31 +85,41 @@ const Navbar = () => {
               <Link to="/werkgebieden" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Werkgebieden
               </Link>
-              <Link to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
+              <NavigationLink to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Voordelen
-              </Link>
-              <Link to="/#process" className="text-sm font-medium hover:text-epa-green transition-colors">
+              </NavigationLink>
+              <NavigationLink to="/#process" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Werkwijze
-              </Link>
-              <Link to="/#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
+              </NavigationLink>
+              <NavigationLink to="/#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
                 FAQ
-              </Link>
+              </NavigationLink>
             </>
           ) : (
             <>
-              <a href="#features" className="text-sm font-medium hover:text-epa-green transition-colors">Voordelen</a>
-              <a href="#process" className="text-sm font-medium hover:text-epa-green transition-colors">Werkwijze</a>
-              <a href="#service-area" className="text-sm font-medium hover:text-epa-green transition-colors">Werkgebied</a>
-              <a href="#about" className="text-sm font-medium hover:text-epa-green transition-colors">Over Ons</a>
-              <a href="#faq" className="text-sm font-medium hover:text-epa-green transition-colors">FAQ</a>
+              <NavigationLink to="#features" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Voordelen
+              </NavigationLink>
+              <NavigationLink to="#process" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Werkwijze
+              </NavigationLink>
+              <NavigationLink to="#service-area" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Werkgebied
+              </NavigationLink>
+              <NavigationLink to="#about" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Over Ons
+              </NavigationLink>
+              <NavigationLink to="#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
+                FAQ
+              </NavigationLink>
             </>
           )}
-          <a 
-            href="#contact-section" 
+          <NavigationLink 
+            to="#contact-section" 
             className="button-transition bg-epa-green hover:bg-epa-green-dark text-white px-5 py-2 rounded-md text-sm font-medium"
           >
             Contact
-          </a>
+          </NavigationLink>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -163,27 +175,27 @@ const Navbar = () => {
                 <Home className="h-4 w-4" />
                 <span>Home</span>
               </Link>
-              <Link 
+              <NavigationLink 
                 to="/#features" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Voordelen
-              </Link>
-              <Link 
+              </NavigationLink>
+              <NavigationLink 
                 to="/#process" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Werkwijze
-              </Link>
-              <Link 
+              </NavigationLink>
+              <NavigationLink 
                 to="/#faq" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 FAQ
-              </Link>
+              </NavigationLink>
             </>
           ) : isLandingPage ? (
             <>
@@ -202,74 +214,74 @@ const Navbar = () => {
               >
                 Werkgebieden
               </Link>
-              <Link 
+              <NavigationLink 
                 to="/#features" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Voordelen
-              </Link>
-              <Link 
+              </NavigationLink>
+              <NavigationLink 
                 to="/#process" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Werkwijze
-              </Link>
-              <Link 
+              </NavigationLink>
+              <NavigationLink 
                 to="/#faq" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 FAQ
-              </Link>
+              </NavigationLink>
             </>
           ) : (
             <>
-              <a 
-                href="#features" 
+              <NavigationLink 
+                to="#features" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Voordelen
-              </a>
-              <a 
-                href="#process" 
+              </NavigationLink>
+              <NavigationLink 
+                to="#process" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Werkwijze
-              </a>
-              <a 
-                href="#service-area" 
+              </NavigationLink>
+              <NavigationLink 
+                to="#service-area" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Werkgebied
-              </a>
-              <a 
-                href="#about" 
+              </NavigationLink>
+              <NavigationLink 
+                to="#about" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Over Ons
-              </a>
-              <a 
-                href="#faq" 
+              </NavigationLink>
+              <NavigationLink 
+                to="#faq" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 FAQ
-              </a>
+              </NavigationLink>
             </>
           )}
-          <a 
-            href="#contact-section" 
+          <NavigationLink 
+            to="#contact-section" 
             className="block px-3 py-3 mt-4 text-center button-transition bg-epa-green hover:bg-epa-green-dark text-white rounded-md"
             onClick={() => setMobileMenuOpen(false)}
           >
             Contact
-          </a>
+          </NavigationLink>
         </div>
       </div>
     </header>
