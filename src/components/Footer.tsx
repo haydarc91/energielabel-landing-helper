@@ -2,6 +2,7 @@
 import React from 'react';
 import { ChevronRight, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import NavigationLink from './ui/navigation-link';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -26,28 +27,10 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 text-left">Diensten</h3>
             <ul className="space-y-2 text-gray-600 text-left">
               <li>
-                <a href="#" className="hover:text-epa-green flex items-center">
+                <NavigationLink to="/#contact-section" className="hover:text-epa-green flex items-center">
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Energielabel voor woningen
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-epa-green flex items-center">
-                  <ChevronRight className="h-4 w-4 mr-1" />
-                  Energieadvies
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-epa-green flex items-center">
-                  <ChevronRight className="h-4 w-4 mr-1" />
-                  Maatwerkrapport
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-epa-green flex items-center">
-                  <ChevronRight className="h-4 w-4 mr-1" />
-                  Duurzaamheidsadvies
-                </a>
+                </NavigationLink>
               </li>
             </ul>
           </div>
@@ -56,28 +39,28 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 text-left">Informatie</h3>
             <ul className="space-y-2 text-gray-600 text-left">
               <li>
-                <a href="#features" className="hover:text-epa-green flex items-center">
+                <NavigationLink to="#features" className="hover:text-epa-green flex items-center">
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Voordelen
-                </a>
+                </NavigationLink>
               </li>
               <li>
-                <a href="#process" className="hover:text-epa-green flex items-center">
+                <NavigationLink to="#process" className="hover:text-epa-green flex items-center">
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Werkwijze
-                </a>
+                </NavigationLink>
               </li>
               <li>
-                <a href="#faq" className="hover:text-epa-green flex items-center">
+                <NavigationLink to="#faq" className="hover:text-epa-green flex items-center">
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Veelgestelde vragen
-                </a>
+                </NavigationLink>
               </li>
               <li>
-                <a href="#contact" className="hover:text-epa-green flex items-center">
+                <NavigationLink to="#contact-section" className="hover:text-epa-green flex items-center">
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Contact
-                </a>
+                </NavigationLink>
               </li>
               <li>
                 <Link to="/werkgebieden" className="hover:text-epa-green flex items-center">
@@ -120,9 +103,9 @@ const Footer = () => {
               &copy; {currentYear} epawoninglabel.nl - Alle rechten voorbehouden
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-500 hover:text-epa-green text-sm">Privacybeleid</a>
-              <a href="#" className="text-gray-500 hover:text-epa-green text-sm">Algemene voorwaarden</a>
-              <a href="#" className="text-gray-500 hover:text-epa-green text-sm">Sitemap</a>
+              <Link to="/privacy-beleid" className="text-gray-500 hover:text-epa-green text-sm">Privacybeleid</Link>
+              <Link to="/algemene-voorwaarden" className="text-gray-500 hover:text-epa-green text-sm">Algemene voorwaarden</Link>
+              <Link to="/sitemap" className="text-gray-500 hover:text-epa-green text-sm">Sitemap</Link>
             </div>
           </div>
         </div>

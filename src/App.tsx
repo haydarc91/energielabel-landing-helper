@@ -1,97 +1,82 @@
 
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from '@/components/ui/toaster';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Index from './pages/Index';
-import Admin from './pages/Admin';
-import Login from './pages/Login';
-import NotFound from './pages/NotFound';
-import { supabase } from '@/integrations/supabase/client';
-import CreateAdminUser from './pages/CreateAdminUser';
-import Werkgebieden from './pages/Werkgebieden';
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import "./App.css";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+import Werkgebieden from "./pages/Werkgebieden";
+import AmersfoortLanding from "./pages/AmersfoortLanding";
+import PrivacyBeleid from "./pages/PrivacyBeleid";
+import AlgemeneVoorwaarden from "./pages/AlgemeneVoorwaarden";
+import Sitemap from "./pages/Sitemap";
 
-// Import all city landing pages
-import AmersfoortLanding from './pages/cities/AmersfoortLanding';
-import UtrechtLanding from './pages/cities/UtrechtLanding';
-import AmsterdamLanding from './pages/cities/AmsterdamLanding';
-import RotterdamLanding from './pages/cities/RotterdamLanding';
-import DenHaagLanding from './pages/cities/DenHaagLanding';
-import ApeldoornLanding from './pages/cities/ApeldoornLanding';
-import ArnhemLanding from './pages/cities/ArnhemLanding';
-import NijmegenLanding from './pages/cities/NijmegenLanding';
-import HilversumLanding from './pages/cities/HilversumLanding';
-import ZwolleLanding from './pages/cities/ZwolleLanding';
-import AmsteveenLanding from './pages/cities/AmsteveenLanding';
+// Import city landing pages
+import AmersfoortPage from "./pages/cities/AmersfoortLanding";
+import AmsterdamPage from "./pages/cities/AmsterdamLanding";
+import AmstveenPage from "./pages/cities/AmsteveenLanding";
+import ApeldoornPage from "./pages/cities/ApeldoornLanding";
+import ArnhemPage from "./pages/cities/ArnhemLanding";
+import DenHaagPage from "./pages/cities/DenHaagLanding";
+import HilversumPage from "./pages/cities/HilversumLanding";
+import NijmegenPage from "./pages/cities/NijmegenLanding";
+import RotterdamPage from "./pages/cities/RotterdamLanding";
+import UtrechtPage from "./pages/cities/UtrechtLanding";
+import ZwollePage from "./pages/cities/ZwolleLanding";
 
-const queryClient = new QueryClient();
+// Admin pages
+import Admin from "./pages/Admin";
+import Login from "./pages/Login";
+import CreateAdminUser from "./pages/CreateAdminUser";
+
+// Scroll to top when navigating to a new page
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+}
 
 function App() {
-  const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getSession = async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        setSession(data.session);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (loading) {
-    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
-  }
+  const [count, setCount] = useState(0);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/werkgebieden" element={<Werkgebieden />} />
-          
-          {/* City landing pages */}
-          <Route path="/werkgebieden/amersfoort" element={<AmersfoortLanding />} />
-          <Route path="/werkgebieden/utrecht" element={<UtrechtLanding />} />
-          <Route path="/werkgebieden/amsterdam" element={<AmsterdamLanding />} />
-          <Route path="/werkgebieden/rotterdam" element={<RotterdamLanding />} />
-          <Route path="/werkgebieden/den-haag" element={<DenHaagLanding />} />
-          <Route path="/werkgebieden/apeldoorn" element={<ApeldoornLanding />} />
-          <Route path="/werkgebieden/arnhem" element={<ArnhemLanding />} />
-          <Route path="/werkgebieden/nijmegen" element={<NijmegenLanding />} />
-          <Route path="/werkgebieden/hilversum" element={<HilversumLanding />} />
-          <Route path="/werkgebieden/zwolle" element={<ZwolleLanding />} />
-          <Route path="/werkgebieden/amstelveen" element={<AmsteveenLanding />} />
-          
-          {/* Protected routes */}
-          <Route
-            path="/admin/*"
-            element={session ? <Admin /> : <Navigate to="/login" replace />}
-          />
-          <Route
-            path="/create-admin"
-            element={<CreateAdminUser />}
-          />
-          
-          {/* 404 route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Toaster />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/werkgebieden" element={<Werkgebieden />} />
+        <Route path="/privacy-beleid" element={<PrivacyBeleid />} />
+        <Route path="/algemene-voorwaarden" element={<AlgemeneVoorwaarden />} />
+        <Route path="/sitemap" element={<Sitemap />} />
+        
+        {/* Legacy route for AmersfoortLanding */}
+        <Route path="/werkgebieden/amersfoort" element={<AmersfoortLanding />} />
+        
+        {/* New city routes with updated components */}
+        <Route path="/werkgebieden/amersfoort" element={<AmersfoortPage />} />
+        <Route path="/werkgebieden/amsterdam" element={<AmsterdamPage />} />
+        <Route path="/werkgebieden/amstelveen" element={<AmstveenPage />} />
+        <Route path="/werkgebieden/apeldoorn" element={<ApeldoornPage />} />
+        <Route path="/werkgebieden/arnhem" element={<ArnhemPage />} />
+        <Route path="/werkgebieden/den-haag" element={<DenHaagPage />} />
+        <Route path="/werkgebieden/hilversum" element={<HilversumPage />} />
+        <Route path="/werkgebieden/nijmegen" element={<NijmegenPage />} />
+        <Route path="/werkgebieden/rotterdam" element={<RotterdamPage />} />
+        <Route path="/werkgebieden/utrecht" element={<UtrechtPage />} />
+        <Route path="/werkgebieden/zwolle" element={<ZwollePage />} />
+        
+        {/* Admin routes */}
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/create-admin" element={<CreateAdminUser />} />
+        
+        {/* 404 route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

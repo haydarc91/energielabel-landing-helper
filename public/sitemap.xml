@@ -3,37 +3,127 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.epawoninglabel.nl/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.epawoninglabel.nl/#features</loc>
-    <lastmod>2023-11-10</lastmod>
+    <loc>https://www.epawoninglabel.nl/werkgebieden</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/privacy-beleid</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/algemene-voorwaarden</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/sitemap</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/amersfoort</loc>
+    <lastmod>2024-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/utrecht</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/amsterdam</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/rotterdam</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/den-haag</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/apeldoorn</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/arnhem</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/nijmegen</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/hilversum</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/zwolle</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/werkgebieden/amstelveen</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/#features</loc>
+    <lastmod>2024-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.epawoninglabel.nl/#process</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-04-13</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.epawoninglabel.nl/#testimonials</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-04-13</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.epawoninglabel.nl/#faq</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-04-13</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.epawoninglabel.nl/#contact</loc>
-    <lastmod>2023-11-10</lastmod>
+    <loc>https://www.epawoninglabel.nl/#contact-section</loc>
+    <lastmod>2024-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
