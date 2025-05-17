@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -15,11 +14,20 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
   
   // For regular links that aren't hash links
   if (!to.includes('#')) {
-    return <Link to={to} className={className} onClick={(e) => {
-      // Always scroll to top for regular page navigation
-      window.scrollTo(0, 0);
-      if (onClick) onClick();
-    }}>{children}</Link>;
+    return (
+      <Link 
+        to={to} 
+        className={className} 
+        onClick={(e) => {
+          // Always scroll to top for regular page navigation
+          window.scrollTo(0, 0);
+          console.log(`Regular link clicked: ${to}, scrolling to top`);
+          if (onClick) onClick();
+        }}
+      >
+        {children}
+      </Link>
+    );
   }
   
   // If we're on the homepage and the link is a hash link
@@ -52,7 +60,18 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
   
   // If we're not on the homepage and the link is a hash link, prepend with /
   if (!isHomePage && to.startsWith('#')) {
-    return <Link to={`/${to}`} className={className} onClick={onClick}>{children}</Link>;
+    return (
+      <Link 
+        to={`/${to}`} 
+        className={className} 
+        onClick={(e) => {
+          console.log(`Non-homepage hash link clicked: ${to}, navigating to homepage with hash`);
+          if (onClick) onClick();
+        }}
+      >
+        {children}
+      </Link>
+    );
   }
   
   // For links that start with /#, handle specially
@@ -85,12 +104,36 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
       );
     } else {
       // Not on homepage, navigate to homepage with hash
-      return <Link to={to} className={className} onClick={onClick}>{children}</Link>;
+      return (
+        <Link 
+          to={to} 
+          className={className} 
+          onClick={(e) => {
+            console.log(`Navigating to homepage with hash: ${to}`);
+            if (onClick) onClick();
+          }}
+        >
+          {children}
+        </Link>
+      );
     }
   }
   
-  // Otherwise, use regular Link
-  return <Link to={to} className={className} onClick={onClick}>{children}</Link>;
+  // Otherwise, use regular Link with scroll to top
+  return (
+    <Link 
+      to={to} 
+      className={className} 
+      onClick={(e) => {
+        // Always scroll to top for regular page navigation
+        window.scrollTo(0, 0);
+        console.log(`Fallback regular link clicked: ${to}, scrolling to top`);
+        if (onClick) onClick();
+      }}
+    >
+      {children}
+    </Link>
+  );
 };
 
 export default NavigationLink;
