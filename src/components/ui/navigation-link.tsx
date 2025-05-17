@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -11,6 +12,15 @@ interface NavigationLinkProps {
 const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className = "", onClick }) => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  
+  // For regular links that aren't hash links
+  if (!to.includes('#')) {
+    return <Link to={to} className={className} onClick={(e) => {
+      // Always scroll to top for regular page navigation
+      window.scrollTo(0, 0);
+      if (onClick) onClick();
+    }}>{children}</Link>;
+  }
   
   // If we're on the homepage and the link is a hash link
   if (isHomePage && to.startsWith('#')) {

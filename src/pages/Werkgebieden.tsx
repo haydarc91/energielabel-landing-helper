@@ -8,17 +8,17 @@ import { Link } from 'react-router-dom';
 
 const Werkgebieden = () => {
   const cities = [
-    { name: "Amersfoort", url: "/werkgebieden/amersfoort" },
-    { name: "Utrecht", url: "/werkgebieden/utrecht" },
-    { name: "Amsterdam", url: "/werkgebieden/amsterdam" },
-    { name: "Rotterdam", url: "/werkgebieden/rotterdam" },
-    { name: "Den Haag", url: "/werkgebieden/den-haag" },
-    { name: "Apeldoorn", url: "/werkgebieden/apeldoorn" },
-    { name: "Arnhem", url: "/werkgebieden/arnhem" },
-    { name: "Nijmegen", url: "/werkgebieden/nijmegen" },
-    { name: "Hilversum", url: "/werkgebieden/hilversum" },
-    { name: "Zwolle", url: "/werkgebieden/zwolle" },
-    { name: "Amstelveen", url: "/werkgebieden/amstelveen" },
+    { name: "Amersfoort", url: "/energielabel-amersfoort-aanvragen" },
+    { name: "Utrecht", url: "/energielabel-utrecht-aanvragen" },
+    { name: "Amsterdam", url: "/energielabel-amsterdam-aanvragen" },
+    { name: "Rotterdam", url: "/energielabel-rotterdam-aanvragen" },
+    { name: "Den Haag", url: "/energielabel-den-haag-aanvragen" },
+    { name: "Apeldoorn", url: "/energielabel-apeldoorn-aanvragen" },
+    { name: "Arnhem", url: "/energielabel-arnhem-aanvragen" },
+    { name: "Nijmegen", url: "/energielabel-nijmegen-aanvragen" },
+    { name: "Hilversum", url: "/energielabel-hilversum-aanvragen" },
+    { name: "Zwolle", url: "/energielabel-zwolle-aanvragen" },
+    { name: "Amstelveen", url: "/energielabel-amstelveen-aanvragen" },
   ];
 
   return (

@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -52,21 +52,34 @@ function App() {
         <Route path="/algemene-voorwaarden" element={<AlgemeneVoorwaarden />} />
         <Route path="/sitemap" element={<Sitemap />} />
         
+        {/* Old routes with redirects to new SEO-friendly URLs */}
+        <Route path="/werkgebieden/amersfoort" element={<Navigate to="/energielabel-amersfoort-aanvragen" replace />} />
+        <Route path="/werkgebieden/amsterdam" element={<Navigate to="/energielabel-amsterdam-aanvragen" replace />} />
+        <Route path="/werkgebieden/amstelveen" element={<Navigate to="/energielabel-amstelveen-aanvragen" replace />} />
+        <Route path="/werkgebieden/apeldoorn" element={<Navigate to="/energielabel-apeldoorn-aanvragen" replace />} />
+        <Route path="/werkgebieden/arnhem" element={<Navigate to="/energielabel-arnhem-aanvragen" replace />} />
+        <Route path="/werkgebieden/den-haag" element={<Navigate to="/energielabel-den-haag-aanvragen" replace />} />
+        <Route path="/werkgebieden/hilversum" element={<Navigate to="/energielabel-hilversum-aanvragen" replace />} />
+        <Route path="/werkgebieden/nijmegen" element={<Navigate to="/energielabel-nijmegen-aanvragen" replace />} />
+        <Route path="/werkgebieden/rotterdam" element={<Navigate to="/energielabel-rotterdam-aanvragen" replace />} />
+        <Route path="/werkgebieden/utrecht" element={<Navigate to="/energielabel-utrecht-aanvragen" replace />} />
+        <Route path="/werkgebieden/zwolle" element={<Navigate to="/energielabel-zwolle-aanvragen" replace />} />
+        
+        {/* New SEO-friendly routes */}
+        <Route path="/energielabel-amersfoort-aanvragen" element={<AmersfoortPage />} />
+        <Route path="/energielabel-amsterdam-aanvragen" element={<AmsterdamPage />} />
+        <Route path="/energielabel-amstelveen-aanvragen" element={<AmstveenPage />} />
+        <Route path="/energielabel-apeldoorn-aanvragen" element={<ApeldoornPage />} />
+        <Route path="/energielabel-arnhem-aanvragen" element={<ArnhemPage />} />
+        <Route path="/energielabel-den-haag-aanvragen" element={<DenHaagPage />} />
+        <Route path="/energielabel-hilversum-aanvragen" element={<HilversumPage />} />
+        <Route path="/energielabel-nijmegen-aanvragen" element={<NijmegenPage />} />
+        <Route path="/energielabel-rotterdam-aanvragen" element={<RotterdamPage />} />
+        <Route path="/energielabel-utrecht-aanvragen" element={<UtrechtPage />} />
+        <Route path="/energielabel-zwolle-aanvragen" element={<ZwollePage />} />
+        
         {/* Legacy route for AmersfoortLanding */}
         <Route path="/werkgebieden/amersfoort" element={<AmersfoortLanding />} />
-        
-        {/* New city routes with updated components */}
-        <Route path="/werkgebieden/amersfoort" element={<AmersfoortPage />} />
-        <Route path="/werkgebieden/amsterdam" element={<AmsterdamPage />} />
-        <Route path="/werkgebieden/amstelveen" element={<AmstveenPage />} />
-        <Route path="/werkgebieden/apeldoorn" element={<ApeldoornPage />} />
-        <Route path="/werkgebieden/arnhem" element={<ArnhemPage />} />
-        <Route path="/werkgebieden/den-haag" element={<DenHaagPage />} />
-        <Route path="/werkgebieden/hilversum" element={<HilversumPage />} />
-        <Route path="/werkgebieden/nijmegen" element={<NijmegenPage />} />
-        <Route path="/werkgebieden/rotterdam" element={<RotterdamPage />} />
-        <Route path="/werkgebieden/utrecht" element={<UtrechtPage />} />
-        <Route path="/werkgebieden/zwolle" element={<ZwollePage />} />
         
         {/* Admin routes */}
         <Route path="/admin" element={<Admin />} />
