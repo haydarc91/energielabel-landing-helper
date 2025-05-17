@@ -63,10 +63,10 @@ const Footer = () => {
                 </NavigationLink>
               </li>
               <li>
-                <Link to="/werkgebieden" className="hover:text-epa-green flex items-center">
+                <NavigationLink to="/werkgebieden" className="hover:text-epa-green flex items-center">
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Werkgebieden
-                </Link>
+                </NavigationLink>
               </li>
             </ul>
           </div>
@@ -103,9 +103,9 @@ const Footer = () => {
               &copy; {currentYear} epawoninglabel.nl - Alle rechten voorbehouden
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link to="/privacy-beleid" className="text-gray-500 hover:text-epa-green text-sm">Privacybeleid</Link>
-              <Link to="/algemene-voorwaarden" className="text-gray-500 hover:text-epa-green text-sm">Algemene voorwaarden</Link>
-              <Link to="/sitemap" className="text-gray-500 hover:text-epa-green text-sm">Sitemap</Link>
+              <NavigationLink to="/privacy-beleid" className="text-gray-500 hover:text-epa-green text-sm">Privacybeleid</NavigationLink>
+              <NavigationLink to="/algemene-voorwaarden" className="text-gray-500 hover:text-epa-green text-sm">Algemene voorwaarden</NavigationLink>
+              <NavigationLink to="/sitemap" className="text-gray-500 hover:text-epa-green text-sm">Sitemap</NavigationLink>
             </div>
           </div>
         </div>
