@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ChevronRight, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -8,6 +7,14 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   const phoneNumber = '085-250 2302';
   const whatsappNumber = '31852502302'; // Without spaces or dashes for WhatsApp link
+  
+  const handleWerkgebiedenClick = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    console.log("Werkgebieden clicked in footer, explicitly scrolling to top");
+  };
 
   return (
     <footer className="bg-gray-50 pt-12 pb-6">
@@ -63,10 +70,14 @@ const Footer = () => {
                 </NavigationLink>
               </li>
               <li>
-                <NavigationLink to="/werkgebieden" className="hover:text-epa-green flex items-center">
+                <Link 
+                  to="/werkgebieden" 
+                  className="hover:text-epa-green flex items-center"
+                  onClick={handleWerkgebiedenClick}
+                >
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Werkgebieden
-                </NavigationLink>
+                </Link>
               </li>
             </ul>
           </div>
@@ -103,9 +114,27 @@ const Footer = () => {
               &copy; {currentYear} epawoninglabel.nl - Alle rechten voorbehouden
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <NavigationLink to="/privacy-beleid" className="text-gray-500 hover:text-epa-green text-sm">Privacybeleid</NavigationLink>
-              <NavigationLink to="/algemene-voorwaarden" className="text-gray-500 hover:text-epa-green text-sm">Algemene voorwaarden</NavigationLink>
-              <NavigationLink to="/sitemap" className="text-gray-500 hover:text-epa-green text-sm">Sitemap</NavigationLink>
+              <Link 
+                to="/privacy-beleid" 
+                className="text-gray-500 hover:text-epa-green text-sm"
+                onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+              >
+                Privacybeleid
+              </Link>
+              <Link 
+                to="/algemene-voorwaarden" 
+                className="text-gray-500 hover:text-epa-green text-sm"
+                onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+              >
+                Algemene voorwaarden
+              </Link>
+              <Link 
+                to="/sitemap" 
+                className="text-gray-500 hover:text-epa-green text-sm"
+                onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+              >
+                Sitemap
+              </Link>
             </div>
           </div>
         </div>

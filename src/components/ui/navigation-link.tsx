@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface NavigationLinkProps {
@@ -12,6 +13,15 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   
+  // Force scroll to top when certain routes are visited
+  useEffect(() => {
+    // This effect will run on component mount and when location changes
+    if (location.pathname === '/werkgebieden') {
+      window.scrollTo(0, 0);
+      console.log('Scrolling to top for werkgebieden page');
+    }
+  }, [location.pathname]);
+  
   // For regular links that aren't hash links
   if (!to.includes('#')) {
     return (
@@ -20,8 +30,11 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
         className={className} 
         onClick={(e) => {
           // Always scroll to top for regular page navigation
-          window.scrollTo(0, 0);
-          console.log(`Regular link clicked: ${to}, scrolling to top`);
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+          console.log(`Regular link clicked: ${to}, forcefully scrolling to top`);
           if (onClick) onClick();
         }}
       >
@@ -125,9 +138,12 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
       to={to} 
       className={className} 
       onClick={(e) => {
-        // Always scroll to top for regular page navigation
-        window.scrollTo(0, 0);
-        console.log(`Fallback regular link clicked: ${to}, scrolling to top`);
+        // Force scroll to top with smooth behavior
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        console.log(`Fallback regular link clicked: ${to}, forcefully scrolling to top`);
         if (onClick) onClick();
       }}
     >
