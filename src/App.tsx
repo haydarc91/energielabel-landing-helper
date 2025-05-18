@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
@@ -28,12 +27,16 @@ import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import CreateAdminUser from "./pages/CreateAdminUser";
 
-// Scroll to top when navigating to a new page
+// Enhanced ScrollToTop component with debugging
 function ScrollToTop() {
   const { pathname } = useLocation();
   
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Force scroll to top with a small delay to ensure it happens after render
+    setTimeout(() => {
+      console.log(`Route changed to: ${pathname}, forcing scroll to top`);
+      window.scrollTo(0, 0);
+    }, 100);
   }, [pathname]);
   
   return null;

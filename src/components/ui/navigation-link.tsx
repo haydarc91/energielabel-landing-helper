@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -22,21 +21,21 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
     }
   }, [location.pathname]);
   
+  // Handle all regular page navigation links (not hash links)
+  const handleRegularNavigation = () => {
+    // Always scroll to top for regular page navigation
+    window.scrollTo(0, 0);
+    console.log(`Regular link clicked: ${to}, forcefully scrolling to top`);
+    if (onClick) onClick();
+  };
+  
   // For regular links that aren't hash links
   if (!to.includes('#')) {
     return (
       <Link 
         to={to} 
         className={className} 
-        onClick={(e) => {
-          // Always scroll to top for regular page navigation
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-          console.log(`Regular link clicked: ${to}, forcefully scrolling to top`);
-          if (onClick) onClick();
-        }}
+        onClick={handleRegularNavigation}
       >
         {children}
       </Link>
@@ -137,15 +136,7 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
     <Link 
       to={to} 
       className={className} 
-      onClick={(e) => {
-        // Force scroll to top with smooth behavior
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-        console.log(`Fallback regular link clicked: ${to}, forcefully scrolling to top`);
-        if (onClick) onClick();
-      }}
+      onClick={handleRegularNavigation}
     >
       {children}
     </Link>

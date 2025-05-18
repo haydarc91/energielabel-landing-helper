@@ -8,12 +8,13 @@ const Footer = () => {
   const phoneNumber = '085-250 2302';
   const whatsappNumber = '31852502302'; // Without spaces or dashes for WhatsApp link
   
-  const handleWerkgebiedenClick = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-    console.log("Werkgebieden clicked in footer, explicitly scrolling to top");
+  // Force scroll to top for werkgebieden link
+  const handlePageNavigation = () => {
+    // Use setTimeout to ensure this runs after the navigation occurs
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      console.log("Force scroll to top after navigation");
+    }, 0);
   };
 
   return (
@@ -70,14 +71,19 @@ const Footer = () => {
                 </NavigationLink>
               </li>
               <li>
-                <Link 
-                  to="/werkgebieden" 
+                {/* Use direct window.location to ensure page refresh and proper scroll behavior */}
+                <a
+                  href="/werkgebieden"
                   className="hover:text-epa-green flex items-center"
-                  onClick={handleWerkgebiedenClick}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log("Werkgebieden clicked in footer - using direct navigation");
+                    window.location.href = "/werkgebieden";
+                  }}
                 >
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Werkgebieden
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -114,27 +120,39 @@ const Footer = () => {
               &copy; {currentYear} epawoninglabel.nl - Alle rechten voorbehouden
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link 
-                to="/privacy-beleid" 
+              <a 
+                href="/privacy-beleid" 
                 className="text-gray-500 hover:text-epa-green text-sm"
-                onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+                onClick={(e) => {
+                  e.preventDefault();
+                  console.log("Privacy policy link clicked - using direct navigation");
+                  window.location.href = "/privacy-beleid";
+                }}
               >
                 Privacybeleid
-              </Link>
-              <Link 
-                to="/algemene-voorwaarden" 
+              </a>
+              <a 
+                href="/algemene-voorwaarden" 
                 className="text-gray-500 hover:text-epa-green text-sm"
-                onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+                onClick={(e) => {
+                  e.preventDefault();
+                  console.log("Terms link clicked - using direct navigation");
+                  window.location.href = "/algemene-voorwaarden";
+                }}
               >
                 Algemene voorwaarden
-              </Link>
-              <Link 
-                to="/sitemap" 
+              </a>
+              <a 
+                href="/sitemap" 
                 className="text-gray-500 hover:text-epa-green text-sm"
-                onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+                onClick={(e) => {
+                  e.preventDefault();
+                  console.log("Sitemap link clicked - using direct navigation");
+                  window.location.href = "/sitemap";
+                }}
               >
                 Sitemap
-              </Link>
+              </a>
             </div>
           </div>
         </div>
