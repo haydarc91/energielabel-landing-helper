@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Navigate, useNavigate } from 'react-router-dom';
 import Logo from '@/components/Logo';
+import { Toaster } from 'sonner';
 
 const Admin = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
@@ -20,22 +21,29 @@ const Admin = () => {
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
   const [session, setSession] = useState<any>(null);
   const [isSessionLoading, setIsSessionLoading] = useState(true);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Get initial session
-    const getSession = async () => {
+    // Check both Supabase auth and direct admin auth
+    const checkAuthentication = async () => {
+      // Check Supabase session
       const { data } = await supabase.auth.getSession();
       setSession(data.session);
+      
+      // Check direct admin authentication
+      const adminAuth = localStorage.getItem('adminAuthenticated') === 'true';
+      setIsAdminAuthenticated(adminAuth);
+      
       setIsSessionLoading(false);
 
-      if (data.session) {
+      if (data.session || adminAuth) {
         fetchSubmissions();
         fetchWebContent();
       }
     };
 
-    getSession();
+    checkAuthentication();
 
     // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
@@ -101,13 +109,15 @@ const Admin = () => {
   };
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error signing out:', error);
-      toast.error('Kon niet uitloggen');
-      return;
-    }
+    // Sign out from Supabase (if logged in through Supabase)
+    await supabase.auth.signOut();
+    
+    // Clear direct admin authentication
+    localStorage.removeItem('adminAuthenticated');
+    
+    // Redirect to login page
     navigate('/login');
+    toast.info('Je bent uitgelogd');
   };
 
   // If session is loading, show loading state
@@ -122,13 +132,14 @@ const Admin = () => {
     );
   }
 
-  // If no session, redirect to login
-  if (!session) {
+  // If no session and no direct admin authentication, redirect to login
+  if (!session && !isAdminAuthenticated) {
     return <Navigate to="/login" />;
   }
   
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toaster position="top-right" />
       <div className="bg-epa-green py-6 px-4 sm:px-6 lg:px-8 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center">

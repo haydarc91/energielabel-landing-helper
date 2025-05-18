@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
@@ -27,6 +28,9 @@ import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import CreateAdminUser from "./pages/CreateAdminUser";
 
+// Add Sonner Toaster
+import { Toaster } from "sonner";
+
 // Enhanced ScrollToTop component with debugging
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -48,6 +52,7 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/werkgebieden" element={<Werkgebieden />} />

@@ -4,13 +4,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 import Logo from '@/components/Logo';
-import { Lock } from 'lucide-react';
+import { Lock, AlertCircle } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [directPassword, setDirectPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [directLoading, setDirectLoading] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -42,12 +45,38 @@ const Login = () => {
       });
       
       if (error) throw error;
+      
+      toast.success("Succesvol ingelogd");
       navigate('/admin');
     } catch (error: any) {
       console.error('Error logging in:', error.message);
       setError(error.message);
+      toast.error(`Inloggen mislukt: ${error.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDirectLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDirectLoading(true);
+    setError(null);
+    
+    try {
+      // Simple hard-coded password for direct access
+      if (directPassword === 'epa2024admin') {
+        localStorage.setItem('adminAuthenticated', 'true');
+        toast.success("Direct ingelogd als administrator");
+        navigate('/admin');
+      } else {
+        throw new Error("Ongeldig wachtwoord");
+      }
+    } catch (error: any) {
+      console.error('Direct login error:', error.message);
+      setError(error.message);
+      toast.error(`Inloggen mislukt: ${error.message}`);
+    } finally {
+      setDirectLoading(false);
     }
   };
 
@@ -71,15 +100,47 @@ const Login = () => {
         
         <div className="mt-8 space-y-6">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
               {error}
             </div>
           )}
           
-          <form className="mt-8 space-y-6" onSubmit={handleEmailLogin}>
-            <div className="space-y-4 rounded-md shadow-sm">
+          <div className="border-t border-b py-4">
+            <p className="text-center text-gray-500 text-sm mb-4">Directe toegang</p>
+            <form className="space-y-4" onSubmit={handleDirectLogin}>
               <div>
-                <label htmlFor="email-address" className="sr-only">E-mailadres</label>
+                <label htmlFor="direct-password" className="block text-sm font-medium text-gray-700">
+                  Admin wachtwoord
+                </label>
+                <Input
+                  id="direct-password"
+                  name="direct-password"
+                  type="password"
+                  required
+                  placeholder="Voer admin wachtwoord in"
+                  value={directPassword}
+                  onChange={(e) => setDirectPassword(e.target.value)}
+                  className="mt-1"
+                />
+                <p className="text-xs text-gray-500 mt-1">Gebruik het admin wachtwoord: epa2024admin</p>
+              </div>
+              <Button
+                type="submit"
+                disabled={directLoading}
+                className="w-full bg-epa-green hover:bg-epa-green-dark"
+              >
+                {directLoading ? 'Bezig met inloggen...' : 'Direct inloggen'}
+              </Button>
+            </form>
+          </div>
+
+          <div>
+            <p className="text-center text-gray-500 text-sm mb-4">OF</p>
+            <p className="text-center text-gray-500 text-sm mb-4">Inloggen met Supabase account</p>
+            <form className="space-y-4" onSubmit={handleEmailLogin}>
+              <div>
+                <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">E-mailadres</label>
                 <Input
                   id="email-address"
                   name="email"
@@ -89,11 +150,11 @@ const Login = () => {
                   placeholder="E-mailadres"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-epa-green focus:border-epa-green focus:z-10 sm:text-sm"
+                  className="mt-1"
                 />
               </div>
               <div>
-                <label htmlFor="password" className="sr-only">Wachtwoord</label>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Wachtwoord</label>
                 <Input
                   id="password"
                   name="password"
@@ -103,24 +164,19 @@ const Login = () => {
                   placeholder="Wachtwoord"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-epa-green focus:border-epa-green focus:z-10 sm:text-sm"
+                  className="mt-1"
                 />
               </div>
-            </div>
-
-            <div>
               <Button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-epa-green hover:bg-epa-green-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-epa-green"
+                className="w-full bg-epa-green hover:bg-epa-green-dark flex items-center justify-center gap-2"
               >
-                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <Lock className="h-5 w-5 text-epa-green-light group-hover:text-epa-green-light" aria-hidden="true" />
-                </span>
-                {loading ? 'Bezig met inloggen...' : 'Inloggen'}
+                <Lock className="h-4 w-4" />
+                {loading ? 'Bezig met inloggen...' : 'Inloggen met account'}
               </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
