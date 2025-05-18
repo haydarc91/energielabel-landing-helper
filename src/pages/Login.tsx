@@ -123,7 +123,6 @@ const Login = () => {
                   onChange={(e) => setDirectPassword(e.target.value)}
                   className="mt-1"
                 />
-                <p className="text-xs text-gray-500 mt-1">Gebruik het admin wachtwoord: epa2024admin</p>
               </div>
               <Button
                 type="submit"
