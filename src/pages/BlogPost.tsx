@@ -160,7 +160,7 @@ const BlogPost = () => {
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <div className="container mx-auto px-4 py-20">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto text-left">
             <h1 className="text-4xl font-bold mb-6 text-gray-900">Artikel niet gevonden</h1>
             <p className="text-xl text-gray-600 mb-8">Het artikel dat u zoekt bestaat niet of is verplaatst.</p>
             <Link 
@@ -190,7 +190,7 @@ const BlogPost = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center">
-          <div className="max-w-4xl">
+          <div className="max-w-4xl text-left">
             <Link 
               to="/blog" 
               className="inline-flex items-center text-white/80 hover:text-white mb-4 text-sm font-medium transition-colors"
@@ -198,11 +198,11 @@ const BlogPost = () => {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Terug naar blog
             </Link>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight text-left">
               {post.title}
             </h1>
             {post.subtitle && (
-              <p className="text-xl text-white/90 font-medium max-w-3xl">
+              <p className="text-xl text-white/90 font-medium max-w-3xl text-left">
                 {post.subtitle}
               </p>
             )}
@@ -235,8 +235,8 @@ const BlogPost = () => {
       {/* Article Content */}
       <article className="py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg max-w-none">
+          <div className="max-w-4xl mx-auto text-left">
+            <div className="prose prose-lg max-w-none text-left">
               {formatContent(post.content)}
             </div>
 
@@ -244,7 +244,7 @@ const BlogPost = () => {
             <div className="mt-12 bg-gradient-to-br from-epa-green to-green-600 rounded-2xl p-8 text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12"></div>
-              <div className="relative">
+              <div className="relative text-left">
                 <h3 className="text-2xl md:text-3xl font-bold mb-4">
                   Energielabel nodig voor uw woning?
                 </h3>
@@ -278,7 +278,7 @@ const BlogPost = () => {
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8 text-gray-900">
+              <h2 className="text-3xl font-bold mb-8 text-gray-900 text-left">
                 Gerelateerde Artikelen
               </h2>
               <div className="grid md:grid-cols-3 gap-8">
@@ -292,7 +292,7 @@ const BlogPost = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 text-left">
                       <h3 className="text-xl font-bold mb-3 text-gray-900 leading-tight">
                         <Link 
                           to={`/blog/${extractSlug(relatedPost.page_path)}`}
