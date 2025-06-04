@@ -30,6 +30,7 @@ const Blog = () => {
         .from('website_content')
         .select('*')
         .eq('section_name', 'blog_article')
+        .neq('page_path', '/blog/alle-kosten-voor-een-energielabel-op-een-rij')
         .order('last_updated', { ascending: false });
 
       if (error) throw error;

@@ -54,6 +54,7 @@ const BlogPost = () => {
         .select('*')
         .eq('section_name', 'blog_article')
         .neq('page_path', `/blog/${slug}`)
+        .neq('page_path', '/blog/alle-kosten-voor-een-energielabel-op-een-rij')
         .limit(3);
 
       if (error) throw error;
