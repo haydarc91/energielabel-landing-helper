@@ -129,9 +129,6 @@ const Navbar = () => {
               <NavigationLink to="#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
                 FAQ
               </NavigationLink>
-              <Link to="/blog" className="text-sm font-medium hover:text-epa-green transition-colors">
-                Blog
-              </Link>
             </>
           )}
           <NavigationLink 
@@ -325,13 +322,6 @@ const Navbar = () => {
               >
                 FAQ
               </NavigationLink>
-              <Link 
-                to="/blog" 
-                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Blog
-              </Link>
             </>
           )}
           <NavigationLink 
