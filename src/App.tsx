@@ -10,6 +10,10 @@ import PrivacyBeleid from "./pages/PrivacyBeleid";
 import AlgemeneVoorwaarden from "./pages/AlgemeneVoorwaarden";
 import Sitemap from "./pages/Sitemap";
 
+// Import blog pages
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+
 // Import city landing pages
 import AmersfoortPage from "./pages/cities/AmersfoortLanding";
 import AmsterdamPage from "./pages/cities/AmsterdamLanding";
@@ -59,6 +63,10 @@ function App() {
         <Route path="/privacy-beleid" element={<PrivacyBeleid />} />
         <Route path="/algemene-voorwaarden" element={<AlgemeneVoorwaarden />} />
         <Route path="/sitemap" element={<Sitemap />} />
+        
+        {/* Blog routes */}
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         
         {/* Old routes with redirects to new SEO-friendly URLs */}
         <Route path="/werkgebieden/amersfoort" element={<Navigate to="/energielabel-amersfoort-aanvragen" replace />} />

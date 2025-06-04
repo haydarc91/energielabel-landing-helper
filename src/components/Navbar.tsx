@@ -14,6 +14,7 @@ const Navbar = () => {
   const isLandingPage = location.pathname.includes('/werkgebieden/');
   const isWerkgebiedenPage = location.pathname === '/werkgebieden';
   const isHomePage = location.pathname === '/';
+  const isBlogPage = location.pathname.startsWith('/blog');
   
   useEffect(() => {
     const handleScroll = () => {
@@ -60,7 +61,23 @@ const Navbar = () => {
             </div>
           )}
 
-          {isWerkgebiedenPage ? (
+          {isBlogPage ? (
+            <>
+              <Link to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
+                <Home className="h-4 w-4" />
+                <span>Home</span>
+              </Link>
+              <NavigationLink to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Voordelen
+              </NavigationLink>
+              <NavigationLink to="/#process" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Werkwijze
+              </NavigationLink>
+              <NavigationLink to="/#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
+                FAQ
+              </NavigationLink>
+            </>
+          ) : isWerkgebiedenPage ? (
             <>
               <Link to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
                 <Home className="h-4 w-4" />
@@ -112,6 +129,9 @@ const Navbar = () => {
               <NavigationLink to="#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
                 FAQ
               </NavigationLink>
+              <Link to="/blog" className="text-sm font-medium hover:text-epa-green transition-colors">
+                Blog
+              </Link>
             </>
           )}
           <NavigationLink 
@@ -165,7 +185,39 @@ const Navbar = () => {
             </div>
           )}
 
-          {isWerkgebiedenPage ? (
+          {isBlogPage ? (
+            <>
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Home className="h-4 w-4" />
+                <span>Home</span>
+              </Link>
+              <NavigationLink 
+                to="/#features" 
+                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Voordelen
+              </NavigationLink>
+              <NavigationLink 
+                to="/#process" 
+                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Werkwijze
+              </NavigationLink>
+              <NavigationLink 
+                to="/#faq" 
+                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                FAQ
+              </NavigationLink>
+            </>
+          ) : isWerkgebiedenPage ? (
             <>
               <Link 
                 to="/" 
@@ -273,6 +325,13 @@ const Navbar = () => {
               >
                 FAQ
               </NavigationLink>
+              <Link 
+                to="/blog" 
+                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
             </>
           )}
           <NavigationLink 

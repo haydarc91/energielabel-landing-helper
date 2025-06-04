@@ -12,6 +12,7 @@ import AboutUs from '@/components/AboutUs';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Send, ArrowUp, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -168,6 +169,27 @@ const Index = () => {
                 Online
               </span>
             </a>
+          </div>
+        </div>
+        
+        {/* Blog Section */}
+        <div className="py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4 text-gray-900">
+                Energielabel Blog
+              </h2>
+              <p className="text-lg text-gray-600 mb-8">
+                Alles wat u moet weten over energielabels en energiebesparing
+              </p>
+              <Link 
+                to="/blog"
+                className="inline-flex items-center bg-epa-green text-white px-6 py-3 rounded-lg hover:bg-epa-green-dark transition-colors font-medium"
+              >
+                Bekijk alle artikelen
+                <Send className="ml-2 h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
         
