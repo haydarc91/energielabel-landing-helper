@@ -19,6 +19,16 @@ const Werkgebieden = () => {
     { name: "Hilversum", url: "/energielabel-hilversum-aanvragen" },
     { name: "Zwolle", url: "/energielabel-zwolle-aanvragen" },
     { name: "Amstelveen", url: "/energielabel-amstelveen-aanvragen" },
+    { name: "Ede", url: "/energielabel-ede-aanvragen" },
+    { name: "Leiden", url: "/energielabel-leiden-aanvragen" },
+    { name: "Haarlem", url: "/energielabel-haarlem-aanvragen" },
+    { name: "Zaanstad", url: "/energielabel-zaanstad-aanvragen" },
+    { name: "Nieuwegein", url: "/energielabel-nieuwegein-aanvragen" },
+    { name: "Hoofddorp", url: "/energielabel-hoofddorp-aanvragen" },
+    { name: "Almere", url: "/energielabel-almere-aanvragen" },
+    { name: "Zoetermeer", url: "/energielabel-zoetermeer-aanvragen" },
+    { name: "Gouda", url: "/energielabel-gouda-aanvragen" },
+    { name: "Veenendaal", url: "/energielabel-veenendaal-aanvragen" },
   ];
 
   return (
