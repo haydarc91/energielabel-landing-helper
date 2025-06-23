@@ -27,6 +27,18 @@ import RotterdamPage from "./pages/cities/RotterdamLanding";
 import UtrechtPage from "./pages/cities/UtrechtLanding";
 import ZwollePage from "./pages/cities/ZwolleLanding";
 
+// Import new city landing pages
+import EdePage from "./pages/cities/EdeLanding";
+import LeidenPage from "./pages/cities/LeidenLanding";
+import HaarlemPage from "./pages/cities/HaarlemLanding";
+import ZaanstadPage from "./pages/cities/ZaanstadLanding";
+import NieuwegeinPage from "./pages/cities/NieuwegeinLanding";
+import HoofddorpPage from "./pages/cities/HoofddorpLanding";
+import AlmerePage from "./pages/cities/AlmereLanding";
+import ZoetermeerPage from "./pages/cities/ZoetermeerLanding";
+import GoudaPage from "./pages/cities/GoudaLanding";
+import VeenendaalPage from "./pages/cities/VeenendaalLanding";
+
 // Admin pages
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
@@ -93,6 +105,18 @@ function App() {
         <Route path="/energielabel-rotterdam-aanvragen" element={<RotterdamPage />} />
         <Route path="/energielabel-utrecht-aanvragen" element={<UtrechtPage />} />
         <Route path="/energielabel-zwolle-aanvragen" element={<ZwollePage />} />
+        
+        {/* New SEO-friendly routes */}
+        <Route path="/energielabel-ede-aanvragen" element={<EdePage />} />
+        <Route path="/energielabel-leiden-aanvragen" element={<LeidenPage />} />
+        <Route path="/energielabel-haarlem-aanvragen" element={<HaarlemPage />} />
+        <Route path="/energielabel-zaanstad-aanvragen" element={<ZaanstadPage />} />
+        <Route path="/energielabel-nieuwegein-aanvragen" element={<NieuwegeinPage />} />
+        <Route path="/energielabel-hoofddorp-aanvragen" element={<HoofddorpPage />} />
+        <Route path="/energielabel-almere-aanvragen" element={<AlmerePage />} />
+        <Route path="/energielabel-zoetermeer-aanvragen" element={<ZoetermeerPage />} />
+        <Route path="/energielabel-gouda-aanvragen" element={<GoudaPage />} />
+        <Route path="/energielabel-veenendaal-aanvragen" element={<VeenendaalPage />} />
         
         {/* Legacy route for AmersfoortLanding */}
         <Route path="/werkgebieden/amersfoort" element={<AmersfoortLanding />} />
