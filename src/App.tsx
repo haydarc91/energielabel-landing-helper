@@ -46,6 +46,7 @@ import CreateAdminUser from "./pages/CreateAdminUser";
 
 // Add Sonner Toaster
 import { Toaster } from "sonner";
+import StickyMobileCTA from "./components/StickyMobileCTA";
 
 // Enhanced ScrollToTop component with debugging
 function ScrollToTop() {
@@ -129,6 +130,7 @@ function App() {
         {/* 404 route */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <StickyMobileCTA />
     </BrowserRouter>
   );
 }

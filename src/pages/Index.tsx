@@ -12,6 +12,7 @@ import AboutUs from '@/components/AboutUs';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Send, ArrowUp, MessageSquare } from 'lucide-react';
+import Seo from '@/components/Seo';
 
 const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -21,36 +22,29 @@ const Index = () => {
   const whatsappNumber = '31852502302'; // Without spaces or dashes for WhatsApp link
 
   useEffect(() => {
-    document.title = "EPA Woninglabel | Officieel Energielabel Vanaf €285";
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute("content", "Krijg snel en professioneel een officieel energielabel voor uw woning. EPA gecertificeerde adviseurs, geldig voor 10 jaar en geregistreerd bij RVO.");
-    }
-    
-    const handleScroll = () => {
-      const newScrollPosition = window.scrollY;
-      setScrollPosition(newScrollPosition);
-      
-      // Debugging - log which sections are visible
-      console.log("Scroll position:", newScrollPosition);
-      console.log("Features section position:", document.getElementById('features')?.offsetTop);
-      
-      const contactSection = document.getElementById('contact-section');
-      const contactPosition = contactSection?.offsetTop || 0;
-      
-      setShowScrollTop(newScrollPosition > 300);
-      
-      setShowFloatingCTA(
-        newScrollPosition > 600 && 
-        newScrollPosition < (contactPosition - 300)
-      );
-    };
+    const handleScroll = (() => {
+      let ticking = false;
+      return () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const newScrollPosition = window.scrollY;
+            setScrollPosition(newScrollPosition);
+            const contactSection = document.getElementById('contact-section');
+            const contactPosition = contactSection?.offsetTop || 0;
+            setShowScrollTop(newScrollPosition > 300);
+            setShowFloatingCTA(
+              newScrollPosition > 600 && newScrollPosition < contactPosition - 300
+            );
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+    })();
 
-    window.addEventListener('scroll', handleScroll);
-    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll as EventListener);
     };
   }, []);
 
@@ -69,6 +63,11 @@ const Index = () => {
     <div className="min-h-screen w-full overflow-x-hidden bg-white">
       <Navbar />
       <main className="w-full">
+        <Seo
+          title="EPA Woninglabel | Officieel Energielabel Vanaf €285"
+          description="Krijg snel en professioneel een officieel energielabel voor uw woning. EPA gecertificeerde adviseurs, geldig voor 10 jaar en geregistreerd bij RVO."
+          canonical="https://www.epawoninglabel.nl/"
+        />
         <Hero />
         <Features />
         

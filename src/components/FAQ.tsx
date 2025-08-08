@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -80,6 +80,25 @@ const FAQ = () => {
       answer: "Ja, het energielabel is gekoppeld aan de woning en niet aan de eigenaar. Bij verkoop van de woning gaat het label automatisch over op de nieuwe eigenaar. Het energielabel is 10 jaar geldig vanaf de registratiedatum."
     }
   ];
+  // Build FAQ schema
+  useEffect(() => {
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: { '@type': 'Answer', text: f.answer },
+      })),
+    };
+    // Remove existing
+    document.querySelectorAll('script[data-faq-json="true"]').forEach((el) => el.parentElement?.removeChild(el));
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-faq-json', 'true');
+    script.text = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+  }, []);
 
   return (
     <section id="faq" ref={sectionRef} className="section-padding">

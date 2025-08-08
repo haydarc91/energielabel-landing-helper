@@ -43,6 +43,7 @@ const CityContactSection = ({
               setCalculatedPrice={setCalculatedPrice}
               addressDetails={addressDetails}
               setAddressDetails={setAddressDetails}
+              prefillCity={city}
             />
           </div>
           <div className="lg:col-span-2">

@@ -98,7 +98,68 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <!-- Old URLs with lower priority for search engines -->
+  <!-- Newly added city landing pages -->
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-ede-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-leiden-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-haarlem-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-zaanstad-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-nieuwegein-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-hoofddorp-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-almere-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-zoetermeer-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-gouda-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.epawoninglabel.nl/energielabel-veenendaal-aanvragen</loc>
+    <lastmod>2025-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
   <url>
     <loc>https://www.epawoninglabel.nl/werkgebieden/amersfoort</loc>
     <lastmod>2024-05-17</lastmod>

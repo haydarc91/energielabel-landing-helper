@@ -24,6 +24,13 @@ const ContactForm = ({
   setCalculatedPrice,
   addressDetails,
   setAddressDetails,
+  prefillCity,
+}: {
+  calculatedPrice: number | null;
+  setCalculatedPrice: React.Dispatch<React.SetStateAction<number | null>>;
+  addressDetails: Address | null;
+  setAddressDetails: React.Dispatch<React.SetStateAction<Address | null>>;
+  prefillCity?: string;
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -45,6 +52,16 @@ const ContactForm = ({
   const [isEditingSurfaceArea, setIsEditingSurfaceArea] = useState(false);
   const [manualSurfaceArea, setManualSurfaceArea] = useState<string>('');
   const [showThankYouMessage, setShowThankYouMessage] = useState(false);
+
+  useEffect(() => {
+    // Prefill message with city context if provided
+    if (prefillCity && !formData.message) {
+      setFormData((prev) => ({
+        ...prev,
+        message: `Aanvraag energielabel in ${prefillCity}`,
+      }));
+    }
+  }, [prefillCity]);
 
   useEffect(() => {
     const { postcode, houseNumber } = formData;
