@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
 import Index from "./pages/Index";
@@ -52,12 +52,9 @@ import StickyMobileCTA from "./components/StickyMobileCTA";
 function ScrollToTop() {
   const { pathname } = useLocation();
   
-  useEffect(() => {
-    // Force scroll to top with a small delay to ensure it happens after render
-    setTimeout(() => {
-      console.log(`Route changed to: ${pathname}, forcing scroll to top`);
-      window.scrollTo(0, 0);
-    }, 100);
+  useLayoutEffect(() => {
+    console.log(`Route changed to: ${pathname}, forcing scroll to top`);
+    window.scrollTo({ top: 0, left: 0 });
   }, [pathname]);
   
   return null;

@@ -1,10 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { supabase } from "@/integrations/supabase/client";
 import { Calendar, ArrowLeft, Phone, Mail, Clock, User } from 'lucide-react';
+import NavigationLink from '../components/ui/navigation-link';
 
 interface BlogPost {
   id: string;
@@ -163,13 +164,13 @@ const BlogPost = () => {
           <div className="max-w-4xl mx-auto text-left">
             <h1 className="text-4xl font-bold mb-6 text-gray-900">Artikel niet gevonden</h1>
             <p className="text-xl text-gray-600 mb-8">Het artikel dat u zoekt bestaat niet of is verplaatst.</p>
-            <Link 
+            <NavigationLink 
               to="/blog" 
               className="inline-flex items-center bg-epa-green text-white px-6 py-3 rounded-lg hover:bg-epa-green-dark transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Terug naar blog
-            </Link>
+            </NavigationLink>
           </div>
         </div>
         <Footer />
@@ -187,17 +188,23 @@ const BlogPost = () => {
           src={getHeroImage(slug || '')}
           alt={post.title || 'Energielabel artikel'}
           className="absolute inset-0 w-full h-full object-cover opacity-60"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          sizes="100vw"
+          width={1200}
+          height={600}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="max-w-4xl text-left">
-            <Link 
+            <NavigationLink 
               to="/blog" 
               className="inline-flex items-center text-white/80 hover:text-white mb-4 text-sm font-medium transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Terug naar blog
-            </Link>
+            </NavigationLink>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight text-left">
               {post.title}
             </h1>
@@ -253,12 +260,12 @@ const BlogPost = () => {
                   Snel, betrouwbaar en tegen een scherpe prijs.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link 
+                  <NavigationLink 
                     to="/#contact-section"
                     className="inline-flex items-center justify-center bg-white text-epa-green px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors text-lg shadow-lg"
                   >
                     Direct Aanvragen
-                  </Link>
+                  </NavigationLink>
                   <a 
                     href="tel:085-250 2302"
                     className="inline-flex items-center justify-center border-2 border-white text-white px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-epa-green transition-colors text-lg"
@@ -289,17 +296,22 @@ const BlogPost = () => {
                         src={getHeroImage(extractSlug(relatedPost.page_path))}
                         alt={relatedPost.title || 'Energielabel artikel'}
                         className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        width={768}
+                        height={384}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                     </div>
                     <div className="p-6 text-left">
                       <h3 className="text-xl font-bold mb-3 text-gray-900 leading-tight">
-                        <Link 
+                        <NavigationLink 
                           to={`/blog/${extractSlug(relatedPost.page_path)}`}
                           className="hover:text-epa-green transition-colors"
                         >
                           {relatedPost.title}
-                        </Link>
+                        </NavigationLink>
                       </h3>
                       {relatedPost.subtitle && (
                         <p className="text-gray-600 mb-4 leading-relaxed">
@@ -308,13 +320,13 @@ const BlogPost = () => {
                             : relatedPost.subtitle}
                         </p>
                       )}
-                      <Link 
+                      <NavigationLink 
                         to={`/blog/${extractSlug(relatedPost.page_path)}`}
                         className="inline-flex items-center text-epa-green hover:text-epa-green-dark font-semibold transition-colors"
                       >
                         Lees meer
                         <ArrowLeft className="h-4 w-4 ml-1 rotate-180" />
-                      </Link>
+                      </NavigationLink>
                     </div>
                   </article>
                 ))}

@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import NavigationLink from '../components/ui/navigation-link';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { supabase } from "@/integrations/supabase/client";
@@ -149,9 +149,9 @@ const Blog = () => {
                         </div>
                         
                         <h2 className="text-xl font-bold mb-4 text-gray-900 group-hover:text-epa-green transition-colors leading-tight">
-                          <Link to={`/blog/${extractSlug(post.page_path)}`}>
+                          <NavigationLink to={`/blog/${extractSlug(post.page_path)}`}>
                             {post.title}
-                          </Link>
+                          </NavigationLink>
                         </h2>
                         
                         {post.subtitle && (
@@ -164,13 +164,13 @@ const Blog = () => {
                           {getExcerpt(post.content)}
                         </p>
                         
-                        <Link 
+                        <NavigationLink 
                           to={`/blog/${extractSlug(post.page_path)}`}
                           className="inline-flex items-center bg-epa-green text-white px-6 py-3 rounded-lg font-medium hover:bg-epa-green-dark transition-all duration-200 group-hover:shadow-lg"
                         >
                           Lees artikel
                           <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </Link>
+                        </NavigationLink>
                       </div>
                     </article>
                   ))}
