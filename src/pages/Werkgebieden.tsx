@@ -4,9 +4,10 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { MapPin, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Werkgebieden = () => {
+  const navigate = useNavigate();
   const cities = [
     { name: "Amersfoort", url: "/energielabel-amersfoort-aanvragen" },
     { name: "Utrecht", url: "/energielabel-utrecht-aanvragen" },
@@ -77,7 +78,7 @@ const Werkgebieden = () => {
                 <Button 
                   size="lg"
                   className="bg-epa-green hover:bg-epa-green-dark text-white"
-                  onClick={() => window.location.href = "/#contact"}
+                  onClick={() => navigate('/#contact')}
                 >
                   Vraag direct aan
                 </Button>

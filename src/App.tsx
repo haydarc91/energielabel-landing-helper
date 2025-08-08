@@ -48,15 +48,41 @@ import CreateAdminUser from "./pages/CreateAdminUser";
 import { Toaster } from "sonner";
 import StickyMobileCTA from "./components/StickyMobileCTA";
 
-// Enhanced ScrollToTop component with debugging
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  
+// Global scroll manager: scroll-to-top and hash-anchor scrolling
+function ScrollManager() {
+  const location = useLocation();
+
   useLayoutEffect(() => {
-    console.log(`Route changed to: ${pathname}, forcing scroll to top`);
-    window.scrollTo({ top: 0, left: 0 });
-  }, [pathname]);
-  
+    const full = `${location.pathname}${location.hash || ''}`;
+    console.log('Route changed to:', full, 'forcing scroll handling');
+
+    if (location.hash) {
+      const targetId = location.hash.slice(1);
+
+      const tryScroll = () => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          return true;
+        }
+        return false;
+      };
+
+      // Try immediately and briefly after to allow DOM to render
+      if (!tryScroll()) {
+        const start = Date.now();
+        const interval = setInterval(() => {
+          if (tryScroll() || Date.now() - start > 1200) {
+            clearInterval(interval);
+          }
+        }, 50);
+      }
+    } else {
+      // Default: scroll to top on normal route changes
+      window.scrollTo({ top: 0, left: 0 });
+    }
+  }, [location.pathname, location.hash]);
+
   return null;
 }
 
@@ -65,7 +91,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <ScrollToTop />
+      <ScrollManager />
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Index />} />

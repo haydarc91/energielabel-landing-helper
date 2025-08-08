@@ -4,9 +4,10 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { MapPin, Check, Star, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AmersfoortLanding = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -31,7 +32,7 @@ const AmersfoortLanding = () => {
                   <Button 
                     size="lg" 
                     className="bg-epa-green hover:bg-epa-green-dark text-white"
-                    onClick={() => window.location.href = "/#contact"}
+                    onClick={() => navigate('/#contact')}
                   >
                     Direct aanvragen
                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -40,7 +41,7 @@ const AmersfoortLanding = () => {
                     size="lg"
                     variant="outline" 
                     className="border-gray-300"
-                    onClick={() => window.location.href = "/#process"}
+                    onClick={() => navigate('/#process')}
                   >
                     Bekijk werkwijze
                   </Button>

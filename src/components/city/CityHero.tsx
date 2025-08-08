@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { MapPin, Check, ArrowRight, Home, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface CityHeroProps {
   city: string;
@@ -10,6 +10,7 @@ interface CityHeroProps {
 }
 
 const CityHero = ({ city, image }: CityHeroProps) => {
+  const navigate = useNavigate();
   return (
     <section className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
       <div className="max-w-6xl mx-auto px-6 md:px-8 lg:px-12">
@@ -56,7 +57,7 @@ const CityHero = ({ city, image }: CityHeroProps) => {
                 size="lg"
                 variant="outline" 
                 className="border-gray-300"
-                onClick={() => window.location.href = "/#process"}
+                onClick={() => navigate('/#process')}
               >
                 Bekijk werkwijze
               </Button>
