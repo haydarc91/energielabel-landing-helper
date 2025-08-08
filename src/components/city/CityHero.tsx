@@ -82,7 +82,7 @@ const CityHero = ({ city, image }: CityHeroProps) => {
               alt={`Energielabel woning aanvragen in ${city}`}
               className="w-full h-full object-cover"
               loading="eager"
-              fetchpriority="high"
+              fetchPriority="high"
               decoding="async"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
