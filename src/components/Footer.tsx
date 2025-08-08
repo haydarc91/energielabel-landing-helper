@@ -87,10 +87,10 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <Link to="/blog" className="hover:text-epa-green flex items-center">
+                <NavigationLink to="/blog" className="hover:text-epa-green flex items-center">
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Blog
-                </Link>
+                </NavigationLink>
               </li>
             </ul>
           </div>

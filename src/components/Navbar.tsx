@@ -45,9 +45,9 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center">
+        <NavigationLink to="/" className="flex items-center">
           <span className="font-bold text-xl md:text-2xl text-epa-green-dark">epawoninglabel.nl</span>
-        </Link>
+        </NavigationLink>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
@@ -63,10 +63,10 @@ const Navbar = () => {
 
           {isBlogPage ? (
             <>
-              <Link to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
+              <NavigationLink to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
                 <Home className="h-4 w-4" />
                 <span>Home</span>
-              </Link>
+              </NavigationLink>
               <NavigationLink to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Voordelen
               </NavigationLink>
@@ -79,10 +79,10 @@ const Navbar = () => {
             </>
           ) : isWerkgebiedenPage ? (
             <>
-              <Link to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
-                <Home className="h-4 w-4" />
-                <span>Home</span>
-              </Link>
+               <NavigationLink to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
+                 <Home className="h-4 w-4" />
+                 <span>Home</span>
+               </NavigationLink>
               <NavigationLink to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Voordelen
               </NavigationLink>
@@ -95,13 +95,13 @@ const Navbar = () => {
             </>
           ) : isLandingPage ? (
             <>
-              <Link to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
-                <Home className="h-4 w-4" />
-                <span>Home</span>
-              </Link>
-              <Link to="/werkgebieden" className="text-sm font-medium hover:text-epa-green transition-colors">
-                Werkgebieden
-              </Link>
+               <NavigationLink to="/" className="flex items-center gap-1 text-sm font-medium hover:text-epa-green transition-colors">
+                 <Home className="h-4 w-4" />
+                 <span>Home</span>
+               </NavigationLink>
+               <NavigationLink to="/werkgebieden" className="text-sm font-medium hover:text-epa-green transition-colors">
+                 Werkgebieden
+               </NavigationLink>
               <NavigationLink to="/#features" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Voordelen
               </NavigationLink>
@@ -184,14 +184,14 @@ const Navbar = () => {
 
           {isBlogPage ? (
             <>
-              <Link 
-                to="/" 
-                className="flex items-center gap-2 px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Home className="h-4 w-4" />
-                <span>Home</span>
-              </Link>
+               <NavigationLink 
+                 to="/" 
+                 className="flex items-center gap-2 px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                 onClick={() => setMobileMenuOpen(false)}
+               >
+                 <Home className="h-4 w-4" />
+                 <span>Home</span>
+               </NavigationLink>
               <NavigationLink 
                 to="/#features" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
@@ -216,14 +216,14 @@ const Navbar = () => {
             </>
           ) : isWerkgebiedenPage ? (
             <>
-              <Link 
-                to="/" 
-                className="flex items-center gap-2 px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Home className="h-4 w-4" />
-                <span>Home</span>
-              </Link>
+               <NavigationLink 
+                 to="/" 
+                 className="flex items-center gap-2 px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                 onClick={() => setMobileMenuOpen(false)}
+               >
+                 <Home className="h-4 w-4" />
+                 <span>Home</span>
+               </NavigationLink>
               <NavigationLink 
                 to="/#features" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
@@ -248,21 +248,21 @@ const Navbar = () => {
             </>
           ) : isLandingPage ? (
             <>
-              <Link 
-                to="/" 
-                className="flex items-center gap-2 px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Home className="h-4 w-4" />
-                <span>Home</span>
-              </Link>
-              <Link 
-                to="/werkgebieden" 
-                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Werkgebieden
-              </Link>
+               <NavigationLink 
+                 to="/" 
+                 className="flex items-center gap-2 px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                 onClick={() => setMobileMenuOpen(false)}
+               >
+                 <Home className="h-4 w-4" />
+                 <span>Home</span>
+               </NavigationLink>
+               <NavigationLink 
+                 to="/werkgebieden" 
+                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                 onClick={() => setMobileMenuOpen(false)}
+               >
+                 Werkgebieden
+               </NavigationLink>
               <NavigationLink 
                 to="/#features" 
                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
