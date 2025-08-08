@@ -65,6 +65,12 @@ const AmersfoortLanding = () => {
                   src="/lovable-uploads/b8ea83af-2c34-4288-ae0d-4fbe4f13a608.png"
                   alt="Energielabel woning aanvragen in Amersfoort"
                   className="w-full h-full object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                  width={1200}
+                  height={600}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
             </div>

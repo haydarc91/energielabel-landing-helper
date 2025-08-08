@@ -84,6 +84,8 @@ const CityHero = ({ city, image }: CityHeroProps) => {
               loading="eager"
               fetchPriority="high"
               decoding="async"
+              width={1200}
+              height={600}
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           </div>

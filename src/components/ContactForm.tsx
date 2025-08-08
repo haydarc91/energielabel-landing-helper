@@ -306,8 +306,13 @@ const PricingSection = () => {
             <div className="h-48 overflow-hidden relative">
               <img 
                 src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-                alt="Standaard woning" 
+                alt="Standaard woning energielabel - voorbeeldwoning" 
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+                width={800}
+                height={450}
+                sizes="(max-width: 768px) 100vw, 33vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               <div className="absolute bottom-4 left-4 text-white">
@@ -353,8 +358,13 @@ const PricingSection = () => {
             <div className="h-48 overflow-hidden relative">
               <img 
                 src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-                alt="Vrijstaande woning" 
+                alt="Vrijstaande woning energielabel - voorbeeld" 
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+                width={800}
+                height={450}
+                sizes="(max-width: 768px) 100vw, 33vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               <div className="absolute bottom-4 left-4 text-white">
@@ -400,8 +410,13 @@ const PricingSection = () => {
             <div className="h-48 overflow-hidden relative">
               <img 
                 src="https://images.unsplash.com/photo-1609921141835-710b7290f500?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-                alt="Spoedservice energielabel" 
+                alt="Spoedservice energielabel illustratie" 
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+                width={800}
+                height={450}
+                sizes="(max-width: 768px) 100vw, 33vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               <div className="absolute bottom-4 left-4 text-white">

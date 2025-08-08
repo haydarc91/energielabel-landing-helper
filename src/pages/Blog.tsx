@@ -196,13 +196,13 @@ const Blog = () => {
               <p className="text-lg mb-6 opacity-90">
                 Officieel geregistreerd bij RVO • EPA-gecertificeerd • Binnen 5 werkdagen
               </p>
-              <Link 
+              <NavigationLink 
                 to="/#contact-section"
                 className="inline-flex items-center bg-white text-epa-green px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg"
               >
                 Direct Energielabel Aanvragen
                 <ArrowRight className="h-5 w-5 ml-2" />
-              </Link>
+              </NavigationLink>
             </div>
           </div>
         </div>
