@@ -28,6 +28,10 @@ const Blog = () => {
       metaDescription.setAttribute("content", "Ontdek alles over energielabels voor woningen. Praktische tips, stappenplannen en actuele informatie over energiebesparing en duurzaamheid.");
     }
     
+    // Force scroll to top when blog page loads
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    console.log('Blog page: Forcing scroll to top on mount');
+    
     fetchBlogPosts();
   }, []);
 

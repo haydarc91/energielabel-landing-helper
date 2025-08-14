@@ -78,8 +78,11 @@ function ScrollManager() {
         }, 50);
       }
     } else {
-      // Default: scroll to top on normal route changes
-      window.scrollTo({ top: 0, left: 0 });
+      // Default: scroll to top on normal route changes - use setTimeout to ensure DOM is ready
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        console.log('ScrollManager: Forced scroll to top for route:', location.pathname);
+      }, 0);
     }
   }, [location.pathname, location.hash]);
 
