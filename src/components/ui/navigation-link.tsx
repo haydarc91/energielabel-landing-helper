@@ -12,20 +12,12 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({ to, children, className
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   
-  // Force scroll to top when certain routes are visited
-  useEffect(() => {
-    // This effect will run on component mount and when location changes
-    if (location.pathname === '/werkgebieden') {
-      window.scrollTo(0, 0);
-      console.log('Scrolling to top for werkgebieden page');
-    }
-  }, [location.pathname]);
+  // ScrollManager in App.tsx handles all scroll-to-top behavior
   
   // Handle all regular page navigation links (not hash links)
   const handleRegularNavigation = () => {
-    // Always scroll to top for regular page navigation
-    window.scrollTo(0, 0);
-    console.log(`Regular link clicked: ${to}, forcefully scrolling to top`);
+    // ScrollManager in App.tsx handles scroll-to-top, no need to do it here
+    console.log(`Regular link clicked: ${to}, letting ScrollManager handle scroll`);
     if (onClick) onClick();
   };
   
