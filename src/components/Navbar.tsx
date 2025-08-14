@@ -126,9 +126,12 @@ const Navbar = () => {
               <NavigationLink to="#about" className="text-sm font-medium hover:text-epa-green transition-colors">
                 Over Ons
               </NavigationLink>
-              <NavigationLink to="#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
-                FAQ
-              </NavigationLink>
+               <NavigationLink to="#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
+                 FAQ
+               </NavigationLink>
+               <NavigationLink to="/blog" className="text-sm font-medium hover:text-epa-green transition-colors">
+                 Blog
+               </NavigationLink>
             </>
           )}
           <NavigationLink 
@@ -315,13 +318,20 @@ const Navbar = () => {
               >
                 Over Ons
               </NavigationLink>
-              <NavigationLink 
-                to="#faq" 
-                className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                FAQ
-              </NavigationLink>
+               <NavigationLink 
+                 to="#faq" 
+                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                 onClick={() => setMobileMenuOpen(false)}
+               >
+                 FAQ
+               </NavigationLink>
+               <NavigationLink 
+                 to="/blog" 
+                 className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
+                 onClick={() => setMobileMenuOpen(false)}
+               >
+                 Blog
+               </NavigationLink>
             </>
           )}
           <NavigationLink 
