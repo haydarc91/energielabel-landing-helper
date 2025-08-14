@@ -29,8 +29,13 @@ const Blog = () => {
     }
     
     // Force scroll to top when blog page loads
+    console.log('Blog page: About to force scroll to top, current position:', window.scrollY);
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    console.log('Blog page: Forcing scroll to top on mount');
+    console.log('Blog page: Called scrollTo, checking result...');
+    
+    setTimeout(() => {
+      console.log('Blog page: Final scroll position after mount:', window.scrollY);
+    }, 50);
     
     fetchBlogPosts();
   }, []);
