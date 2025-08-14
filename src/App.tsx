@@ -79,17 +79,8 @@ function ScrollManager() {
       }
     } else {
       // Default: scroll to top on normal route changes - use setTimeout to ensure DOM is ready
-      console.log('ScrollManager: About to scroll to top for route:', location.pathname);
-      console.log('ScrollManager: Current scroll position before:', window.scrollY);
-      
       setTimeout(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        console.log('ScrollManager: Called scrollTo for route:', location.pathname);
-        
-        // Check if scroll actually happened
-        setTimeout(() => {
-          console.log('ScrollManager: Scroll position after scrollTo:', window.scrollY);
-        }, 10);
       }, 0);
     }
   }, [location.pathname, location.hash]);

@@ -129,9 +129,17 @@ const Navbar = () => {
                <NavigationLink to="#faq" className="text-sm font-medium hover:text-epa-green transition-colors">
                  FAQ
                </NavigationLink>
-               <NavigationLink to="/blog" className="text-sm font-medium hover:text-epa-green transition-colors">
+               <a 
+                 href="/blog"
+                 className="text-sm font-medium hover:text-epa-green transition-colors"
+                 onClick={(e) => {
+                   e.preventDefault();
+                   console.log("Blog clicked in navbar - using direct navigation");
+                   window.location.href = "/blog";
+                 }}
+               >
                  Blog
-               </NavigationLink>
+               </a>
             </>
           )}
           <NavigationLink 
@@ -325,13 +333,18 @@ const Navbar = () => {
                >
                  FAQ
                </NavigationLink>
-               <NavigationLink 
-                 to="/blog" 
+               <a 
+                 href="/blog"
                  className="block px-3 py-3 text-base font-medium hover:bg-epa-green-light hover:text-epa-green-dark rounded-md"
-                 onClick={() => setMobileMenuOpen(false)}
+                 onClick={(e) => {
+                   e.preventDefault();
+                   console.log("Blog clicked in mobile menu - using direct navigation");
+                   setMobileMenuOpen(false);
+                   window.location.href = "/blog";
+                 }}
                >
                  Blog
-               </NavigationLink>
+               </a>
             </>
           )}
           <NavigationLink 

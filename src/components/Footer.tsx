@@ -87,10 +87,19 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <NavigationLink to="/blog" className="hover:text-epa-green flex items-center">
+                {/* Use direct window.location to ensure page refresh and proper scroll behavior */}
+                <a
+                  href="/blog"
+                  className="hover:text-epa-green flex items-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log("Blog clicked in footer - using direct navigation");
+                    window.location.href = "/blog";
+                  }}
+                >
                   <ChevronRight className="h-4 w-4 mr-1" />
                   Blog
-                </NavigationLink>
+                </a>
               </li>
             </ul>
           </div>
