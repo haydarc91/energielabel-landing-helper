@@ -303,7 +303,7 @@ const Blog = () => {
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12"></div>
                 <div className="relative">
                   <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                    Vanaf €285 - Geldig 10 jaar
+                    Vanaf €375 - Geldig 10 jaar
                   </h3>
                   <p className="text-lg mb-6 opacity-90">
                     Officieel geregistreerd bij RVO • EPA-gecertificeerd • Binnen 5 werkdagen

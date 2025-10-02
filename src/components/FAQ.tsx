@@ -65,7 +65,7 @@ const FAQ = () => {
     },
     {
       question: "Hoeveel kost een energielabel?",
-      answer: "De kosten voor een energielabel zijn afhankelijk van het type en de grootte van uw woning. Voor een gemiddelde eengezinswoning liggen de kosten tussen €250 en €350. Neem contact met ons op voor een exacte prijsopgave voor uw specifieke situatie."
+      answer: "De kosten voor een energielabel zijn afhankelijk van het type en de grootte van uw woning. Voor een gemiddelde eengezinswoning liggen de kosten tussen €250 en €450. Neem contact met ons op voor een exacte prijsopgave voor uw specifieke situatie."
     },
     {
       question: "Wat moet ik voorbereiden voor de woninginspectie?",

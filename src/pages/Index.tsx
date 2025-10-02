@@ -64,7 +64,7 @@ const Index = () => {
       <Navbar />
       <main className="w-full">
         <Seo
-          title="EPA Woninglabel | Officieel Energielabel Vanaf €285"
+          title="EPA Woninglabel | Officieel Energielabel Vanaf €375"
           description="Krijg snel en professioneel een officieel energielabel voor uw woning. EPA gecertificeerde adviseurs, geldig voor 10 jaar en geregistreerd bij RVO."
           canonical="https://www.epawoninglabel.nl/"
         />

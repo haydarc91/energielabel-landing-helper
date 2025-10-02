@@ -96,7 +96,7 @@ const PricingSection = () => {
     let basePrice = 0;
     
     if (propertyType === 'detached' || propertyType === 'semi-detached') {
-      basePrice = 350;
+      basePrice = 450;
       
       if (surfaceArea > 200) {
         const extraSurface = surfaceArea - 200;
@@ -104,7 +104,7 @@ const PricingSection = () => {
         basePrice += extraChunks * 50;
       }
     } else {
-      basePrice = 285;
+      basePrice = 375;
     }
     
     if (rushService) {
@@ -324,7 +324,7 @@ const PricingSection = () => {
             </div>
             <CardContent className="p-6">
               <div className="mb-4">
-                <span className="text-3xl font-bold text-epa-green">€285</span>
+                <span className="text-3xl font-bold text-epa-green">€375</span>
                 <span className="text-gray-500 ml-2">incl. BTW</span>
               </div>
               <ul className="space-y-2 mb-6">
@@ -376,7 +376,7 @@ const PricingSection = () => {
             </div>
             <CardContent className="p-6">
               <div className="mb-4">
-                <span className="text-3xl font-bold text-epa-green">€350</span>
+                <span className="text-3xl font-bold text-epa-green">€450</span>
                 <span className="text-gray-500 ml-2">incl. BTW</span>
               </div>
               <ul className="space-y-2 mb-6">
@@ -766,7 +766,7 @@ const PricingSection = () => {
                       <span>Basistarief:</span>
                       <span>€{
                         formData.propertyType === 'detached' || formData.propertyType === 'semi-detached' ? 
-                        '350' : '285'
+                        '450' : '375'
                       }</span>
                     </div>
                     

@@ -84,7 +84,7 @@ const Hero = () => {
         <div className="text-left z-10">
           <h1 ref={titleRef} className="opacity-0 font-bold mb-6 leading-tight text-balance">
             Energielabel voor uw woning <br />
-            <span className="text-epa-green">Vanaf €285</span>
+            <span className="text-epa-green">Vanaf €375</span>
           </h1>
           
           <p ref={subtitleRef} className="opacity-0 text-lg md:text-xl text-gray-600 max-w-3xl mb-10 text-balance">

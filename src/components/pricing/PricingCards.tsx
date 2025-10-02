@@ -20,7 +20,7 @@ const PricingCards = () => {
         <CardContent className="p-6 flex flex-col justify-between h-[calc(100%-12rem)]">
           <div>
             <div className="mb-4 text-center">
-              <span className="text-3xl font-bold text-epa-green">€285</span>
+              <span className="text-3xl font-bold text-epa-green">€375</span>
               <span className="text-gray-500 ml-2">incl. BTW</span>
             </div>
             <ul className="space-y-2 mb-6 text-left">
@@ -65,7 +65,7 @@ const PricingCards = () => {
         <CardContent className="p-6 flex flex-col justify-between h-[calc(100%-12rem)]">
           <div>
             <div className="mb-4 text-center">
-              <span className="text-3xl font-bold text-epa-green">€350</span>
+              <span className="text-3xl font-bold text-epa-green">€450</span>
               <span className="text-gray-500 ml-2">incl. BTW</span>
             </div>
             <ul className="space-y-2 mb-6 text-left">

@@ -42,7 +42,7 @@ const CityLanding = ({
       <main className="flex-grow pt-24">
         <Seo
           title={`Energielabel woning aanvragen ${city} | Officieel & Snel`}
-          description={`Vraag een officieel energielabel aan voor uw woning in ${city}. Binnen 3 werkdagen geregeld door EPA-gecertificeerde adviseurs. Vast tarief vanaf €285.`}
+          description={`Vraag een officieel energielabel aan voor uw woning in ${city}. Binnen 3 werkdagen geregeld door EPA-gecertificeerde adviseurs. Vast tarief vanaf €375.`}
           jsonLd={[
             {
               '@context': 'https://schema.org',

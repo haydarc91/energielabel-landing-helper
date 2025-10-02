@@ -119,7 +119,7 @@ const ContactForm = ({
     let basePrice = 0;
     
     if (propertyType === 'detached') {
-      basePrice = 350;
+      basePrice = 450;
       
       if (surfaceArea > 200) {
         const extraSurface = surfaceArea - 200;
@@ -127,7 +127,7 @@ const ContactForm = ({
         basePrice += extraChunks * 15;
       }
     } else {
-      basePrice = 285;
+      basePrice = 375;
       
       if (surfaceArea > 150) {
         const extraSurface = surfaceArea - 150;

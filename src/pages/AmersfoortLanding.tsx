@@ -57,7 +57,7 @@ const AmersfoortLanding = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="h-5 w-5 text-epa-green" />
-                    <span className="text-gray-700">Vanaf €285 inclusief BTW</span>
+                    <span className="text-gray-700">Vanaf €375 inclusief BTW</span>
                   </div>
                 </div>
               </div>
@@ -118,7 +118,7 @@ const AmersfoortLanding = () => {
                   <li>Lokale expertise en kennis van Amersfoortse woningen</li>
                   <li>Snelle service: binnen 3 werkdagen uw energielabel</li>
                   <li>Persoonlijke aanpak en duidelijke communicatie</li>
-                  <li>Transparante prijzen vanaf €285 inclusief BTW</li>
+                  <li>Transparante prijzen vanaf €375 inclusief BTW</li>
                 </ul>
               </div>
             </div>

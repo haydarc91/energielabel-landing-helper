@@ -98,7 +98,7 @@ const CityProcess = ({ city }: CityProcessProps) => {
               </div>
               <div>
                 <p className="font-medium">Transparante prijzen</p>
-                <p className="text-sm text-gray-600">Vanaf €285 inclusief BTW, zonder verborgen kosten</p>
+                <p className="text-sm text-gray-600">Vanaf €375 inclusief BTW, zonder verborgen kosten</p>
               </div>
             </div>
           </div>
