@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { RefreshCw, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { formatDateNL } from "@/utils/dateFormatters";
+import { Navigate, useNavigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import { User, Session } from '@supabase/supabase-js';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { Dashboard } from "@/components/admin/Dashboard";
 import WebContentEditor, { WebsiteContent } from "@/components/admin/WebContentEditor";
 import SubmissionsTable, { ContactSubmission } from "@/components/admin/SubmissionsTable";
 import SubmissionDetail from "@/components/admin/SubmissionDetail";
-import { Separator } from "@/components/ui/separator";
+import { formatDateNL } from "@/utils/dateFormatters";
+import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Navigate, useNavigate } from 'react-router-dom';
-import Logo from '@/components/Logo';
-import { Toaster } from 'sonner';
-import { User, Session } from '@supabase/supabase-js';
+import { Button } from "@/components/ui/button";
+import { RefreshCw, LogOut } from "lucide-react";
 
 const Admin = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
@@ -23,16 +24,15 @@ const Admin = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [isSessionLoading, setIsSessionLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("dashboard");
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check admin role when session changes
         if (session?.user) {
           setTimeout(() => {
             checkAdminRole(session.user.id);
@@ -44,7 +44,6 @@ const Admin = () => {
       }
     );
 
-    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -143,7 +142,6 @@ const Admin = () => {
     toast.info('Je bent uitgelogd');
   };
 
-  // If session is loading, show loading state
   if (isSessionLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -155,12 +153,10 @@ const Admin = () => {
     );
   }
 
-  // If no session, redirect to login
   if (!session || !user) {
     return <Navigate to="/login" />;
   }
 
-  // If not admin, show access denied
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -184,77 +180,85 @@ const Admin = () => {
   }
   
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Toaster position="top-right" />
-      <div className="bg-epa-green py-6 px-4 sm:px-6 lg:px-8 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center">
-            <Logo className="mr-3" />
-            <div>
-              <h1 className="text-3xl font-bold text-white">Admin</h1>
-              <p className="text-white/80 text-sm">Welkom, {user.email}</p>
-            </div>
-          </div>
-          <Button 
-            variant="outline" 
-            className="bg-white text-epa-green-dark hover:bg-gray-100 flex items-center gap-2" 
-            onClick={handleSignOut}
-          >
-            <LogOut className="h-4 w-4" />
-            Uitloggen
-          </Button>
-        </div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Website Content Management */}
-        <Card className="mb-8 shadow-sm border-epa-gray">
-          <CardHeader>
-            <CardTitle className="text-2xl text-epa-green-dark">Website Inhoud Beheren</CardTitle>
-            <CardDescription>Bewerk de tekst en inhoud die op de website getoond wordt</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <WebContentEditor 
-              webContent={webContent} 
-              onRefresh={fetchWebContent} 
-            />
-          </CardContent>
-        </Card>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gray-50">
+        <Toaster position="top-right" />
         
-        <Separator className="my-8" />
-        
-        {/* Contact Submissions Section */}
-        <Card className="shadow-sm border-epa-gray">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-2xl text-epa-green-dark">Energielabel Aanvragen</CardTitle>
-              <CardDescription>Beheer en verwerk inkomende aanvragen</CardDescription>
-            </div>
-            <Button onClick={fetchSubmissions} variant="outline" className="gap-2 bg-white hover:bg-epa-green-light hover:text-epa-green-dark">
-              <RefreshCw className="h-4 w-4" /> Vernieuwen
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <SubmissionsTable 
-              submissions={submissions} 
-              loading={loading} 
-              formatDate={formatDateNL}
-              onSelectSubmission={handleSelectSubmission}
-            />
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Submission Detail Dialog */}
-      {selectedSubmission && (
-        <SubmissionDetail
-          submission={selectedSubmission}
-          isOpen={!!selectedSubmission}
-          onClose={handleCloseDetail}
-          onUpdate={fetchSubmissions}
+        <AdminSidebar 
+          userEmail={user.email || ''} 
+          onSignOut={handleSignOut}
+          onNavigate={setActiveSection}
+          activeSection={activeSection}
         />
-      )}
-    </div>
+        
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="h-16 bg-white border-b flex items-center px-6 sticky top-0 z-10">
+            <SidebarTrigger className="mr-4" />
+            <div className="flex-1">
+              <h1 className="text-xl font-semibold text-gray-900">
+                {activeSection === 'dashboard' && 'Dashboard'}
+                {activeSection === 'content' && 'Website Inhoud'}
+                {activeSection === 'submissions' && 'Aanvragen'}
+              </h1>
+            </div>
+            {activeSection === 'submissions' && (
+              <Button 
+                onClick={fetchSubmissions} 
+                variant="outline" 
+                size="sm"
+                className="gap-2"
+              >
+                <RefreshCw className="h-4 w-4" /> Vernieuwen
+              </Button>
+            )}
+          </header>
+
+          {/* Main Content */}
+          <main className="flex-1 p-6 overflow-auto">
+            {activeSection === 'dashboard' && (
+              <Dashboard submissions={submissions} webContent={webContent} />
+            )}
+
+            {activeSection === 'content' && (
+              <div className="max-w-7xl">
+                <WebContentEditor 
+                  webContent={webContent} 
+                  onRefresh={fetchWebContent} 
+                />
+              </div>
+            )}
+
+            {activeSection === 'submissions' && (
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Alle Aanvragen</CardTitle>
+                  <CardDescription>Beheer en verwerk inkomende energielabel aanvragen</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <SubmissionsTable 
+                    submissions={submissions} 
+                    loading={loading} 
+                    formatDate={formatDateNL}
+                    onSelectSubmission={handleSelectSubmission}
+                  />
+                </CardContent>
+              </Card>
+            )}
+          </main>
+        </div>
+
+        {/* Submission Detail Dialog */}
+        {selectedSubmission && (
+          <SubmissionDetail
+            submission={selectedSubmission}
+            isOpen={!!selectedSubmission}
+            onClose={handleCloseDetail}
+            onUpdate={fetchSubmissions}
+          />
+        )}
+      </div>
+    </SidebarProvider>
   );
 };
 
