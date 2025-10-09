@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import NavigationLink from '../components/ui/navigation-link';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Seo from '@/components/Seo';
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, ArrowRight, BookOpen, TrendingUp, Send, ArrowUp, MessageSquare, Zap, CheckCircle } from 'lucide-react';
@@ -25,15 +26,6 @@ const Blog = () => {
   const phoneNumber = '085-250 2302';
 
   useEffect(() => {
-    document.title = "Energielabel Blog | Alles over Energielabels voor Woningen";
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute("content", "Ontdek alles over energielabels voor woningen. Praktische tips, stappenplannen en actuele informatie over energiebesparing en duurzaamheid.");
-    }
-    
-    // No need to force scroll to top since page refresh handles it automatically
-    
     fetchBlogPosts();
 
     // Scroll behavior
@@ -106,8 +98,27 @@ const Blog = () => {
     window.location.href = "/#contact-section";
   };
 
+  const blogListSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "EPA Woninglabel Blog",
+    "description": "Ontdek alles over energielabels voor woningen. Praktische tips, stappenplannen en actuele informatie over energiebesparing en duurzaamheid.",
+    "url": "https://www.epawoninglabel.nl/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "EPA Woninglabel",
+      "url": "https://www.epawoninglabel.nl"
+    }
+  };
+
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-white">
+      <Seo
+        title="Energielabel Blog | Alles over Energielabels voor Woningen"
+        description="Ontdek alles over energielabels voor woningen. Praktische tips, stappenplannen en actuele informatie over energiebesparing en duurzaamheid."
+        canonical="https://www.epawoninglabel.nl/blog"
+        jsonLd={blogListSchema}
+      />
       <Navbar />
       
       <main className="w-full">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Seo from '@/components/Seo';
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowLeft, Phone, Mail, Clock, User, ArrowUp, Send, MessageSquare, ArrowRight, BookOpen } from 'lucide-react';
@@ -63,11 +64,6 @@ const BlogPost = () => {
 
       if (error) throw error;
       setPost(data);
-      
-      // Update page title and meta description
-      if (data?.title) {
-        document.title = `${data.title} | EPA Woninglabel Blog`;
-      }
     } catch (error) {
       console.error('Error fetching blog post:', error);
     } finally {
@@ -214,8 +210,68 @@ const BlogPost = () => {
     );
   }
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title || '',
+    "description": post.subtitle || '',
+    "image": getHeroImage(slug || ''),
+    "datePublished": post.last_updated,
+    "dateModified": post.last_updated,
+    "author": {
+      "@type": "Organization",
+      "name": "EPA Woninglabel"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "EPA Woninglabel",
+      "url": "https://www.epawoninglabel.nl",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.epawoninglabel.nl/lovable-uploads/b8ea83af-2c34-4288-ae0d-4fbe4f13a608.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://www.epawoninglabel.nl/blog/${slug}`
+    }
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.epawoninglabel.nl"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://www.epawoninglabel.nl/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": post.title || '',
+        "item": `https://www.epawoninglabel.nl/blog/${slug}`
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-white">
+      <Seo
+        title={`${post.title} | EPA Woninglabel Blog`}
+        description={post.subtitle || post.content?.substring(0, 160) || ''}
+        canonical={`https://www.epawoninglabel.nl/blog/${slug}`}
+        jsonLd={[articleSchema, breadcrumbSchema]}
+        image={getHeroImage(slug || '')}
+        type="article"
+      />
       <Navbar />
       
       <main className="w-full">
