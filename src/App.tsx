@@ -42,7 +42,6 @@ import VeenendaalPage from "./pages/cities/VeenendaalLanding";
 // Admin pages
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
-import CreateAdminUser from "./pages/CreateAdminUser";
 
 // Add Sonner Toaster
 import { Toaster } from "sonner";
@@ -150,7 +149,6 @@ function App() {
         {/* Admin routes */}
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/create-admin" element={<CreateAdminUser />} />
         
         {/* 404 route */}
         <Route path="*" element={<NotFound />} />

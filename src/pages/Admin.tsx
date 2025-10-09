@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { RefreshCw, LogOut } from "lucide-react";
@@ -13,49 +12,80 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Navigate, useNavigate } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { Toaster } from 'sonner';
+import { User, Session } from '@supabase/supabase-js';
 
 const Admin = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [webContent, setWebContent] = useState<WebsiteContent[]>([]);
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
-  const [session, setSession] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isSessionLoading, setIsSessionLoading] = useState(true);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Check both Supabase auth and direct admin auth
-    const checkAuthentication = async () => {
-      // Check Supabase session
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-      
-      // Check direct admin authentication
-      const adminAuth = localStorage.getItem('adminAuthenticated') === 'true';
-      setIsAdminAuthenticated(adminAuth);
-      
-      setIsSessionLoading(false);
-
-      if (data.session || adminAuth) {
-        fetchSubmissions();
-        fetchWebContent();
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Check admin role when session changes
+        if (session?.user) {
+          setTimeout(() => {
+            checkAdminRole(session.user.id);
+          }, 0);
+        } else {
+          setIsAdmin(false);
+          setIsSessionLoading(false);
+        }
       }
-    };
+    );
 
-    checkAuthentication();
-
-    // Subscribe to auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      if (session) {
-        fetchSubmissions();
-        fetchWebContent();
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        checkAdminRole(session.user.id);
+      } else {
+        setIsSessionLoading(false);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkAdminRole = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .single();
+      
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error checking admin role:', error);
+      }
+      
+      const hasAdminRole = !!data;
+      setIsAdmin(hasAdminRole);
+      
+      if (hasAdminRole) {
+        fetchSubmissions();
+        fetchWebContent();
+      }
+    } catch (error) {
+      console.error('Error in checkAdminRole:', error);
+      setIsAdmin(false);
+    } finally {
+      setIsSessionLoading(false);
+    }
+  };
 
   const fetchSubmissions = async () => {
     setLoading(true);
@@ -67,7 +97,6 @@ const Admin = () => {
       
       if (error) throw error;
       
-      // Add default status if missing
       const processedData = data?.map(submission => ({
         ...submission,
         status: submission.status || 'new',
@@ -109,13 +138,7 @@ const Admin = () => {
   };
 
   const handleSignOut = async () => {
-    // Sign out from Supabase (if logged in through Supabase)
     await supabase.auth.signOut();
-    
-    // Clear direct admin authentication
-    localStorage.removeItem('adminAuthenticated');
-    
-    // Redirect to login page
     navigate('/login');
     toast.info('Je bent uitgelogd');
   };
@@ -125,16 +148,39 @@ const Admin = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="spinner h-12 w-12 border-4 border-t-epa-green border-gray-200 rounded-full animate-spin mx-auto"></div>
+          <div className="h-12 w-12 border-4 border-t-epa-green border-gray-200 rounded-full animate-spin mx-auto"></div>
           <p className="mt-4 text-gray-600">Bezig met laden...</p>
         </div>
       </div>
     );
   }
 
-  // If no session and no direct admin authentication, redirect to login
-  if (!session && !isAdminAuthenticated) {
+  // If no session, redirect to login
+  if (!session || !user) {
     return <Navigate to="/login" />;
+  }
+
+  // If not admin, show access denied
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <LogOut className="h-8 w-8 text-red-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Geen toegang</h2>
+          <p className="text-gray-600 mb-6">
+            Je hebt geen admin rechten. Neem contact op met de beheerder om toegang te krijgen.
+          </p>
+          <Button 
+            onClick={handleSignOut}
+            className="bg-epa-green hover:bg-epa-green-dark"
+          >
+            Terug naar login
+          </Button>
+        </div>
+      </div>
+    );
   }
   
   return (
@@ -144,7 +190,10 @@ const Admin = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
             <Logo className="mr-3" />
-            <h1 className="text-3xl font-bold text-white ml-2">Admin</h1>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Admin</h1>
+              <p className="text-white/80 text-sm">Welkom, {user.email}</p>
+            </div>
           </div>
           <Button 
             variant="outline" 
