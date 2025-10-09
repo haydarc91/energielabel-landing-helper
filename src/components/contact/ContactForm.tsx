@@ -40,6 +40,7 @@ const ContactForm = ({
     message: '',
     propertyType: 'apartment',
     rushService: false,
+    labelCheckService: false,
     postcode: '',
     houseNumber: '',
     houseNumberAddition: ''
@@ -83,7 +84,12 @@ const ContactForm = ({
     setFormData(prev => ({ ...prev, [name]: checked }));
     
     if (addressDetails) {
-      calculatePrice(addressDetails.surfaceArea, formData.propertyType, name === 'rushService' ? checked : formData.rushService);
+      calculatePrice(
+        addressDetails.surfaceArea, 
+        formData.propertyType, 
+        name === 'rushService' ? checked : formData.rushService,
+        name === 'labelCheckService' ? checked : formData.labelCheckService
+      );
     }
   };
 
@@ -115,7 +121,7 @@ const ContactForm = ({
     setIsEditingSurfaceArea(false);
   };
 
-  const calculatePrice = (surfaceArea: number, propertyType: string, rushService: boolean) => {
+  const calculatePrice = (surfaceArea: number, propertyType: string, rushService: boolean, labelCheckService: boolean = false) => {
     let basePrice = 0;
     
     if (propertyType === 'detached') {
@@ -138,6 +144,10 @@ const ContactForm = ({
     
     if (rushService) {
       basePrice += 95;
+    }
+    
+    if (labelCheckService) {
+      basePrice += 150;
     }
     
     setCalculatedPrice(basePrice);
@@ -237,7 +247,8 @@ const ContactForm = ({
         calculatePrice(
           address.surfaceArea,
           formData.propertyType,
-          formData.rushService
+          formData.rushService,
+          formData.labelCheckService
         );
         
         toast({
@@ -269,6 +280,7 @@ const ContactForm = ({
         propertyType: formData.propertyType,
         surfaceArea: addressDetails?.surfaceArea,
         rushService: formData.rushService,
+        labelCheckService: formData.labelCheckService,
         message: formData.message,
         calculatedPrice: calculatedPrice,
         postcode: formData.postcode,
@@ -284,6 +296,7 @@ const ContactForm = ({
         propertyType: formData.propertyType,
         surfaceArea: addressDetails?.surfaceArea,
         rushService: formData.rushService ? 'Ja' : 'Nee',
+        labelCheckService: formData.labelCheckService ? 'Ja' : 'Nee',
         message: formData.message,
         calculatedPrice: calculatedPrice,
         postcode: formData.postcode,
@@ -355,6 +368,7 @@ const ContactForm = ({
           message: '',
           propertyType: 'apartment',
           rushService: false,
+          labelCheckService: false,
           postcode: '',
           houseNumber: '',
           houseNumberAddition: ''
@@ -518,6 +532,23 @@ const ContactForm = ({
                 <span className="font-medium">Spoedservice (+€95 incl. BTW)</span>
                 <p className="text-gray-500 text-xs mt-1">
                   Opname en afgifte van het energielabel binnen 24 uur
+                </p>
+              </label>
+            </div>
+            
+            <div className="flex items-start">
+              <input
+                id="labelCheckService"
+                name="labelCheckService"
+                type="checkbox"
+                checked={formData.labelCheckService}
+                onChange={handleCheckboxChange}
+                className="h-5 w-5 text-blue-600 rounded border-gray-300 focus-ring mt-0.5"
+              />
+              <label htmlFor="labelCheckService" className="ml-2 block text-sm text-gray-700">
+                <span className="font-medium">Label Check Service (+€150 incl. BTW)</span>
+                <p className="text-gray-500 text-xs mt-1">
+                  No-cure no-pay: gratis vooraf beoordeling, pas betalen bij succes
                 </p>
               </label>
             </div>

@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import LabelCheckSection from '@/components/LabelCheckSection';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
@@ -69,6 +70,7 @@ const Index = () => {
           canonical="https://www.epawoninglabel.nl/"
         />
         <Hero />
+        <LabelCheckSection />
         <Features />
         
         <div className="py-8 bg-epa-green/5 text-center">
