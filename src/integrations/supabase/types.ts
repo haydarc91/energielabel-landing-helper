@@ -25,6 +25,7 @@ export type Database = {
           house_number: string | null
           house_number_addition: string | null
           id: string
+          label_check_service: boolean | null
           message: string | null
           name: string
           notes: string | null
@@ -45,6 +46,7 @@ export type Database = {
           house_number?: string | null
           house_number_addition?: string | null
           id?: string
+          label_check_service?: boolean | null
           message?: string | null
           name: string
           notes?: string | null
@@ -65,6 +67,7 @@ export type Database = {
           house_number?: string | null
           house_number_addition?: string | null
           id?: string
+          label_check_service?: boolean | null
           message?: string | null
           name?: string
           notes?: string | null

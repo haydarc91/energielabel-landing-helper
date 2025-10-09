@@ -337,6 +337,7 @@ const ContactForm = ({
           property_type: formData.propertyType,
           surface_area: addressDetails?.surfaceArea,
           rush_service: formData.rushService,
+          label_check_service: formData.labelCheckService,
           message: formData.message,
           calculated_price: calculatedPrice,
           postcode: formData.postcode,
