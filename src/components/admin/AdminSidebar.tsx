@@ -25,6 +25,7 @@ interface AdminSidebarProps {
 
 const menuItems = [
   { title: "Dashboard", section: "dashboard", icon: LayoutDashboard },
+  { title: "Blog Artikelen", section: "blog", icon: FileText },
   { title: "Website Inhoud", section: "content", icon: FileText },
   { title: "Aanvragen", section: "submissions", icon: Inbox },
 ];

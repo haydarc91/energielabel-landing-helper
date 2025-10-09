@@ -6,7 +6,9 @@ import { User, Session } from '@supabase/supabase-js';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Dashboard } from "@/components/admin/Dashboard";
-import WebContentEditor, { WebsiteContent } from "@/components/admin/WebContentEditor";
+import { BlogManager } from "@/components/admin/BlogManager";
+import { ContentManager } from "@/components/admin/ContentManager";
+import { WebsiteContent } from "@/components/admin/WebContentEditor";
 import SubmissionsTable, { ContactSubmission } from "@/components/admin/SubmissionsTable";
 import SubmissionDetail from "@/components/admin/SubmissionDetail";
 import { formatDateNL } from "@/utils/dateFormatters";
@@ -198,6 +200,7 @@ const Admin = () => {
             <div className="flex-1">
               <h1 className="text-xl font-semibold text-gray-900">
                 {activeSection === 'dashboard' && 'Dashboard'}
+                {activeSection === 'blog' && 'Blog Artikelen'}
                 {activeSection === 'content' && 'Website Inhoud'}
                 {activeSection === 'submissions' && 'Aanvragen'}
               </h1>
@@ -220,10 +223,19 @@ const Admin = () => {
               <Dashboard submissions={submissions} webContent={webContent} />
             )}
 
+            {activeSection === 'blog' && (
+              <div className="max-w-6xl">
+                <BlogManager 
+                  blogArticles={webContent.filter(c => c.section_name === 'blog_article')}
+                  onRefresh={fetchWebContent} 
+                />
+              </div>
+            )}
+
             {activeSection === 'content' && (
-              <div className="max-w-7xl">
-                <WebContentEditor 
-                  webContent={webContent} 
+              <div className="max-w-6xl">
+                <ContentManager 
+                  content={webContent.filter(c => c.section_name !== 'blog_article')}
                   onRefresh={fetchWebContent} 
                 />
               </div>
